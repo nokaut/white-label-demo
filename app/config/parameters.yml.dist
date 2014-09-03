@@ -1,0 +1,28 @@
+parameters:
+    database_driver:   pdo_mysql
+    database_host:     127.0.0.1
+    database_port:     ~
+    database_name:     symfony
+    database_user:     root
+    database_password: ~
+
+    mailer_transport:  smtp
+    mailer_host:       127.0.0.1
+    mailer_user:       ~
+    mailer_password:   ~
+
+    locale:            pl
+    secret:            ThisTokenIsNotSoSecretChangeIt
+
+    debug_toolbar:          true
+    debug_redirects:        false
+    use_assetic_controller: true
+
+    api_token: ~
+    api_url: http://92.43.117.190:8080/api/v2/
+
+    cache_enabled: false
+    cache_default_lifetime: 1800
+
+    memcache_url: localhost
+    memcache_port: 11211

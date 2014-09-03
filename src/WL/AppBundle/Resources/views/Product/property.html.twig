@@ -1,0 +1,7 @@
+{% if property.value is iterable %}
+    {{ property.value|join(', ') }}
+{% else %}
+    {{ property.value }}
+{% endif %}
+
+{{ property.unit|raw }}

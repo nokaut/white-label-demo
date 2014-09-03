@@ -1,0 +1,140 @@
+{% extends "WLAppBundle::layout.html.twig" %}
+
+{% block title %}
+{{ product.title|raw }}  - White Label Nokaut.pl
+{% endblock %}
+
+{% block desc %}
+{{ product.description|raw|truncate(150) }}
+{% endblock %}
+
+{% block head %}
+    {{ parent() }}
+
+    <link rel="canonical" href="{{ url('product', {'productUrl': product.url|trim('/')}) }}" />
+{% endblock %}
+
+
+
+{% block content %}
+    <div class="page-header">
+        <h1>{{ product.title|raw }}</h1>
+    </div>
+    <div class="row">
+        <div class="col-xs-2 col-sm-2">
+                {% for photoId in product.photoIds if photoId %}
+                    <a id="productImage{{ loop.index }}" target="_blank" href="http://img.nokaut.pl/{{ nokaut_photo_url.prepare(photoId, '500x500', product.title) }}"><img src="http://img.nokaut.pl/{{ nokaut_photo_url.prepare(photoId, '90x90', product.title) }}" alt="{{ product.title }}"></a>
+                {% endfor %}
+        </div>
+        <div class="col-xs-9 col-sm-9">
+            <div>
+                {% for property in product.properties %}
+                    <strong>{{ property.name|raw }}:</strong>
+                    {% include '@WLApp/Product/property.html.twig' %}
+                    {% if loop.last == false %}
+                        |
+                    {% endif %}
+                {% endfor %}
+            </div>
+            <div>
+                <strong id="productRating" data-product="{{ product.id }}" >Ocena:</strong>
+                {% for i in 1..5 %}
+                    <span class="glyphicon glyphicon-star product-star" data-star-current="{{ product.rating ? product.rating.rating|round : 0 }}" data-star-nr="{{ i }}" style="color: {% if product.rating and product.rating.rating|round >= i%}orangered;{% else %}silver{% endif %}"></span>
+                {% endfor %}
+            </div>
+
+            <h2>Oferty</h2>
+            <table class="table">
+                {% for offer in offers %}
+                <tr>
+                    <td style="text-align: center;">
+                        <a target="_blank" rel="nofollow" href="http://www.nokaut.pl{{ offer.clickUrl }}" title="{{ offer.title|raw }}" class="pull-left">
+                            {% if offer.shop.urlLogo %}
+                                <img src="http://img.nokaut.pl{{ offer.shop.urlLogo }}" alt="{{ offer.shop.name }}">
+                            {% endif %}
+                            <br>
+                            {% for i in 1..5 %}
+                                <span class="glyphicon glyphicon-star" style="color: {% if offer.shop.opineoRating and (offer.shop.opineoRating.rating/2)|round > i%}orangered;{% else %}silver{% endif %}"></span>
+                            {% endfor %}
+                            <span class="small">{{ offer.shop.name|raw }}</span>
+                        </a>
+                    </td>
+                    <td>
+                        <a target="_blank" rel="nofollow" href="http://www.nokaut.pl{{ offer.clickUrl }}" title="{{ offer.title|raw }}" class="pull-left">
+                            {% if offer.photoId %}
+                                <img width="80" height="80" src="http://img.nokaut.pl/{{ nokaut_photo_url.prepare(offer.photoId, '90x90', offer.title) }}" alt="{{ offer.title }}">
+                            {% endif %}
+                        </a>
+                    </td>
+                    <td>
+                        <a target="_blank" rel="nofollow" href="http://www.nokaut.pl{{ offer.clickUrl }}" title="{{ offer.title|raw }}" class="pull-left">
+                            <span>{{ offer.title|raw }}</span>
+                            <span>{{ offer.price|number_format(2, ',', '') }} zł</span>
+                        </a>
+                    </td>
+                    <td>
+                        <a target="_blank" rel="nofollow" href="http://www.nokaut.pl{{ offer.clickUrl }}" title="{{ offer.title|raw }}" class="btn btn-primary pull-left">Idź do sklepu</a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </table>
+
+            <p>
+                <h4 class="title">Opis produktu</h4>
+                {{ product.description|raw }}
+            </p>
+
+        </div>
+    </div>
+
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+
+    {% if canAddRating %}
+    <script type="text/javascript">
+
+        $('.product-star').css('cursor', 'pointer');
+        $('.product-star')
+        .mouseover(function(e) {
+            var rating = calculateRating(e, this);
+            selectStars(rating);
+        }).mouseout(function(e) {
+            var currentRating = $(this).attr('data-star-current');
+            selectStars(currentRating);
+        }).click(function(e) {
+            sendPostWithRating(e, this);
+        });
+
+        function calculateRating(e, elementRating) {
+            return $(elementRating).attr('data-star-nr');
+        }
+
+        function sendPostWithRating(e, elementStars) {
+            var rating = calculateRating(e, elementStars);
+            $.post("{{ url('rating_add') }}",
+                    {
+                        productId: $('#productRating').attr('data-product'),
+                        rating: rating
+                    })
+                    .done(function (data) {
+                        if (data != -1) {
+                            selectStars(Math.round(data));
+                            $("#productRating").unbind("click").css('cursor','default');
+                            alert('Dziękujemy za dodanie oceny')
+                        } else {
+                            alert('Nie można dodać oceny. Proszę sprówać później');
+                        }
+                    });
+        }
+
+        function selectStars(countSelectedStars) {
+            $('.product-star').css('color','silver');
+            for(var i=1; i<=countSelectedStars; ++i) {
+                $('.product-star[data-star-nr='+i+']').css('color','orangered');
+            }
+        }
+    </script>
+    {% endif %}
+{% endblock %}

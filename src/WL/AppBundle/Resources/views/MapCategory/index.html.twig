@@ -1,0 +1,33 @@
+{% extends "WLAppBundle::layout.html.twig" %}
+
+{% block title %}
+    Mapa kategorii - White Label Nokaut.pl
+{% endblock %}
+
+
+{% block head %}
+    {{ parent() }}
+
+    <link rel="canonical" href="{{ url('map_categories') }}"/>
+{% endblock %}
+
+{% block pageH1Block %}
+    <h1>Mapa kategorii</h1>
+{% endblock %}
+
+{% block content %}
+    <h1>Mapa kategorii</h1>
+
+    {% for category in categories %}
+        <div>
+            <h3><a href="{{ url('category', {'categoryUrlWithFilters': category.url|trim('/')}) }}"
+                   title="{{ category.title }}">{{ category.title }}</a></h3>
+            <ul>
+                {% for subcategory in category.children %}
+                    <li><a href="{{ url('category', {'categoryUrlWithFilters': subcategory.url|trim('/')}) }}"
+                           title="{{ subcategory.title }}">{{ subcategory.title }}</a></li>
+                {% endfor %}
+            </ul>
+        </div>
+    {% endfor %}
+{% endblock %}

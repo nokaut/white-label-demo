@@ -1,0 +1,36 @@
+{% set currentPage = pagination.currentPage %}
+
+{% if pagination.lastPageNum > 1 %}
+<!--  ==========  -->
+<!--  = Pagination =  -->
+<!--  ==========  -->
+<ul class="pagination">
+    {% if currentPage > 1 %}
+        <li>
+            <a href="{{ pagination.pageUrl(currentPage-1) }}" title="" class="prev">Poprzednia</a>
+        </li>
+    {% endif %}
+    {% if pagination.showFirstPage %}
+        <li {{ pagination.firstPage ? 'class="active"' : '' }}><a href="{{ pagination.pageUrl(1) }}">1</a></li>
+        <li>
+            <span>...</span>
+        </li>
+    {% endif %}
+
+    {% for pageNum in pagination.getDeltaPagesNum %}
+        <li {{ pagination.currentPage == pageNum ? 'class="active"' : '' }}><a href="{{ pagination.pageUrl(pageNum) }}">{{ pageNum }}</a></li>
+    {% endfor %}
+
+    {% if pagination.showLastPage %}
+        <li>
+            <span>...</span>
+        </li>
+        <li {{ pagination.isLastPage ? 'class="active"' : '' }}><a href="{{ pagination.pageUrl(pagination.lastPageNum) }}">{{ pagination.lastPageNum }}</a></li>
+    {% endif %}
+    {% if currentPage < pagination.lastPageNum %}
+        <li>
+            <a href="{{ pagination.pageUrl(currentPage+1) }}" class="next">Następna</a>
+        </li>
+    {% endif %}
+</ul> <!-- /pagination -->
+{% endif %}

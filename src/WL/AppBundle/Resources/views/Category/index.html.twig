@@ -1,0 +1,74 @@
+{% extends "WLAppBundle::layout.html.twig" %}
+
+{% block title %}
+    {% for crumbs in breadcrumbs %}
+        {{ crumbs.title }}
+        {% if loop.last == false %}
+            /
+        {% endif %}
+    {% endfor %}
+    (str. {{ pagination.currentPage }}) - White Label Nokaut.pl
+{% endblock %}
+
+{% block desc %}
+    {% for crumbs in breadcrumbs %}
+        {{ crumbs.title }}
+        {% if loop.last == false %}
+            /
+        {% endif %}
+    {% endfor %}
+{% endblock %}
+
+{% block head %}
+    {{ parent() }}
+
+    <link rel="canonical" href="{{ url(route, { (routeArgument): url|trim('/')}) }}"/>
+{% endblock %}
+
+
+{% block content %}
+    {% block headPage %}
+    <h1>
+        {{ category.title }}
+        {% if filters is not empty %}
+            <small>- {{ breadcrumbs[breadcrumbs|length-1].title|raw }}</small>
+        {% endif %}
+    </h1>
+    {% endblock %}
+
+    {% if filters is not empty %}
+        <div style="margin: 0 0 10px 0;">
+            {% for filter in filters %}
+                <span class="label label-default">{{ filter.name }}: {{ filter.value }} <a href="{{ url(route, { (routeArgument) : filter.outUrl}) }}" style="color: red;" title="Zamknij" class="glyphicon glyphicon-remove"></a></span>
+            {% endfor %}
+        </div>
+    {% endif %}
+
+
+    <ul class="nav nav-tabs small" role="tablist">
+    {% for sort in sorts %}
+        {% if sort.isFilter %}
+            <li class="active"><a href="{{ url(route, { (routeArgument) : sort.url|trim('/')}) }}">{{ sort.name }}</a></li>
+        {% else %}
+            <li><a href="{{ url(route, { (routeArgument) : sort.url|trim('/')}) }}">{{ sort.name }}</a></li>
+        {% endif %}
+    {% endfor %}
+    </ul>
+    <div class="panel">
+        <div class="panel-body">
+        {% for product in products %}
+            {% include 'WLAppBundle:Common:productItem.html.twig' with {'product': product } %}
+        {% else %}
+            <div class="alert alert-warning" role="alert">Brak produktów z wybranymi filrami</div>
+        {% endfor %}
+        {% include '@WLApp/paginator.html.twig' %}
+        </div>
+    </div>
+
+
+{% endblock %}
+
+
+    {% block rightColumn %}
+        {% include 'WLAppBundle:Common:fiters.html.twig' %}
+    {% endblock %}

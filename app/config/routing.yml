@@ -1,0 +1,4 @@
+wl:
+    resource: "@WLAppBundle/Resources/config/routing.yml"
+    prefix:   /
+

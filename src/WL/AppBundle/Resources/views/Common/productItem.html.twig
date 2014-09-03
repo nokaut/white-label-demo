@@ -1,0 +1,16 @@
+{% set url = url('product', {'productUrl': product.url|trim('/') }) %}
+
+<div class="col-sm-4 col-md-3">
+    <div class="thumbnail" style="height: 285px;">
+        {% if product.photoId %}
+            <img src="http://img.nokaut.pl/{{ nokaut_photo_url.prepare(product.photoId, '130x130', product.title) }}" alt="{{ product.title }}">
+        {% else %}
+            <img src="http://img.nokaut.pl/noimg_130x130.png">
+        {% endif %}
+        <div class="caption">
+            <h3 class="small">{{ product.title|raw|truncate(40) }}</h3>
+            <strong>od {{ product.prices.min|number_format(2, ',', '') }} zł</strong>
+            <p><a href="{{ url }}" class="btn btn-default" role="button">Zobacz</a>
+        </div>
+    </div>
+</div>

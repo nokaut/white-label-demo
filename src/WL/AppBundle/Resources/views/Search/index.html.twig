@@ -1,0 +1,23 @@
+{% extends "WLAppBundle:Category:index.html.twig" %}
+
+{% block title %}
+{{ phrase }} (str. [nr. {{ pagination.currentPage }}]) - White Label Nokaut.pl
+{% endblock %}
+
+
+
+{% block headPage %}
+    <h1>
+        Szukaj: {{ phrase }}
+        {% if filters is not empty %}
+            <small>- {{ breadcrumbs[breadcrumbs|length-1].title|raw }}</small>
+        {% endif %}
+    </h1>
+{% endblock %}
+
+{% block content %}
+
+    {{ parent() }}
+
+
+{% endblock %}

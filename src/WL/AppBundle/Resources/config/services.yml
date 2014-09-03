@@ -1,0 +1,66 @@
+services:
+    repo.products:
+        factory_class: WL\AppBundle\Lib\RepositoryFactory
+        class: Nokaut\ApiKit\Repository\CategoriesRepository
+        factory_method: getProductsRepo
+        arguments: [@service_container]
+    repo.products.async:
+        factory_class: WL\AppBundle\Lib\RepositoryFactory
+        class: Nokaut\ApiKit\Repository\CategoriesAsyncRepository
+        factory_method: getProductsAsyncRepo
+        arguments: [@service_container]
+
+    repo.categories:
+        factory_class: WL\AppBundle\Lib\RepositoryFactory
+        class: Nokaut\ApiKit\Repository\CategoriesRepository
+        factory_method: getCategoriesRepo
+        arguments: [@service_container]
+    repo.categories.async:
+        factory_class: WL\AppBundle\Lib\RepositoryFactory
+        class: Nokaut\ApiKit\Repository\CategoriesAsyncRepository
+        factory_method: getCategoriesAsyncRepo
+        arguments: [@service_container]
+
+    repo.offers:
+        factory_class: WL\AppBundle\Lib\RepositoryFactory
+        class: Nokaut\ApiKit\Repository\OffersRepository
+        factory_method: getOffersRepo
+        arguments: [@service_container]
+    repo.offers.async:
+        factory_class: WL\AppBundle\Lib\RepositoryFactory
+        class: Nokaut\ApiKit\Repository\OffersAsyncRepository
+        factory_method: getOffersAsyncRepo
+        arguments: [@service_container]
+
+    repo.async:
+        factory_class: WL\AppBundle\Lib\RepositoryFactory
+        class: Nokaut\ApiKit\Repository\AsyncRepository
+        factory_method: getAsyncRepo
+        arguments: [@service_container]
+
+    root.categories:
+        class: WL\AppBundle\Lib\RootCategories
+        arguments: [@repo.categories.async]
+
+    categories.all:
+        factory_service: root.categories
+        class: Nokaut\ApiKit\Collection\Categories
+        factory_method: getMainCategories
+
+    pre.fetchs:
+        class: WL\AppBundle\Lib\Listener\PreAsyncFetchListener
+        arguments: [@service_container]
+        tags:
+          - { name: kernel.event_listener, event: kernel.controller, method: onKernelController }
+
+    photo.url:
+        class: Nokaut\ApiKit\Helper\PhotoUrl
+
+    cache.memcache:
+        class: WL\AppBundle\Lib\Cache\Memcache
+        arguments: [%memcache_url%, %memcache_port%, %cache_default_lifetime%, %cache_enabled%]
+
+    helper.filter:
+        class: WL\AppBundle\Lib\Helper\SelectedFilter
+
+

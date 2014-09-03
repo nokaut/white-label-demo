@@ -1,0 +1,21 @@
+{% if productsTop10 is defined %}
+<h2>Top 10</h2>
+<ul class="media-list">
+    {% for product in productsTop10 %}
+    <li class="media">
+        <a href="{{ url('product', {'productUrl': product.url|trim('/') }) }}" title="{{ product.title|raw }}">
+            {% if product.photoId %}
+                <img width="64" height="64" src="http://img.nokaut.pl/{{ nokaut_photo_url.prepare(product.photoId, '90x90', product.title) }}" alt="{{ product.title }}" class="pull-left">
+            {% else %}
+                <img width="64" height="64" src="http://img.nokaut.pl/noimg_90x90.png" class="pull-left">
+            {% endif %}
+        <div class="media-body">
+            <strong class="media-heading">{{ product.title|raw|truncate(40) }}</strong>
+            <br>
+            <span>od {{ product.prices.min|number_format(2, ',', '') }} zł</span>
+        </div>
+        </a>
+    </li>
+    {% endfor %}
+</ul>
+{% endif %}
