@@ -15,7 +15,7 @@ use Nokaut\ApiKit\Cache\CacheInterface;
 class Memcache implements CacheInterface
 {
     /**
-     * @var AntiDogPileMemcache
+     * @var \Memcache
      */
     private $cache;
     private $liveTime;
@@ -29,9 +29,11 @@ class Memcache implements CacheInterface
      */
     public function __construct($host, $port, $liveTime, $enabledCache = true)
     {
-        $this->cache = new \Memcache();
-        $this->cache->addserver($host, $port);
-        $this->liveTime = $liveTime;
+        if ($enabledCache) {
+            $this->cache = new \Memcache();
+            $this->cache->addserver($host, $port);
+            $this->liveTime = $liveTime;
+        }
         $this->enabledCache = $enabledCache;
     }
 
