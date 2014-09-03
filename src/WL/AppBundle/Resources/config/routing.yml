@@ -3,7 +3,7 @@ wl_homepage:
     defaults: { _controller: WLAppBundle:Default:index }
 
 category:
-    path: /ktegoria-{categoryUrlWithFilters}
+    path: /kategoria-{categoryUrlWithFilters}
     defaults: { _controller: WLAppBundle:Category:index }
     requirements:
         categoryUrlWithFilters: ".+"
