@@ -20,14 +20,6 @@ search:
     requirements:
         phrase: ".+"
 
-prices:
-    path: /cena:{priceFrom}~{priceTo}{pageNum}.html
-    defaults: { _controller: WLAppBundle:Default:prices, pageNum: --1 }
-    requirements:
-        priceFrom: "\d+(.\d+)?"
-        priceTo: "\d+(.\d+)?"
-        pageNum: "--(\d+)|(%d)"
-
 map_categories:
     path: /mapa-kategorii
     defaults: { _controller: WLAppBundle:MapCategory:index }
