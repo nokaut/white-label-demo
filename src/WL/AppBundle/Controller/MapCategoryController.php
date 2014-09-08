@@ -20,20 +20,11 @@ class MapCategoryController extends Controller
 {
     public function indexAction()
     {
-        /** @var CategoriesAsyncRepository $categoriesRepository */
-        $categoriesRepository = $this->get('repo.categories.async');
-        /** @var CategoriesAsyncFetch $categories */
-        $categories = $categoriesRepository->fetchByParentIdWithChildren(0, 2);
-        $categoriesRepository->fetchAllAsync();
 
         $breadcrumbs = array();
         $breadcrumbs[] = new Breadcrumb("Mapa kategorii");
 
-        /** @var Categories $categoriesResult */
-        $categoriesResult = $categories->getResult();
-        CategoriesSort::sortByTitle($categoriesResult);
         return $this->render('WLAppBundle:MapCategory:index.html.twig', array(
-            'categories' => $categoriesResult,
             'breadcrumbs' => $breadcrumbs,
         ));
     }

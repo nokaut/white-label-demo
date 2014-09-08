@@ -18,14 +18,13 @@
 {% block content %}
     <h1>Mapa kategorii</h1>
 
-    {% for category in categories %}
+    {% for menuLink in menu_main %}
         <div>
-            <h3><a href="{{ url('category', {'categoryUrlWithFilters': category.url|trim('/')}) }}"
-                   title="{{ category.title }}">{{ category.title }}</a></h3>
+            <h3>{{ menuLink.name }}</h3>
             <ul>
-                {% for subcategory in category.children %}
-                    <li><a href="{{ url('category', {'categoryUrlWithFilters': subcategory.url|trim('/')}) }}"
-                           title="{{ subcategory.title }}">{{ subcategory.title }}</a></li>
+                {% for subLink in menuLink.subLinks %}
+                    <li><a href="{{ url('category', {'categoryUrlWithFilters': subLink.url|trim('/')}) }}"
+                           title="{{ subLink.name }}">{{ subLink.name }}</a></li>
                 {% endfor %}
             </ul>
         </div>
