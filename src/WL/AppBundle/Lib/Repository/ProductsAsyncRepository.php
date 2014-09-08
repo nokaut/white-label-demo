@@ -6,7 +6,7 @@
  * Time: 09:55
  */
 
-namespace WL\AppBundle\Repository;
+namespace WL\AppBundle\Lib\Repository;
 
 
 use Nokaut\ApiKit\ClientApi\ClientApiInterface;

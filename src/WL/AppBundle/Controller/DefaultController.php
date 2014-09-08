@@ -11,7 +11,7 @@ use WL\AppBundle\Lib\CategoriesAllowed;
 use WL\AppBundle\Lib\Filter\FilterProperties;
 use WL\AppBundle\Lib\Pagination\Pagination;
 use WL\AppBundle\Lib\Type\Breadcrumb;
-use WL\AppBundle\Repository\ProductsAsyncRepository;
+use WL\AppBundle\Lib\Repository\ProductsAsyncRepository;
 
 class DefaultController extends Controller
 {

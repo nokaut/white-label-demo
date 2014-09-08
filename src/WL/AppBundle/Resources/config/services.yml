@@ -1,7 +1,10 @@
 services:
     repo.factory:
         class: WL\AppBundle\Lib\RepositoryFactory
-        arguments: [@service_container]
+        arguments: [@api_kit.config.cache.memcache, @categories.allowed]
+    repo.factory.cache.file:
+        class: WL\AppBundle\Lib\RepositoryFactory
+        arguments: [@api_kit.config.cache.file, @categories.allowed]
 
     repo.products:
         factory_service: repo.factory
@@ -15,6 +18,10 @@ services:
     repo.categories:
         factory_service: repo.factory
         class: Nokaut\ApiKit\Repository\CategoriesRepository
+        factory_method: getCategoriesRepository
+    repo.categories.cache.file:
+        factory_service: repo.factory.cache.file
+        class: Nokaut\ApiKit\Repository\CategoriesAsyncRepository
         factory_method: getCategoriesRepository
     repo.categories.async:
         factory_service: repo.factory
@@ -43,7 +50,7 @@ services:
         factory_class: WL\AppBundle\Lib\MenuBuilder
         class: array
         factory_method: buildMenu
-        arguments: [@repo.categories, @categories.allowed]
+        arguments: [@repo.categories.cache.file, @categories.allowed]
 
     pre.fetchs:
         class: WL\AppBundle\Lib\Listener\PreAsyncFetchListener
@@ -57,8 +64,27 @@ services:
     cache.memcache:
         class: WL\AppBundle\Lib\Cache\Memcache
         arguments: [%memcache_url%, %memcache_port%, %cache_default_lifetime%, %cache_enabled%]
+    cache.file:
+        class: WL\AppBundle\Lib\Cache\CacheFile
+        arguments: [%kernel.cache_dir%, %cache_categories_menu_lifetime%, %cache_categories_menu_enabled%]
 
     helper.filter:
         class: WL\AppBundle\Lib\Helper\SelectedFilter
+
+    api_kit.config.cache.memcache:
+        class: Nokaut\ApiKit\Config
+        calls:
+          - [setApiAccessToken, [%api_token%]]
+          - [setApiUrl, [%api_url%]]
+          - [setCache, [@cache.memcache]]
+          - [setLogger, [@logger]]
+
+    api_kit.config.cache.file:
+        class: Nokaut\ApiKit\Config
+        calls:
+          - [setApiAccessToken, [%api_token%]]
+          - [setApiUrl, [%api_url%]]
+          - [setCache, [@cache.file]]
+          - [setLogger, [@logger]]
 
 

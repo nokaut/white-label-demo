@@ -13,7 +13,7 @@ use WL\AppBundle\Lib\Filter\FilterProperties;
 use WL\AppBundle\Lib\Pagination\Pagination;
 use WL\AppBundle\Lib\Type\Breadcrumb;
 use WL\AppBundle\Lib\Type\Filter;
-use WL\AppBundle\Repository\ProductsAsyncRepository;
+use WL\AppBundle\Lib\Repository\ProductsAsyncRepository;
 
 class CategoryController extends Controller
 {

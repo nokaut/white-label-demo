@@ -23,7 +23,7 @@ use WL\AppBundle\Lib\BreadcrumbsBuilder;
 use WL\AppBundle\Lib\Filter\FilterProperties;
 use WL\AppBundle\Lib\Rating\RatingAdd;
 use WL\AppBundle\Lib\Type\Breadcrumb;
-use WL\AppBundle\Repository\ProductsAsyncRepository;
+use WL\AppBundle\Lib\Repository\ProductsAsyncRepository;
 
 class ProductController extends Controller
 {

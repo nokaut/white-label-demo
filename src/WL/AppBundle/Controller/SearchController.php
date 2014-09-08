@@ -4,23 +4,27 @@ namespace WL\AppBundle\Controller;
 
 use Nokaut\ApiKit\ClientApi\Rest\Async\ProductsAsyncFetch;
 use Nokaut\ApiKit\Collection\Products;
+use Nokaut\ApiKit\Entity\Category;
 use Nokaut\ApiKit\Entity\Product;
+use Nokaut\ApiKit\Repository\CategoriesRepository;
 use Nokaut\ApiKit\Repository\ProductsRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use WL\AppBundle\Lib\Filter\FilterProperties;
 use WL\AppBundle\Lib\Pagination\Pagination;
 use WL\AppBundle\Lib\Type\Breadcrumb;
 use WL\AppBundle\Lib\Type\Filter;
-use WL\AppBundle\Repository\ProductsAsyncRepository;
+use WL\AppBundle\Lib\Repository\ProductsAsyncRepository;
 
 class SearchController extends Controller
 {
     public function indexAction($phrase)
     {
-        $phrase = $this->repairPhrase($phrase);
+        $phraseUrl = $this->preparePhraseUrl($phrase);
+        $phraseUrlForApi = $this->reduceToAllowCategories($phraseUrl);
+
         /** @var ProductsAsyncRepository $productsRepo */
         $productsRepo = $this->get('repo.products.async');
-        $productsFetch = $productsRepo->fetchProductsByUrl($phrase, ProductsRepository::$fieldsForList, 24);
+        $productsFetch = $productsRepo->fetchProductsByUrl($phraseUrlForApi, ProductsRepository::$fieldsForList, 24);
         $productsTopFetch = $productsRepo->fetchTopProducts();
         $productsRepo->fetchAllAsync();
         /** @var Products $products */
@@ -41,7 +45,7 @@ class SearchController extends Controller
             'filters' => $filters,
             'sorts' => $products ? $products->getMetadata()->getSorts() : array(),
             'pagination' => $pagination,
-            'url' => $products ? $products->getMetadata()->getUrl() : '',
+            'url' => $phraseUrl,
             'productsTop10' => $productsTopFetch->getResult()
         ));
     }
@@ -95,7 +99,7 @@ class SearchController extends Controller
      * @param string $phrase
      * @return string
      */
-    private function repairPhrase($phrase)
+    private function preparePhraseUrl($phrase)
     {
         $phrase = str_replace(
             array('ę', 'ó', 'ą', 'ś', 'ł', 'ż', 'ź', 'ć', 'ń'),
@@ -136,6 +140,40 @@ class SearchController extends Controller
             return $filterProperties->filterPropertiesInProducts($products);
         }
         return $products;
+    }
+
+    /**
+     * add categories to url for filter only for allowed categories
+     * @param string $phrase
+     * @return string
+     */
+    protected function reduceToAllowCategories($phrase)
+    {
+        if ($this->hasCategory($phrase)) {
+            return $phrase;
+        }
+        /** @var CategoriesRepository $categoriesRepository */
+        $categoriesRepository = $this->get('repo.categories.cache.file');
+        $categories = $categoriesRepository->fetchCategoriesByIds($this->get('categories.allowed')->getAllowedCategories());
+
+        $categoriesUrlPart = "";
+
+        foreach ($categories as $category) {
+            /** @var Category $category */
+            $categoriesUrlPart .= trim($category->getUrl(), '/') . ",";
+        }
+        return rtrim($categoriesUrlPart, ',') . '/' . $phrase;
+    }
+
+    /**
+     * @param string $phrase
+     * @return bool
+     */
+    protected function hasCategory($phrase)
+    {
+        $phraseParts = explode('/', ltrim($phrase, '/'));
+
+        return count($phraseParts) > 1;
     }
 
 }

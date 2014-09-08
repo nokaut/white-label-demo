@@ -11,20 +11,18 @@ namespace WL\AppBundle\Lib;
 
 use Nokaut\ApiKit\ApiKit;
 use Nokaut\ApiKit\Config;
-use Symfony\Component\DependencyInjection\ContainerInterface;
-use WL\AppBundle\Repository\ProductsAsyncRepository;
+use WL\AppBundle\Lib\Repository\ProductsAsyncRepository;
 
 class RepositoryFactory extends ApiKit
 {
     /**
-     * @var ContainerInterface
+     * @var CategoriesAllowed
      */
-    protected $container;
+    protected $categoriesAllowed;
 
-    public function __construct(ContainerInterface $container)
+    public function __construct(Config $config, CategoriesAllowed $categoriesAllowed)
     {
-        $this->container = $container;
-        $config = $this->prepareConfig($container);
+        $this->categoriesAllowed = $categoriesAllowed;
         parent::__construct($config);
     }
 
@@ -40,21 +38,6 @@ class RepositoryFactory extends ApiKit
         $this->validate($config);
 
         $restClientApi = $this->getClientApi($config);
-        /** @var CategoriesAllowed $categoriesAllowed */
-        $categoriesAllowed = $this->container->get('categories.allowed');
-        return new ProductsAsyncRepository($config->getApiUrl(), $restClientApi, $categoriesAllowed);
-    }
-
-    /**
-     * @return Config
-     */
-    protected function prepareConfig()
-    {
-        $config = new Config();
-        $config->setApiAccessToken($this->container->getParameter('api_token'));
-        $config->setApiUrl($this->container->getParameter('api_url'));
-        $config->setCache($this->container->get('cache.memcache'));
-        $config->setLogger($this->container->get('logger'));
-        return $config;
+        return new ProductsAsyncRepository($config->getApiUrl(), $restClientApi, $this->categoriesAllowed);
     }
 } 
