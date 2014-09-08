@@ -29,7 +29,7 @@ twig:
     debug:            "%kernel.debug%"
     strict_variables: "%kernel.debug%"
     globals:
-        categories_all: @categories.all
+        menu_main: @menu.main
         nokaut_photo_url: @photo.url
         helper_filter: @helper.filter
 

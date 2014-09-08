@@ -6,32 +6,25 @@ use Nokaut\ApiKit\ClientApi\Rest\Async\ProductsAsyncFetch;
 use Nokaut\ApiKit\Collection\Products;
 use Nokaut\ApiKit\Entity\Category;
 use Nokaut\ApiKit\Repository\CategoriesRepository;
-use Nokaut\ApiKit\Repository\ProductsAsyncRepository;
 use Nokaut\ApiKit\Repository\ProductsRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use WL\AppBundle\Lib\BreadcrumbsBuilder;
 use WL\AppBundle\Lib\Filter\FilterProperties;
 use WL\AppBundle\Lib\Pagination\Pagination;
 use WL\AppBundle\Lib\Type\Breadcrumb;
 use WL\AppBundle\Lib\Type\Filter;
+use WL\AppBundle\Repository\ProductsAsyncRepository;
 
 class CategoryController extends Controller
 {
     public function indexAction($categoryUrlWithFilters)
     {
-        $path = explode('/', $categoryUrlWithFilters);
-        $categoryUrl = $path[0];
-        /** @var CategoriesRepository $categoriesRepo */
-        $categoriesRepo = $this->get('repo.categories');
-        try {
-            $category = $categoriesRepo->fetchByUrl($categoryUrl);
-        } catch (\Exception $e) {
-            throw $this->createNotFoundException("not found category " . $categoryUrl);
-        }
+        $category = $this->fetchCategory($categoryUrlWithFilters);
 
         /** @var ProductsAsyncRepository $productsAsyncRepo */
         $productsAsyncRepo = $this->get('repo.products.async');
         $productsFetch = $productsAsyncRepo->fetchProductsByUrl($categoryUrlWithFilters, ProductsRepository::$fieldsForList, 24);
-        $productsTopFetch = $this->fetchTopProducts($productsAsyncRepo, $category);
+        $productsTopFetch = $productsAsyncRepo->fetchTopProducts(10, array($category->getId()));
         $productsAsyncRepo->fetchAllAsync();
 
         /** @var Products $products */
@@ -41,13 +34,15 @@ class CategoryController extends Controller
 
         $filters = $this->getFilters($products);
 
-        $breadcrumbs = array();
-        foreach ($category->getPath() as $path) {
-            $breadcrumbs[] = new Breadcrumb(
-                $path->getTitle(),
-                $this->get('router')->generate('category', array('categoryUrlWithFilters' => ltrim($path->getUrl(), '/')))
-            );
-        }
+        $breadcrumbsBuilder = new BreadcrumbsBuilder();
+        $breadcrumbs = $breadcrumbsBuilder->prepareBreadcrumbs(
+            $category,
+            function($url) {
+                return $this->get('router')->generate('category', array('categoryUrlWithFilters' => ltrim($url, '/')));
+            },
+            $this->get('categories.allowed')->getAllowedCategories()
+        );
+
         $breadcrumbsFilers = '';
         foreach ($filters as $filter) {
             $breadcrumbsFilers .= $filter->getName() . ": " . $filter->getValue();
@@ -71,18 +66,6 @@ class CategoryController extends Controller
             'sorts' => $products ? $products->getMetadata()->getSorts() : array(),
             'url' => $products ? $products->getMetadata()->getUrl() : ''
         ));
-    }
-
-    /**
-     * @param ProductsAsyncRepository $productsRepo
-     * @param Category $category
-     * @return ProductsAsyncFetch
-     */
-    protected function fetchTopProducts(ProductsAsyncRepository $productsRepo, Category $category)
-    {
-        $url = $category->getUrl() . "--najpopularniejsze.html";
-        $products = $productsRepo->fetchProductsByUrl($url, ProductsRepository::$fieldsForProductBox, 10);
-        return $products;
     }
 
     /**
@@ -160,5 +143,24 @@ class CategoryController extends Controller
             return $filterProperties->filterPropertiesInProducts($products);
         }
         return $products;
+    }
+
+    /**
+     * @param $categoryUrlWithFilters
+     * @return Category
+     * @throws \Symfony\Component\HttpKernel\Exception\NotFoundHttpException
+     */
+    private function fetchCategory($categoryUrlWithFilters)
+    {
+        $path = explode('/', $categoryUrlWithFilters);
+        $categoryUrl = $path[0];
+        /** @var CategoriesRepository $categoriesRepo */
+        $categoriesRepo = $this->get('repo.categories');
+        try {
+            $category = $categoriesRepo->fetchByUrl($categoryUrl);
+            return $category;
+        } catch (\Exception $e) {
+            throw $this->createNotFoundException("not found category " . $categoryUrl);
+        }
     }
 }

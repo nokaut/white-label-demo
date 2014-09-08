@@ -2,18 +2,16 @@
 
 namespace WL\AppBundle\Controller;
 
-use Debril\RssAtomBundle\Protocol\Filter\Limit;
 use Nokaut\ApiKit\ClientApi\Rest\Async\ProductsAsyncFetch;
 use Nokaut\ApiKit\ClientApi\Rest\Query\ProductsQuery;
 use Nokaut\ApiKit\Collection\Products;
-use Nokaut\ApiKit\Repository\ProductsAsyncRepository;
 use Nokaut\ApiKit\Repository\ProductsRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
-use Symfony\Component\Stopwatch\Stopwatch;
+use WL\AppBundle\Lib\CategoriesAllowed;
 use WL\AppBundle\Lib\Filter\FilterProperties;
 use WL\AppBundle\Lib\Pagination\Pagination;
 use WL\AppBundle\Lib\Type\Breadcrumb;
-use WL\AppBundle\Lib\Type\Rss\RssItems;
+use WL\AppBundle\Repository\ProductsAsyncRepository;
 
 class DefaultController extends Controller
 {
@@ -27,7 +25,7 @@ class DefaultController extends Controller
         /** @var ProductsAsyncRepository $productsAsyncRepo */
         $productsAsyncRepo = $this->get('repo.products.async');
         $products24Fetch = $this->fetchRandProducts($productsAsyncRepo);
-        $productsTop10Fetch = $this->fetchTopProducts($productsAsyncRepo);
+        $productsTop10Fetch = $productsAsyncRepo->fetchTopProducts();
         $productsAsyncRepo->fetchAllAsync();
 
 
@@ -46,22 +44,13 @@ class DefaultController extends Controller
     protected function fetchRandProducts(ProductsAsyncRepository $productsAsyncRepo)
     {
         $query = new ProductsQuery($this->container->getParameter('api_url'));
+        /** @var CategoriesAllowed $categoriesAllowed */
+        $categoriesAllowed = $this->get('categories.allowed');
+        $query->setCategoryIds($categoriesAllowed->getAllowedCategories());
         $query->setFields(ProductsRepository::$fieldsForList);
-        $query->setOrder('popularity', 'asc');
+        $query->setOrder('random', 'asc');
         $query->setLimit(24);
         return $productsAsyncRepo->fetchProductsWithBestOfferByQuery($query);
-    }
-
-    /**
-     * @param ProductsAsyncRepository $productsAsyncRepo
-     * @return ProductsAsyncFetch
-     */
-    protected function fetchTopProducts(ProductsAsyncRepository $productsAsyncRepo)
-    {
-        $query = new ProductsQuery($this->container->getParameter('api_url'));
-        $query->setLimit(10);
-        $query->setFields(ProductsRepository::$fieldsForProductBox);
-        return $productsAsyncRepo->fetchProductsByQuery($query);
     }
 
     /**

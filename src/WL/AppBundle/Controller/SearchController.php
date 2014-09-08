@@ -3,16 +3,15 @@
 namespace WL\AppBundle\Controller;
 
 use Nokaut\ApiKit\ClientApi\Rest\Async\ProductsAsyncFetch;
-use Nokaut\ApiKit\ClientApi\Rest\Query\ProductsQuery;
 use Nokaut\ApiKit\Collection\Products;
 use Nokaut\ApiKit\Entity\Product;
-use Nokaut\ApiKit\Repository\ProductsAsyncRepository;
 use Nokaut\ApiKit\Repository\ProductsRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use WL\AppBundle\Lib\Filter\FilterProperties;
 use WL\AppBundle\Lib\Pagination\Pagination;
 use WL\AppBundle\Lib\Type\Breadcrumb;
 use WL\AppBundle\Lib\Type\Filter;
+use WL\AppBundle\Repository\ProductsAsyncRepository;
 
 class SearchController extends Controller
 {
@@ -22,7 +21,7 @@ class SearchController extends Controller
         /** @var ProductsAsyncRepository $productsRepo */
         $productsRepo = $this->get('repo.products.async');
         $productsFetch = $productsRepo->fetchProductsByUrl($phrase, ProductsRepository::$fieldsForList, 24);
-        $productsTopFetch = $this->fetchTopProducts($productsRepo);
+        $productsTopFetch = $productsRepo->fetchTopProducts();
         $productsRepo->fetchAllAsync();
         /** @var Products $products */
         $products = $productsFetch->getResult();
@@ -122,18 +121,6 @@ class SearchController extends Controller
             $this->get('router')->generate('search', array('phrase' => ltrim($products->getMetadata()->getPaging()->getUrlTemplate(), '/')))
         );
         return $pagination;
-    }
-
-    /**
-     * @param ProductsAsyncRepository $productsAsyncRepo
-     * @return ProductsAsyncFetch
-     */
-    protected function fetchTopProducts(ProductsAsyncRepository $productsAsyncRepo)
-    {
-        $query = new ProductsQuery($this->container->getParameter('api_url'));
-        $query->setLimit(10);
-        $query->setFields(ProductsRepository::$fieldsForProductBox);
-        return $productsAsyncRepo->fetchProductsByQuery($query);
     }
 
     /**

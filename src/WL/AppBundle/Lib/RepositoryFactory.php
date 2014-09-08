@@ -12,106 +12,49 @@ namespace WL\AppBundle\Lib;
 use Nokaut\ApiKit\ApiKit;
 use Nokaut\ApiKit\Config;
 use Symfony\Component\DependencyInjection\ContainerInterface;
-use WL\AppBundle\Lib\Cache\Memcache;
+use WL\AppBundle\Repository\ProductsAsyncRepository;
 
-class RepositoryFactory
+class RepositoryFactory extends ApiKit
 {
-
     /**
-     * @param ContainerInterface $container
-     * @return \Nokaut\ApiKit\Repository\ProductsRepository
+     * @var ContainerInterface
      */
-    public static function getProductsRepo(ContainerInterface $container)
-    {
-        $config = self::prepareConfig($container);
+    protected $container;
 
-        $apiKit = new ApiKit($config);
-        return $apiKit->getProductsRepository();
+    public function __construct(ContainerInterface $container)
+    {
+        $this->container = $container;
+        $config = $this->prepareConfig($container);
+        parent::__construct($config);
     }
 
     /**
-     * @param ContainerInterface $container
-     * @return \Nokaut\ApiKit\Repository\ProductsAsyncRepository
+     * @param \Nokaut\ApiKit\Config $config
+     * @return ProductsAsyncRepository
      */
-    public static function getProductsAsyncRepo(ContainerInterface $container)
+    public function getProductsAsyncRepository(Config $config = null)
     {
-        $config = self::prepareConfig($container);
+        if (is_null($config)) {
+            $config = $this->config;
+        }
+        $this->validate($config);
 
-        $apiKit = new ApiKit($config);
-        return $apiKit->getProductsAsyncRepository();
+        $restClientApi = $this->getClientApi($config);
+        /** @var CategoriesAllowed $categoriesAllowed */
+        $categoriesAllowed = $this->container->get('categories.allowed');
+        return new ProductsAsyncRepository($config->getApiUrl(), $restClientApi, $categoriesAllowed);
     }
 
     /**
-     * @param ContainerInterface $container
-     * @return \Nokaut\ApiKit\Repository\CategoriesRepository
-     */
-    public static function getCategoriesRepo(ContainerInterface $container)
-    {
-        $config = self::prepareConfig($container);
-
-        $apiKit = new ApiKit($config);
-        return $apiKit->getCategoriesRepository();
-    }
-
-    /**
-     * @param ContainerInterface $container
-     * @return \Nokaut\ApiKit\Repository\CategoriesAsyncRepository
-     */
-    public static function getCategoriesAsyncRepo(ContainerInterface $container)
-    {
-        $config = self::prepareConfig($container);
-
-        $apiKit = new ApiKit($config);
-        return $apiKit->getCategoriesAsyncRepository();
-    }
-
-    /**
-     * @param ContainerInterface $container
-     * @return \Nokaut\ApiKit\Repository\OffersRepository
-     */
-    public static function getOffersRepo(ContainerInterface $container)
-    {
-        $config = self::prepareConfig($container);
-
-        $apiKit = new ApiKit($config);
-        return $apiKit->getOffersRepository();
-    }
-
-    /**
-     * @param ContainerInterface $container
-     * @return \Nokaut\ApiKit\Repository\OffersAsyncRepository
-     */
-    public static function getOffersAsyncRepo(ContainerInterface $container)
-    {
-        $config = self::prepareConfig($container);
-
-        $apiKit = new ApiKit($config);
-        return $apiKit->getOffersAsyncRepository();
-    }
-
-    /**
-     * @param ContainerInterface $container
-     * @return \Nokaut\ApiKit\Repository\AsyncRepository
-     */
-    public static function getAsyncRepo(ContainerInterface $container)
-    {
-        $config = self::prepareConfig($container);
-
-        $apiKit = new ApiKit($config);
-        return $apiKit->getAsyncRepository();
-    }
-
-    /**
-     * @param ContainerInterface $container
      * @return Config
      */
-    protected static function prepareConfig(ContainerInterface $container)
+    protected function prepareConfig()
     {
         $config = new Config();
-        $config->setApiAccessToken($container->getParameter('api_token'));
-        $config->setApiUrl($container->getParameter('api_url'));
-        $config->setCache($container->get('cache.memcache'));
-        $config->setLogger($container->get('logger'));
+        $config->setApiAccessToken($this->container->getParameter('api_token'));
+        $config->setApiUrl($this->container->getParameter('api_url'));
+        $config->setCache($this->container->get('cache.memcache'));
+        $config->setLogger($this->container->get('logger'));
         return $config;
     }
 } 

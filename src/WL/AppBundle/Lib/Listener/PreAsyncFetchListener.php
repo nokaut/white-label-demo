@@ -27,8 +27,7 @@ class PreAsyncFetchListener
     public function onKernelController(FilterControllerEvent $event)
     {
         if (is_null(self::$done)) {
-            //set request to API for all categories
-            $this->container->get('categories.all');
+            //todo
 
             self::$done = true;
         }

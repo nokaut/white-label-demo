@@ -11,19 +11,19 @@ namespace WL\AppBundle\Controller;
 
 use Nokaut\ApiKit\ClientApi\Rest\Async\OffersAsyncFetch;
 use Nokaut\ApiKit\ClientApi\Rest\Async\ProductsAsyncFetch;
-use Nokaut\ApiKit\ClientApi\Rest\Query\Sort;
 use Nokaut\ApiKit\Entity\Category;
 use Nokaut\ApiKit\Entity\Product;
 use Nokaut\ApiKit\Repository\CategoriesAsyncRepository;
 use Nokaut\ApiKit\Repository\OffersRepository;
-use Nokaut\ApiKit\Repository\ProductsAsyncRepository;
 use Nokaut\ApiKit\Repository\ProductsRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use WL\AppBundle\Lib\BreadcrumbsBuilder;
 use WL\AppBundle\Lib\Filter\FilterProperties;
 use WL\AppBundle\Lib\Rating\RatingAdd;
 use WL\AppBundle\Lib\Type\Breadcrumb;
+use WL\AppBundle\Repository\ProductsAsyncRepository;
 
 class ProductController extends Controller
 {
@@ -53,13 +53,14 @@ class ProductController extends Controller
         /** @var Category $category */
         $category = $categoryFetch->getResult();
 
-        $breadcrumbs = array();
-        foreach ($category->getPath() as $path) {
-            $breadcrumbs[] = new Breadcrumb(
-                $path->getTitle(),
-                $this->get('router')->generate('category', array('categoryUrlWithFilters' => ltrim($path->getUrl(), '/')))
-            );
-        }
+        $breadcrumbsBuilder = new BreadcrumbsBuilder();
+        $breadcrumbs = $breadcrumbsBuilder->prepareBreadcrumbs(
+            $category,
+            function($url) {
+                return $this->get('router')->generate('category', array('categoryUrlWithFilters' => ltrim($url, '/')));
+            },
+            $this->get('categories.allowed')->getAllowedCategories()
+        );
         $breadcrumbs[] = new Breadcrumb($product->getTitle());
 
         return $this->render('WLAppBundle:Product:index.html.twig', array(
@@ -97,23 +98,7 @@ class ProductController extends Controller
     {
         /** @var ProductsAsyncRepository $productsRepo */
         $productsRepo = $this->get('repo.products.async');
-        $productsFetch = $productsRepo->fetchProductsByCategory(array($categoryId), 10, ProductsRepository::$fieldsForProductBox);
-        return $productsFetch;
-    }
-
-    /**
-     * @param int $categoryId
-     * @return ProductsAsyncFetch
-     */
-    protected function fetchProductsRandomFromCategory($categoryId)
-    {
-        /** @var ProductsAsyncRepository $productsRepo */
-        $productsRepo = $this->get('repo.products.async');
-
-        $sort = new Sort();
-        $sort->setOrder('asc');
-        $sort->setField('random');
-        $productsFetch = $productsRepo->fetchProductsByCategory(array($categoryId), 4, ProductsRepository::$fieldsForProductBox, $sort);
+        $productsFetch = $productsRepo->fetchTopProducts(10, array($categoryId), 10);
         return $productsFetch;
     }
 

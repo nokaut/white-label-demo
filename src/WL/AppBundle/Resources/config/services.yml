@@ -1,51 +1,49 @@
 services:
+    repo.factory:
+        class: WL\AppBundle\Lib\RepositoryFactory
+        arguments: [@service_container]
+
     repo.products:
-        factory_class: WL\AppBundle\Lib\RepositoryFactory
-        class: Nokaut\ApiKit\Repository\CategoriesRepository
-        factory_method: getProductsRepo
-        arguments: [@service_container]
+        factory_service: repo.factory
+        class: Nokaut\ApiKit\Repository\ProductsRepository
+        factory_method: getProductsRepository
     repo.products.async:
-        factory_class: WL\AppBundle\Lib\RepositoryFactory
-        class: Nokaut\ApiKit\Repository\CategoriesAsyncRepository
-        factory_method: getProductsAsyncRepo
-        arguments: [@service_container]
+        factory_service: repo.factory
+        class: WL\AppBundle\Repository\ProductsAsyncRepository
+        factory_method: getProductsAsyncRepository
 
     repo.categories:
-        factory_class: WL\AppBundle\Lib\RepositoryFactory
+        factory_service: repo.factory
         class: Nokaut\ApiKit\Repository\CategoriesRepository
-        factory_method: getCategoriesRepo
-        arguments: [@service_container]
+        factory_method: getCategoriesRepository
     repo.categories.async:
-        factory_class: WL\AppBundle\Lib\RepositoryFactory
+        factory_service: repo.factory
         class: Nokaut\ApiKit\Repository\CategoriesAsyncRepository
-        factory_method: getCategoriesAsyncRepo
-        arguments: [@service_container]
+        factory_method: getCategoriesAsyncRepository
 
     repo.offers:
-        factory_class: WL\AppBundle\Lib\RepositoryFactory
+        factory_service: repo.factory
         class: Nokaut\ApiKit\Repository\OffersRepository
-        factory_method: getOffersRepo
-        arguments: [@service_container]
+        factory_method: getOffersRepository
     repo.offers.async:
-        factory_class: WL\AppBundle\Lib\RepositoryFactory
+        factory_service: repo.factory
         class: Nokaut\ApiKit\Repository\OffersAsyncRepository
-        factory_method: getOffersAsyncRepo
-        arguments: [@service_container]
+        factory_method: getOffersAsyncRepository
 
     repo.async:
-        factory_class: WL\AppBundle\Lib\RepositoryFactory
+        factory_service: repo.factory
         class: Nokaut\ApiKit\Repository\AsyncRepository
-        factory_method: getAsyncRepo
-        arguments: [@service_container]
+        factory_method: getAsyncRepository
 
-    root.categories:
-        class: WL\AppBundle\Lib\RootCategories
-        arguments: [@repo.categories.async]
+    categories.allowed:
+        class: WL\AppBundle\Lib\CategoriesAllowed
+        arguments: [%categories%]
 
-    categories.all:
-        factory_service: root.categories
-        class: Nokaut\ApiKit\Collection\Categories
-        factory_method: getMainCategories
+    menu.main:
+        factory_class: WL\AppBundle\Lib\MenuBuilder
+        class: array
+        factory_method: buildMenu
+        arguments: [@repo.categories, @categories.allowed]
 
     pre.fetchs:
         class: WL\AppBundle\Lib\Listener\PreAsyncFetchListener
