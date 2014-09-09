@@ -66,7 +66,7 @@ services:
         arguments: [%memcache_url%, %memcache_port%, %cache_default_lifetime%, %cache_enabled%]
     cache.file:
         class: WL\AppBundle\Lib\Cache\CacheFile
-        arguments: [%kernel.cache_dir%, %cache_categories_menu_lifetime%, %cache_categories_menu_enabled%]
+        arguments: [%kernel.cache_dir%, %cache_menu_lifetime%, %cache_menu_enabled%]
 
     helper.filter:
         class: WL\AppBundle\Lib\Helper\SelectedFilter

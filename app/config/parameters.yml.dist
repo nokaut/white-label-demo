@@ -23,8 +23,8 @@ parameters:
 
     cache_enabled: false
     cache_default_lifetime: 1800
-    cache_categories_menu_enabled: true
-    cache_categories_menu_lifetime: 86400
+    cache_menu_enabled: true
+    cache_menu_lifetime: 86400
 
     memcache_url: localhost
     memcache_port: 11211
