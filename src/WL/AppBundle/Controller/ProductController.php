@@ -63,7 +63,7 @@ class ProductController extends Controller
         );
         $breadcrumbs[] = new Breadcrumb($product->getTitle());
 
-        return $this->render('WLAppBundle:Product:index.html.twig', array(
+        return $this->render($this->container->getParameter('template_bundle') . ':Product:index.html.twig', array(
             'product' => $product,
             'offers' => $offersFetch->getResult(),
             'productsTop10' => $productsFromCategoryFetch->getResult(),

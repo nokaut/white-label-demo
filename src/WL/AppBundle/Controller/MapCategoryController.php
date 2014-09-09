@@ -24,7 +24,7 @@ class MapCategoryController extends Controller
         $breadcrumbs = array();
         $breadcrumbs[] = new Breadcrumb("Mapa kategorii");
 
-        return $this->render('WLAppBundle:MapCategory:index.html.twig', array(
+        return $this->render($this->container->getParameter('template_bundle') . ':MapCategory:index.html.twig', array(
             'breadcrumbs' => $breadcrumbs,
         ));
     }

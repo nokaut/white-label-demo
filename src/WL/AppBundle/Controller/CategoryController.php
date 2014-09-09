@@ -55,7 +55,7 @@ class CategoryController extends Controller
             $breadcrumbs[] = new Breadcrumb(trim($breadcrumbsFilers,', '));
         }
 
-        return $this->render('WLAppBundle:Category:index.html.twig', array(
+        return $this->render($this->container->getParameter('template_bundle') . ':Category:index.html.twig', array(
             'category' => $category,
             'products' => $this->filterProducts($productsFetch),
             'productsTop10' => $productsTopFetch->getResult(),
