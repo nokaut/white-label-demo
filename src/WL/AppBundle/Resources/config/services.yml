@@ -87,4 +87,8 @@ services:
           - [setCache, [@cache.file]]
           - [setLogger, [@logger]]
 
+    twig.chunk_extension:
+        class: WL\AppBundle\Lib\Twig\ChunkExtension
+        tags:
+          - { name: twig.extension }
 
