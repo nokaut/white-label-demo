@@ -87,6 +87,10 @@ services:
           - [setCache, [@cache.file]]
           - [setLogger, [@logger]]
 
+    breadcrumb.builder:
+        class: WL\AppBundle\Lib\BreadcrumbsBuilder
+        arguments: [@categories.allowed]
+
     twig.chunk_extension:
         class: WL\AppBundle\Lib\Twig\ChunkExtension
         tags:

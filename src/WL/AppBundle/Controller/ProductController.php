@@ -53,15 +53,7 @@ class ProductController extends Controller
         /** @var Category $category */
         $category = $categoryFetch->getResult();
 
-        $breadcrumbsBuilder = new BreadcrumbsBuilder();
-        $breadcrumbs = $breadcrumbsBuilder->prepareBreadcrumbs(
-            $category,
-            function($url) {
-                return $this->get('router')->generate('category', array('categoryUrlWithFilters' => ltrim($url, '/')));
-            },
-            $this->get('categories.allowed')->getAllowedCategories()
-        );
-        $breadcrumbs[] = new Breadcrumb($product->getTitle());
+        $breadcrumbs = $this->prepareBreadcrumbs($category, $product);
 
         return $this->render($this->container->getParameter('template_bundle') . ':Product:index.html.twig', array(
             'product' => $product,
@@ -117,5 +109,24 @@ class ProductController extends Controller
         return array('id', 'url', 'category_id', 'description', 'id', 'prices',
             'photo_id', 'producer_name', 'title', 'title_normalized',
             'properties', 'photo_ids', 'rating');
+    }
+
+    /**
+     * @param $category
+     * @param $product
+     * @return array
+     */
+    private function prepareBreadcrumbs($category, $product)
+    {
+        /** @var BreadcrumbsBuilder $breadcrumbsBuilder */
+        $breadcrumbsBuilder = $this->get('breadcrumb.builder');
+        $breadcrumbs = $breadcrumbsBuilder->prepareBreadcrumbs(
+            $category,
+            function ($url) {
+                return $this->get('router')->generate('category', array('categoryUrlWithFilters' => ltrim($url, '/')));
+            }
+        );
+        $breadcrumbs[] = new Breadcrumb($product->getTitle());
+        return $breadcrumbs;
     }
 }

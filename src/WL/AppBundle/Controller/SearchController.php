@@ -9,6 +9,7 @@ use Nokaut\ApiKit\Entity\Product;
 use Nokaut\ApiKit\Repository\CategoriesRepository;
 use Nokaut\ApiKit\Repository\ProductsRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use WL\AppBundle\Lib\BreadcrumbsBuilder;
 use WL\AppBundle\Lib\Filter\FilterProperties;
 use WL\AppBundle\Lib\Pagination\Pagination;
 use WL\AppBundle\Lib\Type\Breadcrumb;
@@ -31,11 +32,10 @@ class SearchController extends Controller
         $products = $productsFetch->getResult();
         $pagination = $this->preparePagination($products);
 
-        $breadcrumbs = array();
-        $breadcrumbs[] = new Breadcrumb("Szukaj: " . $products->getMetadata()->getQuery()->getPhrase());
-
         $filters = $this->getFilters($products);
         $this->setCategoryToProduct($products);
+
+        $breadcrumbs = $this->prepareBreadcrumbs($products, $filters);
 
         return $this->render($this->container->getParameter('template_bundle') . ':Search:index.html.twig', array(
             'products' => $this->filterProducts($productsFetch),
@@ -73,7 +73,7 @@ class SearchController extends Controller
         foreach ($products->getPrices() as $price) {
             if ($price->getIsFilter()) {
                 $filter = new Filter();
-                $filter->setName("Cena");
+                $filter->setName("Ceny");
                 $filter->setValue("od " . $price->getMin() . " do " . $price->getMax());
                 $filter->setOutUrl($price->getUrl());
                 $filters[] = $filter;
@@ -174,6 +174,21 @@ class SearchController extends Controller
         $phraseParts = explode('/', ltrim($phrase, '/'));
 
         return count($phraseParts) > 1;
+    }
+
+    /**
+     * @param Products $products
+     * @param $filters
+     * @return Breadcrumb[]
+     */
+    private function prepareBreadcrumbs($products, $filters)
+    {
+        $breadcrumbs = array();
+        $breadcrumbs[] = new Breadcrumb("Szukaj: " . $products->getMetadata()->getQuery()->getPhrase());
+        /** @var BreadcrumbsBuilder $breadcrumbsBuilder */
+        $breadcrumbsBuilder = $this->get('breadcrumb.builder');
+        $breadcrumbsBuilder->appendFilter($breadcrumbs, $filters);
+        return $breadcrumbs;
     }
 
 }

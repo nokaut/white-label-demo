@@ -34,26 +34,7 @@ class CategoryController extends Controller
 
         $filters = $this->getFilters($products);
 
-        $breadcrumbsBuilder = new BreadcrumbsBuilder();
-        $breadcrumbs = $breadcrumbsBuilder->prepareBreadcrumbs(
-            $category,
-            function($url) {
-                return $this->get('router')->generate('category', array('categoryUrlWithFilters' => ltrim($url, '/')));
-            },
-            $this->get('categories.allowed')->getAllowedCategories()
-        );
-
-        $breadcrumbsFilers = '';
-        foreach ($filters as $filter) {
-            $breadcrumbsFilers .= $filter->getName() . ": " . $filter->getValue();
-            if ($filter->getName() == 'Ceny') {
-                $breadcrumbsFilers .= ' zł';
-            }
-            $breadcrumbsFilers .= ', ';
-        }
-        if ($breadcrumbsFilers) {
-            $breadcrumbs[] = new Breadcrumb(trim($breadcrumbsFilers,', '));
-        }
+        $breadcrumbs = $this->prepareBreadcrumbs($category, $filters);
 
         return $this->render($this->container->getParameter('template_bundle') . ':Category:index.html.twig', array(
             'category' => $category,
@@ -162,5 +143,25 @@ class CategoryController extends Controller
         } catch (\Exception $e) {
             throw $this->createNotFoundException("not found category " . $categoryUrl);
         }
+    }
+
+    /**
+     * @param $category
+     * @param Filter[] $filters
+     * @return array
+     */
+    private function prepareBreadcrumbs($category, array $filters)
+    {
+        /** @var BreadcrumbsBuilder $breadcrumbsBuilder */
+        $breadcrumbsBuilder = $this->get('breadcrumb.builder');
+        $breadcrumbs = $breadcrumbsBuilder->prepareBreadcrumbs(
+            $category,
+            function ($url) {
+                return $this->get('router')->generate('category', array('categoryUrlWithFilters' => ltrim($url, '/')));
+            }
+        );
+
+        $breadcrumbsBuilder->appendFilter($breadcrumbs, $filters);
+        return $breadcrumbs;
     }
 }

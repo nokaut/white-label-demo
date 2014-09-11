@@ -85,9 +85,10 @@
         <ol class="breadcrumb">
             <li><a href="/">White Label Nokaut.pl</a></li>
             {% for crumb in breadcrumbs %}
-                {% if loop.last %}
+                {% if loop.last or crumb.url is null %}
                     <li class="active">{{ crumb.title }}</li>
                 {% else %}
+
                     <li><a href="{{ crumb.url }}">{{ crumb.title }}</a></li>
                 {% endif %}
             {% endfor %}
