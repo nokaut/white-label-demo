@@ -47,10 +47,13 @@ services:
         arguments: [%categories%]
 
     menu.main:
-        factory_class: WL\AppBundle\Lib\MenuBuilder
+        class: WL\AppBundle\Lib\MenuBuilder
+        arguments: [@repo.factory.cache.file, @categories.allowed]
+
+    menu.main.builded:
+        factory_service: menu.main
         class: array
         factory_method: buildMenu
-        arguments: [@repo.categories.cache.file, @categories.allowed]
 
     pre.fetchs:
         class: WL\AppBundle\Lib\Listener\PreAsyncFetchListener

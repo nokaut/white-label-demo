@@ -10,6 +10,7 @@
 {% block stylesheets %}
     <link rel="stylesheet" href="{{ asset('bundles/wlapp/css/bootstrap.min.css') }}" />
     <link rel="stylesheet" href="{{ asset('bundles/wlapp/css/bootstrap-theme.min.css') }}" />
+    <link rel="stylesheet" href="{{ asset('bundles/wlapp/css/main.css') }}" />
     <style>
         body{ padding-top: 70px; }
     </style>
@@ -56,20 +57,65 @@
                 <a class="navbar-brand" href="/">White Label Nokaut.pl</a>
             </div>
             <div class="collapse navbar-collapse">
+                <ul class="nav navbar-nav">
                 {% for menuLink in menu_main %}
-                    <ul class="nav navbar-nav">
-                        <li class="dropdown">
-                            <a class="dropdown-toggle" data-toggle="dropdown" href="javascript:void(0)">{{ menuLink.name }}{% if menuLink.subLinks|length>0 %} <span class="caret"></span>{% endif %}</a>
-                            {% if menuLink.subLinks|length>0 %}
-                                <ul class="dropdown-menu" role="menu">
-                                {% for subLink in menuLink.subLinks %}
-                                    <li><a href="{{  url('category', { 'categoryUrlWithFilters': subLink.url|trim('/')}) }}" title="{{ subLink.name|raw }}">{{ subLink.name|raw }}</a></li>
-                                 {% endfor %}
-                                </ul>
-                            {% endif %}
-                        </li>
-                    </ul>
+                    <li class="dropdown {% if menuLink.subLinks|length>0 %}megamenu{% endif %}">
+                        <a class="dropdown-toggle" data-toggle="dropdown" href="javascript:void(0)">{{ menuLink.name }}{% if menuLink.subLinks|length>0 %} <span class="caret"></span>{% endif %}</a>
+                        {% if menuLink.subLinks|length>0 %}
+                            <div class="dropdown-menu megamenu container" role="menu">
+                                <div class="row">
+                                    <div class="col-sm-4">
+                                        <h3>Kategorie</h3>
+                                        <ul>
+                                        {% for subLink in menuLink.subLinks %}
+                                            <li><a href="{{  url('category', { 'categoryUrlWithFilters': subLink.url|trim('/')}) }}" title="{{ subLink.name|raw }}">{{ subLink.name|raw }}</a></li>
+                                        {% endfor %}
+                                        </ul>
+                                    </div>
+                                    {% if menuLink.topProducts|length>0 %}
+                                    <div class="col-md-8 hidden-sm hidden-xs">
+                                        <h3>Top produkty w {{ menuLink.name }}</h3>
+
+                                        <div class="row">
+                                            {% for productsChunk in menuLink.topProducts|chunk(3) %}
+                                                <div class="col-md-6 hidden-sm hidden-xs">
+                                                <ul class="list-unstyled">
+                                                    {% for productMenu in productsChunk %}
+                                                        {% set productMenuUrl = url('product', {'productUrl': productMenu.url|trim('/') }) %}
+                                                        <li class="product">
+                                                            <div class="row">
+                                                                <div class="col-md-3">
+                                                                    <a href="{{ productMenuUrl }}">
+                                                                        {% if productMenu.photoId %}
+                                                                            <img width="60" src="http://img.nokaut.pl/{{ nokaut_photo_url.prepare(productMenu.photoId, '90x90', productMenu.title) }}" alt="{{ productMenu.title }}">
+                                                                        {% else %}
+                                                                            <img width="60" src="http://img.nokaut.pl/noimg_90x90.png">
+                                                                        {% endif %}
+                                                                    </a>
+                                                                </div>
+
+                                                                <div class="col-md-9">
+                                                                    <h4><a href="{{ productMenuUrl }}">{{ productMenu.title|raw|truncate(40) }}</a></h4>
+                                                                    {% if productMenu.category %}
+                                                                        <span class="item-cat"><small><a title="{{ productMenu.category.name }}" href="{{  url('category', { 'categoryUrlWithFilters': productMenu.category.urlIn|trim('/')}) }}">{{ productMenu.category.name }}</a></small></span>
+                                                                    {% endif %}
+                                                                    <span class="price">od {{ productMenu.prices.min|number_format(2, ',', '') }} zł</span>
+                                                                </div>
+                                                            </div>
+                                                        </li>
+                                                    {% endfor %}
+                                                </ul>
+                                                </div>
+                                            {% endfor %}
+                                        </div>
+                                    </div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        {% endif %}
+                    </li>
                 {% endfor %}
+                </ul>
                 <form id="searchFrom" class="navbar-form navbar-left" role="search">
                     <div class="form-group">
                         <input type="text" id="phraseInput" class="form-control" placeholder="Szukaj">

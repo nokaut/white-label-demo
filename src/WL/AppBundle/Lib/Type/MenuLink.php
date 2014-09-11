@@ -9,11 +9,13 @@
 namespace WL\AppBundle\Lib\Type;
 
 
+use Nokaut\ApiKit\Collection\Products;
 use WL\AppBundle\Lib\Type\Menu\Link;
 
 class MenuLink extends Link
 {
     protected $subLinks = array();
+    protected $topProducts = array();
 
     function __construct($name)
     {
@@ -42,6 +44,22 @@ class MenuLink extends Link
     public function getSubLinks()
     {
         return $this->subLinks;
+    }
+
+    /**
+     * @param Products $topProducts
+     */
+    public function setTopProducts($topProducts)
+    {
+        $this->topProducts = $topProducts;
+    }
+
+    /**
+     * @return Products
+     */
+    public function getTopProducts()
+    {
+        return $this->topProducts;
     }
 
 }

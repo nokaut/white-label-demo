@@ -52,4 +52,27 @@ class ProductsAsyncRepository extends \Nokaut\ApiKit\Repository\ProductsAsyncRep
         $query->setFields(ProductsRepository::$fieldsForProductBox);
         return $this->fetchProductsByQuery($query);
     }
+
+    /**
+     * get top products
+     * @param int $limit
+     * @param array $categoriesIds - optional: ids of categories
+     * @return ProductsAsyncFetch
+     */
+    public function fetchProductsForMenu($limit = 6, array $categoriesIds = null)
+    {
+        $query = new ProductsQuery($this->apiBaseUrl);
+        $query->addFacet('query');
+        $query->addFacet('categories');
+        $query->setLimit($limit);
+        if ($categoriesIds) {
+            $query->setCategoryIds($categoriesIds);
+        } else {
+            $query->setCategoryIds($this->categoriesAllowed->getAllowedCategories());
+        }
+        $fields = ProductsRepository::$fieldsForProductBox;
+        $fields[] = '_categories.url_in';
+        $query->setFields($fields);
+        return $this->fetchProductsByQuery($query);
+    }
 } 

@@ -9,45 +9,54 @@
 namespace WL\AppBundle\Lib;
 
 
+use Nokaut\ApiKit\ClientApi\Rest\Async\CategoriesAsyncFetch;
+use Nokaut\ApiKit\ClientApi\Rest\Async\ProductsAsyncFetch;
 use Nokaut\ApiKit\Collection\Categories;
 use Nokaut\ApiKit\Entity\Category;
-use Nokaut\ApiKit\Repository\CategoriesRepository;
 use WL\AppBundle\Lib\Type\Menu\Link;
 use WL\AppBundle\Lib\Type\MenuLink;
 
 class MenuBuilder
 {
     /**
-     * @var CategoriesRepository
+     * @var RepositoryFactory
      */
-    protected static $categoriesRepository;
+    protected $repositoryFactory;
     /**
      * @var CategoriesAllowed
      */
-    protected static $categoriesAllowed;
+    protected $categoriesAllowed;
 
-
-    public static function buildMenu(CategoriesRepository $categoriesRepository, CategoriesAllowed $categoriesAllowed)
+    public function __construct(RepositoryFactory $repositoryFactory, CategoriesAllowed $categoriesAllowed)
     {
-        self::$categoriesRepository = $categoriesRepository;
-        self::$categoriesAllowed = $categoriesAllowed;
-        $categories = self::fetchCategories();
+        $this->repositoryFactory = $repositoryFactory;
+        $this->productsRepository = $repositoryFactory->getProductsAsyncRepository();
+        $this->categoriesRepository = $repositoryFactory->getCategoriesAsyncRepository();
+        $this->categoriesAllowed = $categoriesAllowed;
+    }
+
+    public function buildMenu()
+    {
+        $categoriesFetch = $this->fetchCategories();
+        $productsByGroup = $this->fetchProducts();
+        $this->productsRepository->fetchAllAsync();
 
         $menuLinks = array();
-        foreach (self::$categoriesAllowed->getParametersCategories() as $name => $groupedCategoriesIds) {
+        foreach ($this->categoriesAllowed->getParametersCategories() as $name => $groupedCategoriesIds) {
             $menuLink = new MenuLink($name);
-            self::setSubLinks($categories, $groupedCategoriesIds, $menuLink);
+            $this->setSubLinks($categoriesFetch->getResult(), $groupedCategoriesIds, $menuLink);
+            $menuLink->setTopProducts($productsByGroup[$name]->getResult());
             $menuLinks[] = $menuLink;
         }
         return $menuLinks;
     }
 
     /**
-     * @return Categories
+     * @return CategoriesAsyncFetch
      */
-    protected static function fetchCategories()
+    protected function fetchCategories()
     {
-        return self::$categoriesRepository->fetchCategoriesByIds(self::$categoriesAllowed->getAllowedCategories());
+        return $this->categoriesRepository->fetchCategoriesByIds($this->categoriesAllowed->getAllowedCategories());
     }
 
     /**
@@ -55,7 +64,7 @@ class MenuBuilder
      * @param array $groupedCategoriesIds
      * @param MenuLink $menuLink
      */
-    private static function setSubLinks($categories, array $groupedCategoriesIds, MenuLink $menuLink)
+    private function setSubLinks($categories, array $groupedCategoriesIds, MenuLink $menuLink)
     {
         foreach ($groupedCategoriesIds as $categoryId) {
             foreach ($categories as $category) {
@@ -67,5 +76,17 @@ class MenuBuilder
                 }
             }
         }
+    }
+
+    /**
+     * @return ProductsAsyncFetch[]
+     */
+    private function fetchProducts()
+    {
+        $result = array();
+        foreach ($this->categoriesAllowed->getParametersCategories() as $name => $groupedCategoriesIds) {
+            $result[$name] = $this->productsRepository->fetchProductsForMenu(6, $groupedCategoriesIds);
+        }
+        return $result;
     }
 } 
