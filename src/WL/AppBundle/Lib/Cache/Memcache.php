@@ -62,9 +62,4 @@ class Memcache implements CacheInterface
         }
     }
 
-    public function getHashObject()
-    {
-        return get_class($this).$this->liveTime.$this->enabledCache;
-    }
-
 }

@@ -49,9 +49,4 @@ class CacheFile extends \Desarrolla2\Cache\Cache implements \Nokaut\ApiKit\Cache
         parent::delete($keyName);
     }
 
-    public function getHashObject()
-    {
-        return get_class($this).$this->enabledCache.$this->timeout.$this->cacheDir;
-    }
-
 } 
