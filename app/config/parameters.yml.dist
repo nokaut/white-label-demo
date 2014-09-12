@@ -30,4 +30,3 @@ parameters:
     memcache_port: 11211
 
     categories: ~
-    template: ~
