@@ -29,7 +29,7 @@ class DefaultController extends Controller
         $productsAsyncRepo->fetchAllAsync();
 
 
-        return $this->render($this->container->getParameter('template_bundle') . ':Default:index.html.twig',
+        return $this->render('WLAppBundle:Default:index.html.twig',
             array(
                 'breadcrumbs' => $breadcrumbs,
                 'products24' => $this->filterProducts($products24Fetch),

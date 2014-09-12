@@ -37,7 +37,7 @@ class SearchController extends Controller
 
         $breadcrumbs = $this->prepareBreadcrumbs($products, $filters);
 
-        return $this->render($this->container->getParameter('template_bundle') . ':Search:index.html.twig', array(
+        return $this->render('WLAppBundle:Search:index.html.twig', array(
             'products' => $this->filterProducts($productsFetch),
             'phrase' => $products ? $products->getMetadata()->getQuery()->getPhrase() : '',
             'breadcrumbs' => $breadcrumbs,
