@@ -4,7 +4,7 @@
         "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "2b0b0bc4b256fa3c6d88c63659d12313",
+    "hash": "cc170aaf84e574e4a3c4f6b8c1c6d0b8",
     "packages": [
         {
             "name": "commerceguys/guzzle-oauth2-plugin",
@@ -43,52 +43,6 @@
             ],
             "description": "An OAuth2 plugin for guzzle",
             "time": "2014-05-20 10:02:48"
-        },
-        {
-            "name": "debril/rss-atom-bundle",
-            "version": "1.4.0",
-            "target-dir": "Debril/RssAtomBundle",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/alexdebril/rss-atom-bundle.git",
-                "reference": "40f521af9035f271c5e807cb59d39e33125c1553"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/alexdebril/rss-atom-bundle/zipball/40f521af9035f271c5e807cb59d39e33125c1553",
-                "reference": "40f521af9035f271c5e807cb59d39e33125c1553",
-                "shasum": ""
-            },
-            "require": {
-                "php": ">=5.3.3",
-                "symfony/config": "~2.2",
-                "symfony/options-resolver": "~2.2"
-            },
-            "require-dev": {
-                "doctrine/common": "~2.3",
-                "phpunit/phpunit": "~3.7",
-                "symfony/browser-kit": "~2.3",
-                "symfony/finder": "~2.3",
-                "symfony/form": "~2.3",
-                "symfony/framework-bundle": "~2.3",
-                "symfony/validator": "~2.3"
-            },
-            "type": "symfony-bundle",
-            "autoload": {
-                "psr-0": {
-                    "Debril\\RssAtomBundle": ""
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "LGPL"
-            ],
-            "description": "RSS and Atom support for Symfony 2",
-            "keywords": [
-                "atom",
-                "rss"
-            ],
-            "time": "2014-09-06 14:21:47"
         },
         {
             "name": "desarrolla2/cache",
@@ -1107,12 +1061,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/nokaut/api-kit.git",
-                "reference": "6c60520d5d3f702895415c067c42a2eb6b3e5668"
+                "reference": "096fa6ec9fbcbf0227302a466f590c7d4ee1c006"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/nokaut/api-kit/zipball/6c60520d5d3f702895415c067c42a2eb6b3e5668",
-                "reference": "6c60520d5d3f702895415c067c42a2eb6b3e5668",
+                "url": "https://api.github.com/repos/nokaut/api-kit/zipball/096fa6ec9fbcbf0227302a466f590c7d4ee1c006",
+                "reference": "096fa6ec9fbcbf0227302a466f590c7d4ee1c006",
                 "shasum": ""
             },
             "require": {
@@ -1148,10 +1102,10 @@
                 "nokaut api"
             ],
             "support": {
-                "source": "https://github.com/nokaut/api-kit/tree/v1.3.0",
+                "source": "https://github.com/nokaut/api-kit/tree/master",
                 "issues": "https://github.com/nokaut/api-kit/issues"
             },
-            "time": "2014-09-12 08:46:45"
+            "time": "2014-09-12 09:41:59"
         },
         {
             "name": "psr/log",

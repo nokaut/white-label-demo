@@ -33,7 +33,6 @@
         "sensio/framework-extra-bundle": "~3.0",
         "incenteev/composer-parameter-handler": "~2.0",
         "nokaut/api-kit": "dev-master",
-        "debril/rss-atom-bundle": "~1.3",
         "guzzle/guzzle": "3.8.*",
         "desarrolla2/cache":  "dev-master"
     },
