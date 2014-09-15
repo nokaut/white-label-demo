@@ -3,9 +3,9 @@
 <div class="col-sm-4 col-md-3">
     <div class="thumbnail" style="height: 285px;">
         {% if product.photoId %}
-            <img src="http://img.nokaut.pl/{{ nokaut_photo_url.prepare(product.photoId, '130x130', product.title) }}" alt="{{ product.title }}">
+            <img src="{{ nokaut_img_domain ~ nokaut_photo_url.prepare(product.photoId, '130x130', product.title) }}" alt="{{ product.title }}">
         {% else %}
-            <img src="http://img.nokaut.pl/noimg_130x130.png">
+            <img src="{{ nokaut_img_domain }}noimg_130x130.png">
         {% endif %}
         <div class="caption">
             <h3 class="small">{{ product.title|raw|truncate(40) }}</h3>

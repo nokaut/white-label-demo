@@ -29,4 +29,6 @@ parameters:
     memcache_url: localhost
     memcache_port: 11211
 
+    nokaut_img_domain: http://img.nokaut.pl
+
     categories: ~

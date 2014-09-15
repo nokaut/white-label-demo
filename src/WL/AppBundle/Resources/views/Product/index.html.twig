@@ -23,7 +23,7 @@
     <div class="row">
         <div class="col-xs-2 col-sm-2">
                 {% for photoId in product.photoIds if photoId %}
-                    <a id="productImage{{ loop.index }}" target="_blank" href="http://img.nokaut.pl/{{ nokaut_photo_url.prepare(photoId, '500x500', product.title) }}"><img src="http://img.nokaut.pl/{{ nokaut_photo_url.prepare(photoId, '90x90', product.title) }}" alt="{{ product.title }}"></a>
+                    <a id="productImage{{ loop.index }}" target="_blank" href="{{ nokaut_img_domain ~ nokaut_photo_url.prepare(photoId, '500x500', product.title) }}"><img src="{{ nokaut_img_domain ~ nokaut_photo_url.prepare(photoId, '90x90', product.title) }}" alt="{{ product.title }}"></a>
                 {% endfor %}
         </div>
         <div class="col-xs-9 col-sm-9">
@@ -50,7 +50,7 @@
                     <td style="text-align: center;">
                         <a target="_blank" rel="nofollow" href="http://www.nokaut.pl{{ offer.clickUrl }}" title="{{ offer.title|raw }}" class="pull-left">
                             {% if offer.shop.urlLogo %}
-                                <img src="http://img.nokaut.pl{{ offer.shop.urlLogo }}" alt="{{ offer.shop.name }}">
+                                <img src="{{ nokaut_img_domain ~ offer.shop.urlLogo }}" alt="{{ offer.shop.name }}">
                             {% endif %}
                             <br>
                             {% for i in 1..5 %}
@@ -62,7 +62,7 @@
                     <td>
                         <a target="_blank" rel="nofollow" href="http://www.nokaut.pl{{ offer.clickUrl }}" title="{{ offer.title|raw }}" class="pull-left">
                             {% if offer.photoId %}
-                                <img width="80" height="80" src="http://img.nokaut.pl/{{ nokaut_photo_url.prepare(offer.photoId, '90x90', offer.title) }}" alt="{{ offer.title }}">
+                                <img width="80" height="80" src="{{ nokaut_img_domain ~ nokaut_photo_url.prepare(offer.photoId, '90x90', offer.title) }}" alt="{{ offer.title }}">
                             {% endif %}
                         </a>
                     </td>
@@ -81,7 +81,7 @@
 
             <p>
                 <h4 class="title">Opis produktu</h4>
-                {{ product.description|raw }}
+                {{ product.descriptionHtml|raw }}
             </p>
 
         </div>

@@ -106,7 +106,7 @@ class ProductController extends Controller
      */
     protected function getFieldsForProduct()
     {
-        return array('id', 'url', 'category_id', 'description', 'id', 'prices',
+        return array('id', 'url', 'category_id', 'description_html', 'prices',
             'photo_id', 'producer_name', 'title', 'title_normalized',
             'properties', 'photo_ids', 'rating');
     }
