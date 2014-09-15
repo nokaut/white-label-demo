@@ -59,7 +59,7 @@ class ProductsAsyncRepository extends \Nokaut\ApiKit\Repository\ProductsAsyncRep
      * @param array $categoriesIds - optional: ids of categories
      * @return ProductsAsyncFetch
      */
-    public function fetchProductsForMenu($limit = 6, array $categoriesIds = null)
+    public function fetchProductsWithCategory($limit = 6, array $categoriesIds = null)
     {
         $query = new ProductsQuery($this->apiBaseUrl);
         $query->addFacet('query');
