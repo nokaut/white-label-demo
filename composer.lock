@@ -4,7 +4,7 @@
         "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "cc170aaf84e574e4a3c4f6b8c1c6d0b8",
+    "hash": "d35289f7fb7d43455d9b38e5a8553f9d",
     "packages": [
         {
             "name": "commerceguys/guzzle-oauth2-plugin",
@@ -1057,16 +1057,16 @@
         },
         {
             "name": "nokaut/api-kit",
-            "version": "dev-master",
+            "version": "v1.3.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/nokaut/api-kit.git",
-                "reference": "096fa6ec9fbcbf0227302a466f590c7d4ee1c006"
+                "reference": "65e33b816cc82ce357a8119d0c86be51a58a18a0"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/nokaut/api-kit/zipball/096fa6ec9fbcbf0227302a466f590c7d4ee1c006",
-                "reference": "096fa6ec9fbcbf0227302a466f590c7d4ee1c006",
+                "url": "https://api.github.com/repos/nokaut/api-kit/zipball/65e33b816cc82ce357a8119d0c86be51a58a18a0",
+                "reference": "65e33b816cc82ce357a8119d0c86be51a58a18a0",
                 "shasum": ""
             },
             "require": {
@@ -1102,10 +1102,10 @@
                 "nokaut api"
             ],
             "support": {
-                "source": "https://github.com/nokaut/api-kit/tree/master",
+                "source": "https://github.com/nokaut/api-kit/tree/v1.3.1",
                 "issues": "https://github.com/nokaut/api-kit/issues"
             },
-            "time": "2014-09-12 09:41:59"
+            "time": "2014-09-15 10:09:26"
         },
         {
             "name": "psr/log",
@@ -1852,7 +1852,6 @@
     "aliases": [],
     "minimum-stability": "dev",
     "stability-flags": {
-        "nokaut/api-kit": 20,
         "desarrolla2/cache": 20
     },
     "prefer-stable": true,
