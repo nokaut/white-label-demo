@@ -31,4 +31,27 @@ parameters:
 
     nokaut_img_domain: http://img.nokaut.pl
 
-    categories: ~
+    categories:
+            'Kategorie':
+                    - 1
+                    - 47
+                    - 86
+                    - 126
+                    - 185
+                    - 445
+                    - 487
+                    - 633
+                    - 685
+                    - 686
+                    - 5799
+                    - 5844
+                    - 5872
+                    - 5888
+                    - 6118
+                    - 6222
+                    - 8472
+                    - 8519
+                    - 9768
+                    - 9812
+                    - 10166
+                    - 10669
