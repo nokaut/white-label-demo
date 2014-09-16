@@ -94,7 +94,7 @@ class ProductController extends Controller
         return $productsFetch;
     }
 
-    private function removeUselessProperties(Product $product)
+    protected function removeUselessProperties(Product $product)
     {
         $filter = new FilterProperties();
         $filteredProperties = $filter->filterProperties($product->getProperties());
@@ -116,7 +116,7 @@ class ProductController extends Controller
      * @param $product
      * @return array
      */
-    private function prepareBreadcrumbs($category, $product)
+    protected function prepareBreadcrumbs($category, $product)
     {
         /** @var BreadcrumbsBuilder $breadcrumbsBuilder */
         $breadcrumbsBuilder = $this->get('breadcrumb.builder');

@@ -113,7 +113,7 @@ class SearchController extends Controller
      * @param Products|null $products
      * @return Pagination
      */
-    private function preparePagination($products)
+    protected function preparePagination($products)
     {
         if (is_null($products)) {
             return new Pagination();
@@ -181,7 +181,7 @@ class SearchController extends Controller
      * @param $filters
      * @return Breadcrumb[]
      */
-    private function prepareBreadcrumbs($products, $filters)
+    protected function prepareBreadcrumbs($products, $filters)
     {
         $breadcrumbs = array();
         $breadcrumbs[] = new Breadcrumb("Szukaj: " . $products->getMetadata()->getQuery()->getPhrase());

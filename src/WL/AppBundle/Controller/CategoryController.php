@@ -131,7 +131,7 @@ class CategoryController extends Controller
      * @return Category
      * @throws \Symfony\Component\HttpKernel\Exception\NotFoundHttpException
      */
-    private function fetchCategory($categoryUrlWithFilters)
+    protected function fetchCategory($categoryUrlWithFilters)
     {
         $path = explode('/', $categoryUrlWithFilters);
         $categoryUrl = $path[0];
@@ -150,7 +150,7 @@ class CategoryController extends Controller
      * @param Filter[] $filters
      * @return array
      */
-    private function prepareBreadcrumbs($category, array $filters)
+    protected function prepareBreadcrumbs($category, array $filters)
     {
         /** @var BreadcrumbsBuilder $breadcrumbsBuilder */
         $breadcrumbsBuilder = $this->get('breadcrumb.builder');
