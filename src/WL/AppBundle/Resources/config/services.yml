@@ -99,3 +99,6 @@ services:
         tags:
           - { name: twig.extension }
 
+    helper.price:
+        class: WL\AppBundle\Lib\Helper\Price
+

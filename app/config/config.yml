@@ -32,6 +32,7 @@ twig:
         menu_main: @menu.main.builded
         nokaut_photo_url: @photo.url
         helper_filter: @helper.filter
+        helper_price: @helper.price
         nokaut_img_domain: %nokaut_img_domain%
 
 # Assetic Configuration
