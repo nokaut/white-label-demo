@@ -99,7 +99,7 @@ class SearchController extends Controller
      * @param string $phrase
      * @return string
      */
-    private function preparePhraseUrl($phrase)
+    protected function preparePhraseUrl($phrase)
     {
         $phrase = str_replace(
             array('ę', 'ó', 'ą', 'ś', 'ł', 'ż', 'ź', 'ć', 'ń'),
