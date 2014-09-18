@@ -16,6 +16,9 @@ class Price
 
     public function getSavePercent(Prices $prices)
     {
+        if ($prices->getMax() == 0) {
+            return 0;
+        }
         $percent = ($prices->getMax() - $prices->getMin()) / $prices->getMax() * 100;
         return number_format($percent);
     }
