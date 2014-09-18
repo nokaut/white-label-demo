@@ -5,6 +5,7 @@ namespace WL\AppBundle\Controller;
 use Nokaut\ApiKit\ClientApi\Rest\Async\ProductsAsyncFetch;
 use Nokaut\ApiKit\Collection\Products;
 use Nokaut\ApiKit\Entity\Category;
+use Nokaut\ApiKit\Entity\Metadata\Facet\PriceFacet;
 use Nokaut\ApiKit\Entity\Product;
 use Nokaut\ApiKit\Repository\CategoriesRepository;
 use Nokaut\ApiKit\Repository\ProductsRepository;
@@ -74,7 +75,7 @@ class SearchController extends Controller
             if ($price->getIsFilter()) {
                 $filter = new Filter();
                 $filter->setName("Ceny");
-                $filter->setValue("od " . $price->getMin() . " do " . $price->getMax());
+                $filter->setValue($this->prepareFilterPriceValue($price));
                 $filter->setOutUrl($price->getUrl());
                 $filters[] = $filter;
             }
@@ -189,6 +190,27 @@ class SearchController extends Controller
         $breadcrumbsBuilder = $this->get('breadcrumb.builder');
         $breadcrumbsBuilder->appendFilter($breadcrumbs, $filters);
         return $breadcrumbs;
+    }
+
+
+    /**
+     * @param PriceFacet $price
+     * @return string
+     */
+    protected function prepareFilterPriceValue(PriceFacet $price)
+    {
+        if ($price->getMin() && $price->getMax()) {
+            return "od " . $price->getMin() . " do " . $price->getMax() . "zł";
+        }
+
+        if ($price->getMin()) {
+            return "od " . $price->getMin() . "zł";
+        }
+
+        if ($price->getMax()) {
+            return "do " . $price->getMax() . "zł";
+        }
+        return '-';
     }
 
 }
