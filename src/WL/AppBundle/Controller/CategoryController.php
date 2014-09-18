@@ -24,7 +24,7 @@ class CategoryController extends Controller
 
         /** @var ProductsAsyncRepository $productsAsyncRepo */
         $productsAsyncRepo = $this->get('repo.products.async');
-        $productsFetch = $productsAsyncRepo->fetchProductsByUrl($categoryUrlWithFilters, ProductsRepository::$fieldsForList, 24);
+        $productsFetch = $productsAsyncRepo->fetchProductsByUrl($categoryUrlWithFilters, $this->getProductFields(), 24);
         $productsTopFetch = $productsAsyncRepo->fetchTopProducts(10, array($category->getId()));
         $productsAsyncRepo->fetchAllAsync();
 
@@ -184,5 +184,15 @@ class CategoryController extends Controller
             return "do " . $price->getMax() . "zł";
         }
         return '-';
+    }
+
+    /**
+     * @return array
+     */
+    protected function getProductFields()
+    {
+        $fieldsForList = ProductsRepository::$fieldsForList;
+        $fieldsForList[] = '_categories.url_in';
+        return $fieldsForList;
     }
 }

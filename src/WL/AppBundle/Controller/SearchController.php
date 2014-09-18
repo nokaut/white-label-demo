@@ -26,7 +26,7 @@ class SearchController extends Controller
 
         /** @var ProductsAsyncRepository $productsRepo */
         $productsRepo = $this->get('repo.products.async');
-        $productsFetch = $productsRepo->fetchProductsByUrl($phraseUrlForApi, ProductsRepository::$fieldsForList, 24);
+        $productsFetch = $productsRepo->fetchProductsByUrl($phraseUrlForApi, $this->getProductFields(), 24);
         $productsTopFetch = $productsRepo->fetchTopProducts();
         $productsRepo->fetchAllAsync();
         /** @var Products $products */
@@ -211,6 +211,16 @@ class SearchController extends Controller
             return "do " . $price->getMax() . "zł";
         }
         return '-';
+    }
+
+    /**
+     * @return array
+     */
+    protected function getProductFields()
+    {
+        $fieldsForList = ProductsRepository::$fieldsForList;
+        $fieldsForList[] = '_categories.url_in';
+        return $fieldsForList;
     }
 
 }

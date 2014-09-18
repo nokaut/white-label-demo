@@ -10,7 +10,7 @@
         {% for category in subcategories if category.isFilter == false %}
         <li class="list-group-item">
             <span class="badge">{{ category.total }}</span>
-            <a href="{{  url(route, { (routeArgument): category.url|trim('/')}) }}" title="{{ category.name|raw }}" class="link">
+            <a href="{{  url(route, { (routeArgument): category.urlIn|trim('/')}) }}" title="{{ category.name|raw }}" class="link">
                 {{ category.name|raw }}
             </a>
         </li>
