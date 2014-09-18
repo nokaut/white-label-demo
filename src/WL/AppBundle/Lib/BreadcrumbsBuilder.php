@@ -63,9 +63,6 @@ class BreadcrumbsBuilder
         $breadcrumbsFilers = '';
         foreach ($filters as $filter) {
             $breadcrumbsFilers .= $filter->getName() . ": " . $filter->getValue();
-            if ($filter->getName() == 'Ceny') {
-                $breadcrumbsFilers .= ' zł';
-            }
             $breadcrumbsFilers .= ', ';
         }
         if ($breadcrumbsFilers) {
