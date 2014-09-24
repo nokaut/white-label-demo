@@ -29,3 +29,9 @@ rating_add:
     defaults: { _controller: WLAppBundle:Product:addRate }
     methods:  [POST]
 
+click:
+    path:     /click/{offerId}
+    defaults: { _controller: WLAppBundle:Click:click }
+    requirements:
+        clickUrl: ".+"
+

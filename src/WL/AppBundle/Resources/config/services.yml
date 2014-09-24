@@ -74,6 +74,13 @@ services:
     helper.filter:
         class: WL\AppBundle\Lib\Helper\SelectedFilter
 
+    helper.price:
+        class: WL\AppBundle\Lib\Helper\Price
+
+    helper.click:
+        class: WL\AppBundle\Lib\Helper\ClickUrl
+        arguments: [@service_container]
+
     api_kit.config.cache.memcache:
         class: Nokaut\ApiKit\Config
         calls:
@@ -99,6 +106,9 @@ services:
         tags:
           - { name: twig.extension }
 
-    helper.price:
-        class: WL\AppBundle\Lib\Helper\Price
+    twig.click_extension:
+        class: WL\AppBundle\Lib\Twig\ClickUrlExtension
+        arguments: [@helper.click]
+        tags:
+          - { name: twig.extension }
 

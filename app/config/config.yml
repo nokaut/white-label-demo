@@ -34,6 +34,7 @@ twig:
         helper_filter: @helper.filter
         helper_price: @helper.price
         nokaut_img_domain: %nokaut_img_domain%
+        click_domain: %click_domain%
 
 # Assetic Configuration
 assetic:

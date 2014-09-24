@@ -1,0 +1,128 @@
+{% extends "::base.html.twig" %}
+
+{% block title %}WLTemplateBundle:Click:click{% endblock %}
+
+
+{% block head %}
+    <meta name="viewport" content="width=device-width">
+{% endblock %}
+
+{% block stylesheets %}
+    <link rel="stylesheet" href="{{ asset('bundles/wlapp/css/bootstrap.min.css') }}" />
+    <link rel="stylesheet" href="{{ asset('bundles/wlapp/css/bootstrap-theme.min.css') }}" />
+    <link rel="stylesheet" href="{{ asset('bundles/wlapp/css/main.css') }}" />
+
+    <link rel="stylesheet" href="{{ asset('bundles/wlapp/owl-carousel/owl.carousel.css') }}">
+    <link rel="stylesheet" href="{{ asset('bundles/wlapp/owl-carousel/owl.theme.css') }}">
+
+    <style type="text/css">
+        body {
+            overflow-y: hidden;
+        }
+        #imagepgframe {
+            width: 100%;
+            height: 100%;
+            position: absolute;
+        }
+        #wrap {
+            width: 100%;
+            position: absolute;
+            top: 180px;
+            left: 0;
+            bottom: 0;
+        }
+        .item h2 {
+            font-size: 12px;
+            display: block; /* Fallback for non-webkit */
+            display: -webkit-box;
+            max-width: 400px;
+            height: 26px;
+            margin: 0 auto;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        .item span.price {
+            font-size: 12px;
+            display: block; /* Fallback for non-webkit */
+        }
+    </style>
+{% endblock %}
+
+{% block body %}
+    <div class="row">
+        <div id="owl-click" class="owl-carousel">
+            {% if products %}
+                {% for product in products if product.offerWithBestPrice %}
+                    <div class="item">
+                        <div class="col-md-12">
+                            <img width="80" height="80"
+                                 src="{{ nokaut_img_domain ~ nokaut_photo_url.prepare(product.photoId, '90x90', product.title) }}"
+                                 alt="{{ product.title|raw }}">
+
+                            <h2>{{ product.title|raw }}</h2>
+                            <span class="price">{{ product.prices.min|number_format(2, ',', '') }} zł</span>
+                            <a class="btn btn-xs btn-primary" target="click"
+                               href="{{ click_domain ~ product.offerWithBestPrice.clickUrl }}">Zobacz</a>
+                        </div>
+                    </div>
+                {% endfor %}
+            {% elseif offers %}
+                {% for offer in offers %}
+                    <div class="item">
+                        <div class="col-md-12">
+                            <img width="80" height="80" src="{{ nokaut_img_domain ~ nokaut_photo_url.prepare(offer.photoId, '90x90', offer.title) }}" alt="{{ offer.title }}">
+                            <h2>{{ offer.title|raw }}</h2>
+                            <span class="price">{{ offer.price|number_format(2, ',', '') }} zł</span>
+                            <a class="btn btn-xs btn-primary"  target="click" href="{{ click_domain ~ offer.clickUrl }}">Zobacz</a>
+                        </div>
+                    </div>
+                {% endfor %}
+            {% endif %}
+        </div>
+        <div class="text-center">
+            <a class="btn prev"><i class="glyphicon glyphicon-chevron-left"></i></a>
+            <a class="btn next"><i class="glyphicon glyphicon-chevron-right"></i></a>
+            <a href="{{ click_domain ~ offer.clickUrl }}" class="btn"><i class="glyphicon glyphicon-remove-circle"></i></a>
+        </div>
+    </div>
+    <div id="wrap">
+
+        <iframe id="imagepgframe" name="click" frameBorder="0" src="{{ iframeUrl|raw }}"></iframe>
+
+    </div>
+{% endblock %}
+
+{% block javascripts %}
+
+    <!-- jQuery 1.7+ -->
+    <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+
+    <script src="{{ asset('bundles/wlapp/owl-carousel/owl.carousel.min.js') }}"></script>
+
+    <script type="text/javascript">
+        $(document).ready(function() {
+            var owl = $("#owl-click");
+
+            owl.owlCarousel({
+                items : 10, //10 items above 1000px browser width
+                itemsDesktop : [1000,5], //5 items between 1000px and 901px
+                itemsDesktopSmall : [900,3], // betweem 900px and 601px
+                itemsTablet: [600,2], //2 items between 600 and 0
+                itemsMobile : false, // itemsMobile disabled - inherit from itemsTablet option
+                autoPlay:  true,
+                stopOnHover : true,
+                pagination: false
+            });
+
+            // Custom Navigation Events
+            $(".next").click(function(){
+                owl.trigger('owl.next');
+            });
+            $(".prev").click(function(){
+                owl.trigger('owl.prev');
+            });
+        });
+    </script>
+{% endblock %}

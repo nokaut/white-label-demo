@@ -14,6 +14,7 @@ use Nokaut\ApiKit\ClientApi\Rest\Async\ProductsAsyncFetch;
 use Nokaut\ApiKit\Entity\Category;
 use Nokaut\ApiKit\Entity\Product;
 use Nokaut\ApiKit\Repository\CategoriesAsyncRepository;
+use Nokaut\ApiKit\Repository\OffersAsyncRepository;
 use Nokaut\ApiKit\Repository\OffersRepository;
 use Nokaut\ApiKit\Repository\ProductsRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
@@ -42,7 +43,7 @@ class ProductController extends Controller
         $categoriesRepo = $this->get('repo.categories.async');
         $categoryFetch = $categoriesRepo->fetchById($product->getCategoryId());
 
-        /** @var OffersRepository $offersAsyncRepo */
+        /** @var OffersAsyncRepository $offersAsyncRepo */
         $offersRepo = $this->get('repo.offers.async');
         /** @var OffersAsyncFetch $offersFetch */
         $offersFetch = $offersRepo->fetchOffersByProductId($product->getId(), OffersRepository::$fieldsForProductPage);
