@@ -19,7 +19,7 @@ parameters:
     use_assetic_controller: true
 
     api_token: ~
-    api_url: http://92.43.117.190:8080/api/v2/
+    api_url: http://92.43.117.190/api/v2/
 
     cache_enabled: false
     cache_default_lifetime: 1800
