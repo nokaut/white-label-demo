@@ -35,6 +35,9 @@ class MenuBuilder
         $this->categoriesAllowed = $categoriesAllowed;
     }
 
+    /**
+     * @return MenuLink[]
+     */
     public function buildMenu()
     {
         $categoriesFetch = $this->fetchCategories();
