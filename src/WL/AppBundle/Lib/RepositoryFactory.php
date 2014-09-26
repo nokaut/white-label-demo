@@ -38,6 +38,6 @@ class RepositoryFactory extends ApiKit
         $this->validate($config);
 
         $restClientApi = $this->getClientApi($config);
-        return new ProductsAsyncRepository($config->getApiUrl(), $restClientApi, $this->categoriesAllowed);
+        return new ProductsAsyncRepository($config, $restClientApi, $this->categoriesAllowed);
     }
 } 

@@ -54,8 +54,8 @@
         {% endif %}
     {% endfor %}
     </ul>
-    <div class="panel">
-        <div class="panel-body">
+    <div style="margin-top: 10px;">
+        <div class="row">
         {% for product in products %}
             {% include 'WLAppBundle:Common:productItem.html.twig' with {'product': product } %}
         {% else %}

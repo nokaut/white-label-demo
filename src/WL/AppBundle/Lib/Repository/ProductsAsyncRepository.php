@@ -10,8 +10,9 @@ namespace WL\AppBundle\Lib\Repository;
 
 
 use Nokaut\ApiKit\ClientApi\ClientApiInterface;
-use Nokaut\ApiKit\ClientApi\Rest\Async\ProductsAsyncFetch;
+use Nokaut\ApiKit\ClientApi\Rest\Fetch\ProductsFetch;
 use Nokaut\ApiKit\ClientApi\Rest\Query\ProductsQuery;
+use Nokaut\ApiKit\Config;
 use Nokaut\ApiKit\Repository\ProductsRepository;
 use WL\AppBundle\Lib\CategoriesAllowed;
 
@@ -23,21 +24,22 @@ class ProductsAsyncRepository extends \Nokaut\ApiKit\Repository\ProductsAsyncRep
     private $categoriesAllowed;
 
     /**
-     * @param string $apiBaseUrl
+     * @param Config $config
      * @param ClientApiInterface $clientApi
      * @param CategoriesAllowed $categoriesAllowed
+     * @internal param string $apiBaseUrl
      */
-    public function __construct($apiBaseUrl, ClientApiInterface $clientApi, CategoriesAllowed $categoriesAllowed)
+    public function __construct(Config $config, ClientApiInterface $clientApi, CategoriesAllowed $categoriesAllowed)
     {
         $this->categoriesAllowed = $categoriesAllowed;
-        parent::__construct($apiBaseUrl, $clientApi);
+        parent::__construct($config, $clientApi);
     }
 
     /**
      * get top products
      * @param int $limit
      * @param array $categoriesIds - optional: ids of categories
-     * @return ProductsAsyncFetch
+     * @return ProductsFetch
      */
     public function fetchTopProducts($limit = 10, array $categoriesIds = null)
     {
@@ -57,7 +59,7 @@ class ProductsAsyncRepository extends \Nokaut\ApiKit\Repository\ProductsAsyncRep
      * get top products
      * @param int $limit
      * @param array $categoriesIds - optional: ids of categories
-     * @return ProductsAsyncFetch
+     * @return ProductsFetch
      */
     public function fetchProductsWithCategory($limit = 6, array $categoriesIds = null)
     {
