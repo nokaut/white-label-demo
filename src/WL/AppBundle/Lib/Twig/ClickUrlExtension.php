@@ -9,7 +9,9 @@
 namespace WL\AppBundle\Lib\Twig;
 
 
+use Nokaut\ApiKit\Entity\EntityAbstract;
 use Nokaut\ApiKit\Entity\Offer;
+use Nokaut\ApiKit\Entity\Product;
 use WL\AppBundle\Lib\Helper\ClickUrl;
 
 class ClickUrlExtension extends \Twig_Extension
@@ -33,13 +35,19 @@ class ClickUrlExtension extends \Twig_Extension
     }
 
     /**
-     * @param Offer $offer
-     *
+     * @param EntityAbstract $entity
+     * @throws \InvalidArgumentException
      * @return string
      */
-    function clickUrl($offer)
+    function clickUrl($entity)
     {
-        return $this->clickUrl->prepareClickUrl($offer);
+        if ($entity instanceof Product) {
+            return $this->clickUrl->prepareProductClickUrl($entity);
+        }
+        if ($entity instanceof Offer) {
+            return $this->clickUrl->prepareOfferClickUrl($entity);
+        }
+        throw new \InvalidArgumentException("unsupported entity " . get_class($entity) ." for generate click");
     }
 
     /**

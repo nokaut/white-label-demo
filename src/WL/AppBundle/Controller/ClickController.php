@@ -7,6 +7,7 @@ use Nokaut\ApiKit\ClientApi\Rest\Async\ProductsAsyncFetch;
 use Nokaut\ApiKit\ClientApi\Rest\Query\Filter\Single;
 use Nokaut\ApiKit\ClientApi\Rest\Query\OffersQuery;
 use Nokaut\ApiKit\ClientApi\Rest\Query\ProductsQuery;
+use Nokaut\ApiKit\Collection\CollectionAbstract;
 use Nokaut\ApiKit\Entity\Offer;
 use Nokaut\ApiKit\Repository\OffersAsyncRepository;
 use Nokaut\ApiKit\Repository\OffersRepository;
@@ -21,30 +22,23 @@ class ClickController extends Controller
 {
     protected static $limitOffers = 30;
 
-    public function clickAction(Request $request)
+    public function clickProductAction($productId)
     {
-        $offer = $this->fetchOffer($request->get('offerId'));
+        try {
+            $offer = $this->fetchOfferFromProduct($productId);
+            return $this->doIFrame($offer);
 
-        $clickMode = $this->container->getParameter('click_mode');
-        $offers = $products = null;
-        if ($clickMode == ClickUrl::FRAME_OFFERS_SHOP) {
-            $offers = $this->fetchOfferFromShop($offer);
-        } else {
-            $products = $this->fetchProductsFromCategory($offer);
+        } catch (\Exception $e) {
+            throw $e;
+//            return $this->redirect('/');
         }
+    }
 
-        /** @var ProductsAsyncRepository $productsRepository */
-        $productsRepository = $this->get('repo.products.async');
-        $productsRepository->fetchAllAsync();
+    public function clickOfferAction($offerId)
+    {
+        $offer = $this->fetchOffer($offerId);
 
-
-        $iframeUrl = 'http://www.nokaut.pl' . $offer->getClickUrl();
-        return $this->render('WLAppBundle:Click:click.html.twig', array(
-            'iframeUrl' => $iframeUrl,
-            'products' => $products ? $products->getResult() : null,
-            'offers' => $offers ? $offers->getResult() : null,
-            'offer' => $offer
-        ));
+        return $this->doIFrame($offer);
     }
 
     /**
@@ -64,7 +58,6 @@ class ClickController extends Controller
      */
     protected function fetchProductsFromCategory($offer)
     {
-
         /** @var ProductsAsyncRepository $productsRepository */
         $productsRepository = $this->get('repo.products.async');
 
@@ -91,6 +84,52 @@ class ClickController extends Controller
         $query->setLimit(self::$limitOffers);
 
         return $offersRepository->fetchOffersByQuery($query);
+    }
+
+    /**
+     * @param $productId
+     * @throws \Exception
+     * @return Offer
+     */
+    protected function fetchOfferFromProduct($productId)
+    {
+        /** @var OffersRepository $offersRepository */
+        $offersRepository = $this->get('repo.offers');
+
+        $offers = $offersRepository->fetchOffersByProductId($productId, OffersAsyncRepository::$fieldsAll);
+
+        if ($offers && count($offers) > 0) {
+            return $offers->getItem(0);
+        }
+        throw new \Exception('offer not found');
+    }
+
+    /**
+     * @param Offer $offer
+     * @return \Symfony\Component\HttpFoundation\Response
+     */
+    protected function doIFrame($offer)
+    {
+        $clickMode = $this->container->getParameter('click_mode');
+        $offers = $products = null;
+        if ($clickMode == ClickUrl::FRAME_OFFERS_SHOP) {
+            $offers = $this->fetchOfferFromShop($offer);
+        } else {
+            $products = $this->fetchProductsFromCategory($offer);
+        }
+
+        /** @var ProductsAsyncRepository $productsRepository */
+        $productsRepository = $this->get('repo.products.async');
+        $productsRepository->fetchAllAsync();
+
+
+        $iframeUrl = 'http://www.nokaut.pl' . $offer->getClickUrl();
+        return $this->render('WLAppBundle:Click:click.html.twig', array(
+            'iframeUrl' => $iframeUrl,
+            'products' => $products ? $products->getResult() : null,
+            'offers' => $offers ? $offers->getResult() : null,
+            'offer' => $offer
+        ));
     }
 
 }

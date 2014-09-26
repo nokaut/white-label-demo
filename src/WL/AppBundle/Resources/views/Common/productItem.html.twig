@@ -6,7 +6,14 @@
         <div class="caption">
             <h3 class="small">{{ product.title|raw|truncate(40) }}</h3>
             <strong>od {{ product.prices.min|number_format(2, ',', '') }} zł</strong>
-            <p><a href="{{ url }}" class="btn btn-default" role="button">Zobacz</a>
+            <br>
+            <br>
+            <div class="btn-group">
+                <a href="{{ url }}" class="btn btn-xs btn-default" role="button">Zobacz</a>
+                {% if product.clickUrl %}
+                    <a target="_blank" href="{{ product|click }}" class="btn btn-xs btn-primary" role="button">Zobacz w sklepie</a>
+                {% endif %}
+            </div>
         </div>
     </div>
 </div>

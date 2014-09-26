@@ -10,6 +10,7 @@ namespace WL\AppBundle\Lib\Helper;
 
 
 use Nokaut\ApiKit\Entity\Offer;
+use Nokaut\ApiKit\Entity\Product;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
@@ -39,13 +40,27 @@ class ClickUrl
      * @param Offer $offer
      * @return string
      */
-    public function prepareClickUrl($offer)
+    public function prepareOfferClickUrl($offer)
     {
         if (self::REDIRECT == $this->clickMode) {
             return $this->container->getParameter('click_domain') . $offer->getClickUrl();
         }
 
-        return $this->generateUrl('click', array('offerId' => $offer->getId()));
+        return $this->generateUrl('clickOffer', array('offerId' => $offer->getId()));
+
+    }
+
+    /**
+     * @param Product $product
+     * @return string
+     */
+    public function prepareProductClickUrl($product)
+    {
+        if (self::REDIRECT == $this->clickMode) {
+            return $this->container->getParameter('click_domain') . $product->getClickUrl();
+        }
+
+        return $this->generateUrl('clickProduct', array('productId' => $product->getId()));
 
     }
 
