@@ -63,7 +63,7 @@
 
                             <h2>{{ product.title|raw }}</h2>
                             <span class="price">{{ product.prices.min|number_format(2, ',', '') }} zł</span>
-                            <a class="btn btn-xs btn-primary" target="click"
+                            <a class="btn btn-xs btn-primary trigger-click" target="click"
                                href="{{ click_domain ~ product.offerWithBestPrice.clickUrl }}">Zobacz</a>
                         </div>
                     </div>
@@ -75,7 +75,7 @@
                             <img width="80" height="80" src="{{ nokaut_img_domain ~ nokaut_photo_url.prepare(offer.photoId, '90x90', offer.title) }}" alt="{{ offer.title }}">
                             <h2>{{ offer.title|raw }}</h2>
                             <span class="price">{{ offer.price|number_format(2, ',', '') }} zł</span>
-                            <a class="btn btn-xs btn-primary"  target="click" href="{{ click_domain ~ offer.clickUrl }}">Zobacz</a>
+                            <a class="btn btn-xs btn-primary trigger-click" target="click" href="{{ click_domain ~ offer.clickUrl }}">Zobacz</a>
                         </div>
                     </div>
                 {% endfor %}
@@ -84,7 +84,7 @@
         <div class="text-center">
             <a class="btn prev"><i class="glyphicon glyphicon-chevron-left"></i></a>
             <a class="btn next"><i class="glyphicon glyphicon-chevron-right"></i></a>
-            <a href="{{ click_domain ~ offer.clickUrl }}" class="btn"><i class="glyphicon glyphicon-remove-circle"></i></a>
+            <a id="close-iframe" href="{{ click_domain ~ offer.clickUrl }}" class="btn"><i class="glyphicon glyphicon-remove-circle"></i></a>
         </div>
     </div>
     <div id="wrap">
@@ -122,6 +122,10 @@
             });
             $(".prev").click(function(){
                 owl.trigger('owl.prev');
+            });
+
+            $("a.trigger-click").click(function() {
+                $('#close-iframe').attr('href', $(this).attr('href'));
             });
         });
     </script>
