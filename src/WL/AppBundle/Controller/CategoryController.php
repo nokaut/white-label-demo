@@ -3,6 +3,7 @@
 namespace WL\AppBundle\Controller;
 
 use Nokaut\ApiKit\ClientApi\Rest\Async\ProductsAsyncFetch;
+use Nokaut\ApiKit\ClientApi\Rest\Exception\NotFoundException;
 use Nokaut\ApiKit\Collection\Products;
 use Nokaut\ApiKit\Entity\Category;
 use Nokaut\ApiKit\Entity\Metadata\Facet\PriceFacet;
@@ -141,7 +142,7 @@ class CategoryController extends Controller
         try {
             $category = $categoriesRepo->fetchByUrl($categoryUrl);
             return $category;
-        } catch (\Exception $e) {
+        } catch (NotFoundException $e) {
             throw $this->createNotFoundException("not found category " . $categoryUrl);
         }
     }
