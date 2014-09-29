@@ -9,8 +9,8 @@
 namespace WL\AppBundle\Controller;
 
 
-use Nokaut\ApiKit\ClientApi\Rest\Async\OffersAsyncFetch;
-use Nokaut\ApiKit\ClientApi\Rest\Async\ProductsAsyncFetch;
+use Nokaut\ApiKit\ClientApi\Rest\Fetch\OffersFetch;
+use Nokaut\ApiKit\ClientApi\Rest\Fetch\ProductsFetch;
 use Nokaut\ApiKit\Entity\Category;
 use Nokaut\ApiKit\Entity\Product;
 use Nokaut\ApiKit\Repository\CategoriesAsyncRepository;
@@ -45,7 +45,7 @@ class ProductController extends Controller
 
         /** @var OffersAsyncRepository $offersAsyncRepo */
         $offersRepo = $this->get('repo.offers.async');
-        /** @var OffersAsyncFetch $offersFetch */
+        /** @var OffersFetch $offersFetch */
         $offersFetch = $offersRepo->fetchOffersByProductId($product->getId(), OffersRepository::$fieldsForProductPage);
 
         $productsFromCategoryFetch = $this->fetchProductsFromCategory($product->getCategoryId());
@@ -85,7 +85,7 @@ class ProductController extends Controller
 
     /**
      * @param int $categoryId
-     * @return ProductsAsyncFetch
+     * @return ProductsFetch
      */
     protected function fetchProductsFromCategory($categoryId)
     {

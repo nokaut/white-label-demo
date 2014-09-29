@@ -2,18 +2,16 @@
 
 namespace WL\AppBundle\Controller;
 
-use Nokaut\ApiKit\ClientApi\Rest\Async\OffersAsyncFetch;
-use Nokaut\ApiKit\ClientApi\Rest\Async\ProductsAsyncFetch;
+use Nokaut\ApiKit\ClientApi\Rest\Fetch\OffersFetch;
+use Nokaut\ApiKit\ClientApi\Rest\Fetch\ProductsFetch;
 use Nokaut\ApiKit\ClientApi\Rest\Query\Filter\Single;
 use Nokaut\ApiKit\ClientApi\Rest\Query\OffersQuery;
 use Nokaut\ApiKit\ClientApi\Rest\Query\ProductsQuery;
-use Nokaut\ApiKit\Collection\CollectionAbstract;
 use Nokaut\ApiKit\Entity\Offer;
 use Nokaut\ApiKit\Repository\OffersAsyncRepository;
 use Nokaut\ApiKit\Repository\OffersRepository;
 use Nokaut\ApiKit\Repository\ProductsRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
-use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use WL\AppBundle\Lib\Helper\ClickUrl;
 use WL\AppBundle\Lib\Repository\ProductsAsyncRepository;
@@ -54,7 +52,7 @@ class ClickController extends Controller
 
     /**
      * @param Offer $offer
-     * @return ProductsAsyncFetch
+     * @return ProductsFetch
      */
     protected function fetchProductsFromCategory($offer)
     {
@@ -70,7 +68,7 @@ class ClickController extends Controller
 
     /**
      * @param Offer $offer
-     * @return OffersAsyncFetch
+     * @return OffersFetch
      */
     protected function fetchOfferFromShop($offer)
     {

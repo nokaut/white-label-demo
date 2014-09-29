@@ -2,7 +2,7 @@
 
 namespace WL\AppBundle\Controller;
 
-use Nokaut\ApiKit\ClientApi\Rest\Async\ProductsAsyncFetch;
+use Nokaut\ApiKit\ClientApi\Rest\Fetch\ProductsFetch;
 use Nokaut\ApiKit\ClientApi\Rest\Query\ProductsQuery;
 use Nokaut\ApiKit\Collection\Products;
 use Nokaut\ApiKit\Repository\ProductsRepository;
@@ -39,7 +39,7 @@ class DefaultController extends Controller
 
     /**
      * @param ProductsAsyncRepository $productsAsyncRepo
-     * @return ProductsAsyncFetch
+     * @return ProductsFetch
      */
     protected function fetchRandProducts(ProductsAsyncRepository $productsAsyncRepo)
     {
@@ -54,7 +54,7 @@ class DefaultController extends Controller
     }
 
     /**
-     * @param ProductsAsyncFetch $products24Fetch
+     * @param ProductsFetch $products24Fetch
      * @return mixed
      */
     protected function filterProducts($products24Fetch)
@@ -69,7 +69,7 @@ class DefaultController extends Controller
     }
 
     /**
-     * @param ProductsAsyncFetch $productsFetch
+     * @param ProductsFetch $productsFetch
      * @return Pagination
      */
     protected function preparePagination($productsFetch)

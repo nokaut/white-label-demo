@@ -9,10 +9,6 @@
 namespace WL\AppBundle\Controller;
 
 
-use Nokaut\ApiKit\ClientApi\Rest\Async\CategoriesAsyncFetch;
-use Nokaut\ApiKit\Collection\Categories;
-use Nokaut\ApiKit\Collection\Sort\CategoriesSort;
-use Nokaut\ApiKit\Repository\CategoriesAsyncRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use WL\AppBundle\Lib\Type\Breadcrumb;
 

@@ -2,7 +2,7 @@
 
 namespace WL\AppBundle\Controller;
 
-use Nokaut\ApiKit\ClientApi\Rest\Async\ProductsAsyncFetch;
+use Nokaut\ApiKit\ClientApi\Rest\Fetch\ProductsFetch;
 use Nokaut\ApiKit\Collection\Products;
 use Nokaut\ApiKit\Entity\Category;
 use Nokaut\ApiKit\Entity\Metadata\Facet\PriceFacet;
@@ -129,7 +129,7 @@ class SearchController extends Controller
     }
 
     /**
-     * @param ProductsAsyncFetch $productsFetch
+     * @param ProductsFetch $productsFetch
      * @return mixed
      */
     protected function filterProducts($productsFetch)

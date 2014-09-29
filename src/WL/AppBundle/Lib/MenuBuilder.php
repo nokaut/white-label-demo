@@ -9,8 +9,8 @@
 namespace WL\AppBundle\Lib;
 
 
-use Nokaut\ApiKit\ClientApi\Rest\Async\CategoriesAsyncFetch;
-use Nokaut\ApiKit\ClientApi\Rest\Async\ProductsAsyncFetch;
+use Nokaut\ApiKit\ClientApi\Rest\Fetch\CategoriesFetch;
+use Nokaut\ApiKit\ClientApi\Rest\Fetch\ProductsFetch;
 use Nokaut\ApiKit\Collection\Categories;
 use Nokaut\ApiKit\Entity\Category;
 use WL\AppBundle\Lib\Type\Menu\Link;
@@ -55,7 +55,7 @@ class MenuBuilder
     }
 
     /**
-     * @return CategoriesAsyncFetch
+     * @return CategoriesFetch
      */
     protected function fetchCategories()
     {
@@ -82,7 +82,7 @@ class MenuBuilder
     }
 
     /**
-     * @return ProductsAsyncFetch[]
+     * @return ProductsFetch[]
      */
     private function fetchProducts()
     {
