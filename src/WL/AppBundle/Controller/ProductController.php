@@ -9,6 +9,7 @@
 namespace WL\AppBundle\Controller;
 
 
+use Nokaut\ApiKit\ClientApi\Rest\Exception\NotFoundException;
 use Nokaut\ApiKit\ClientApi\Rest\Fetch\OffersFetch;
 use Nokaut\ApiKit\ClientApi\Rest\Fetch\ProductsFetch;
 use Nokaut\ApiKit\Entity\Category;
@@ -34,7 +35,7 @@ class ProductController extends Controller
         $productsRepo = $this->get('repo.products');
         try {
             $product = $productsRepo->fetchProductByUrl($productUrl, $this->getFieldsForProduct());
-        } catch (\Exception $e) {
+        } catch (NotFoundException $e) {
             throw $this->createNotFoundException("not found product: " . $productUrl);
         }
         $this->removeUselessProperties($product);
