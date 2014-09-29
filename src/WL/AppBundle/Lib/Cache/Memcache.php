@@ -40,7 +40,7 @@ class Memcache implements CacheInterface
     public function get($keyName, $lifetime = null)
     {
         if ($this->enabledCache) {
-            return $this->cache->get($keyName);
+            return @$this->cache->get($keyName);
         }
         return null;
     }
@@ -51,7 +51,7 @@ class Memcache implements CacheInterface
             if (empty($lifetime)) {
                 $lifetime = $this->liveTime;
             }
-            $this->cache->set($keyName, $content, $lifetime);
+            $this->cache->set($keyName, $content, 0, $lifetime);
         }
     }
 
