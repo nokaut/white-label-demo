@@ -4,7 +4,7 @@
         "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "f85c16b071c014b31e577f13b4001630",
+    "hash": "cc170aaf84e574e4a3c4f6b8c1c6d0b8",
     "packages": [
         {
             "name": "commerceguys/guzzle-oauth2-plugin",
@@ -1044,16 +1044,16 @@
         },
         {
             "name": "nokaut/api-kit",
-            "version": "dev-jjuszkiewicz_async",
+            "version": "dev-master",
             "source": {
                 "type": "git",
                 "url": "https://github.com/nokaut/api-kit.git",
-                "reference": "5fe65760076e4a84dceb7e9119390baa8e55f07a"
+                "reference": "53dfd25e0cfe0a69d2c4544b0a91c45372d653c7"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/nokaut/api-kit/zipball/5fe65760076e4a84dceb7e9119390baa8e55f07a",
-                "reference": "5fe65760076e4a84dceb7e9119390baa8e55f07a",
+                "url": "https://api.github.com/repos/nokaut/api-kit/zipball/53dfd25e0cfe0a69d2c4544b0a91c45372d653c7",
+                "reference": "53dfd25e0cfe0a69d2c4544b0a91c45372d653c7",
                 "shasum": ""
             },
             "require": {
@@ -1089,10 +1089,10 @@
                 "nokaut api"
             ],
             "support": {
-                "source": "https://github.com/nokaut/api-kit/tree/jjuszkiewicz_async",
+                "source": "https://github.com/nokaut/api-kit/tree/v1.4.0",
                 "issues": "https://github.com/nokaut/api-kit/issues"
             },
-            "time": "2014-09-26 08:35:51"
+            "time": "2014-09-29 09:51:47"
         },
         {
             "name": "psr/log",
@@ -1564,16 +1564,16 @@
         },
         {
             "name": "symfony/symfony",
-            "version": "v2.5.4",
+            "version": "v2.5.5",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/symfony.git",
-                "reference": "3a369dddea56596df91977d8c2083e70784852f2"
+                "reference": "2aef97bbc95d0c4ae63537cca81bd6d984427d81"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/symfony/zipball/3a369dddea56596df91977d8c2083e70784852f2",
-                "reference": "3a369dddea56596df91977d8c2083e70784852f2",
+                "url": "https://api.github.com/repos/symfony/symfony/zipball/2aef97bbc95d0c4ae63537cca81bd6d984427d81",
+                "reference": "2aef97bbc95d0c4ae63537cca81bd6d984427d81",
                 "shasum": ""
             },
             "require": {
@@ -1674,7 +1674,7 @@
             "keywords": [
                 "framework"
             ],
-            "time": "2014-09-03 09:51:48"
+            "time": "2014-09-28 17:33:53"
         },
         {
             "name": "twig/extensions",
