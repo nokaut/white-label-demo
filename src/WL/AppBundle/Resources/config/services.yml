@@ -81,6 +81,10 @@ services:
         class: WL\AppBundle\Lib\Helper\ClickUrl
         arguments: [@service_container]
 
+    helper.url_search:
+        class: WL\AppBundle\Lib\Helper\UrlSearch
+        arguments: [@repo.categories.cache.file, @categories.allowed]
+
     api_kit.config.cache.memcache:
         class: Nokaut\ApiKit\Config
         calls:

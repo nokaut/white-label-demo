@@ -7,11 +7,12 @@ use Nokaut\ApiKit\Collection\Products;
 use Nokaut\ApiKit\Entity\Category;
 use Nokaut\ApiKit\Entity\Metadata\Facet\PriceFacet;
 use Nokaut\ApiKit\Entity\Product;
-use Nokaut\ApiKit\Repository\CategoriesRepository;
 use Nokaut\ApiKit\Repository\ProductsRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Component\HttpFoundation\Response;
 use WL\AppBundle\Lib\BreadcrumbsBuilder;
 use WL\AppBundle\Lib\Filter\FilterProperties;
+use WL\AppBundle\Lib\Helper\UrlSearch;
 use WL\AppBundle\Lib\Pagination\Pagination;
 use WL\AppBundle\Lib\Type\Breadcrumb;
 use WL\AppBundle\Lib\Type\Filter;
@@ -21,8 +22,9 @@ class SearchController extends Controller
 {
     public function indexAction($phrase)
     {
-        $phraseUrl = $this->preparePhraseUrl($phrase);
-        $phraseUrlForApi = $this->reduceToAllowCategories($phraseUrl);
+        /** @var UrlSearch $urlSearchPreparer */
+        $urlSearchPreparer = $this->get('helper.url_search');
+        $phraseUrlForApi = $urlSearchPreparer->preparePhraseWithAllowCategories($phrase);
 
         /** @var ProductsAsyncRepository $productsRepo */
         $productsRepo = $this->get('repo.products.async');
@@ -38,6 +40,11 @@ class SearchController extends Controller
 
         $breadcrumbs = $this->prepareBreadcrumbs($products, $filters);
 
+        $responseStatus = null;
+        if ($products->getMetadata()->getTotal() == 0) {
+            $responseStatus = new Response('', 404);
+        }
+
         return $this->render('WLAppBundle:Search:index.html.twig', array(
             'products' => $this->filterProducts($productsFetch),
             'phrase' => $products ? $products->getMetadata()->getQuery()->getPhrase() : '',
@@ -46,9 +53,9 @@ class SearchController extends Controller
             'filters' => $filters,
             'sorts' => $products ? $products->getMetadata()->getSorts() : array(),
             'pagination' => $pagination,
-            'url' => $phraseUrl,
+            'url' => $urlSearchPreparer->getReduceUrl($products->getMetadata()->getUrl()),
             'productsTop10' => $productsTopFetch->getResult()
-        ));
+        ), $responseStatus);
     }
 
     /**
@@ -97,20 +104,6 @@ class SearchController extends Controller
     }
 
     /**
-     * @param string $phrase
-     * @return string
-     */
-    protected function preparePhraseUrl($phrase)
-    {
-        $phrase = str_replace(
-            array('ę', 'ó', 'ą', 'ś', 'ł', 'ż', 'ź', 'ć', 'ń'),
-            array('e', 'o', 'a', 's', 'l', 'z', 'z', 'c', 'n'),
-            $phrase);
-        $phrase = preg_replace('/\s+/', ' ', $phrase);
-        return $phrase;
-    }
-
-    /**
      * @param Products|null $products
      * @return Pagination
      */
@@ -141,40 +134,6 @@ class SearchController extends Controller
             return $filterProperties->filterPropertiesInProducts($products);
         }
         return $products;
-    }
-
-    /**
-     * add categories to url for filter only for allowed categories
-     * @param string $phrase
-     * @return string
-     */
-    protected function reduceToAllowCategories($phrase)
-    {
-        if ($this->hasCategory($phrase)) {
-            return $phrase;
-        }
-        /** @var CategoriesRepository $categoriesRepository */
-        $categoriesRepository = $this->get('repo.categories.cache.file');
-        $categories = $categoriesRepository->fetchCategoriesByIds($this->get('categories.allowed')->getAllowedCategories());
-
-        $categoriesUrlPart = "";
-
-        foreach ($categories as $category) {
-            /** @var Category $category */
-            $categoriesUrlPart .= trim($category->getUrl(), '/') . ",";
-        }
-        return rtrim($categoriesUrlPart, ',') . '/' . $phrase;
-    }
-
-    /**
-     * @param string $phrase
-     * @return bool
-     */
-    protected function hasCategory($phrase)
-    {
-        $phraseParts = explode('/', ltrim($phrase, '/'));
-
-        return count($phraseParts) > 1;
     }
 
     /**

@@ -10,6 +10,7 @@ use Nokaut\ApiKit\Entity\Metadata\Facet\PriceFacet;
 use Nokaut\ApiKit\Repository\CategoriesRepository;
 use Nokaut\ApiKit\Repository\ProductsRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Component\HttpFoundation\Response;
 use WL\AppBundle\Lib\BreadcrumbsBuilder;
 use WL\AppBundle\Lib\Filter\FilterProperties;
 use WL\AppBundle\Lib\Pagination\Pagination;
@@ -37,6 +38,11 @@ class CategoryController extends Controller
 
         $breadcrumbs = $this->prepareBreadcrumbs($category, $filters);
 
+        $responseStatus = null;
+        if ($products->getMetadata()->getTotal() == 0) {
+            $responseStatus = new Response('', 404);
+        }
+
         return $this->render('WLAppBundle:Category:index.html.twig', array(
             'category' => $category,
             'products' => $this->filterProducts($productsFetch),
@@ -47,7 +53,7 @@ class CategoryController extends Controller
             'filters' => $filters,
             'sorts' => $products ? $products->getMetadata()->getSorts() : array(),
             'url' => $products ? $products->getMetadata()->getUrl() : ''
-        ));
+        ), $responseStatus);
     }
 
     /**
