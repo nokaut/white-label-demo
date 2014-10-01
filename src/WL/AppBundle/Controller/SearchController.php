@@ -17,6 +17,7 @@ use WL\AppBundle\Lib\Pagination\Pagination;
 use WL\AppBundle\Lib\Type\Breadcrumb;
 use WL\AppBundle\Lib\Type\Filter;
 use WL\AppBundle\Lib\Repository\ProductsAsyncRepository;
+use WL\AppBundle\Lib\View\Data\Converter\Filters\Facets\PropertiesConverter as FacetsPropertiesConverter;
 
 class SearchController extends Controller
 {
@@ -35,8 +36,10 @@ class SearchController extends Controller
         $products = $productsFetch->getResult();
         $pagination = $this->preparePagination($products);
 
+        $facetsPropertiesConverter = new FacetsPropertiesConverter();
+        $filterPropertiesFacets = $facetsPropertiesConverter->convert($products);
+
         $filters = $this->getFilters($products);
-        $this->setCategoryToProduct($products);
 
         $breadcrumbs = $this->prepareBreadcrumbs($products, $filters);
 
@@ -51,6 +54,7 @@ class SearchController extends Controller
             'breadcrumbs' => $breadcrumbs,
             'subcategories' => $products ? $products->getCategories() : array(),
             'filters' => $filters,
+            'filterPropertiesFacets' => $filterPropertiesFacets,
             'sorts' => $products ? $products->getMetadata()->getSorts() : array(),
             'pagination' => $pagination,
             'url' => $urlSearchPreparer->getReduceUrl($products->getMetadata()->getUrl()),
@@ -87,20 +91,18 @@ class SearchController extends Controller
                 $filters[] = $filter;
             }
         }
-        return $filters;
-    }
-
-    protected function setCategoryToProduct(Products $products)
-    {
-        foreach ($products as $product) {
-            /** @var Product $product */
-            foreach ($products->getCategories() as $category) {
-                if ($product->getCategoryId() == $category->getId()) {
-                    $product->setCategory($category);
-                    break;
+        foreach ($products->getProperties() as $property) {
+            foreach ($property->getValues() as $value) {
+                if ($value->getIsFilter()) {
+                    $filter = new Filter();
+                    $filter->setName($property->getName());
+                    $filter->setValue($value->getName());
+                    $filter->setOutUrl($value->getUrl());
+                    $filters[] = $filter;
                 }
             }
         }
+        return $filters;
     }
 
     /**

@@ -16,6 +16,7 @@ use WL\AppBundle\Lib\Filter\FilterProperties;
 use WL\AppBundle\Lib\Pagination\Pagination;
 use WL\AppBundle\Lib\Type\Filter;
 use WL\AppBundle\Lib\Repository\ProductsAsyncRepository;
+use WL\AppBundle\Lib\View\Data\Converter\Filters\Facets\PropertiesConverter as FacetsPropertiesConverter;
 
 class CategoryController extends Controller
 {
@@ -34,6 +35,9 @@ class CategoryController extends Controller
 
         $pagination = $this->preparePagination($products);
 
+        $facetsPropertiesConverter = new FacetsPropertiesConverter();
+        $filterPropertiesFacets = $facetsPropertiesConverter->convert($products);
+
         $filters = $this->getFilters($products);
 
         $breadcrumbs = $this->prepareBreadcrumbs($category, $filters);
@@ -51,6 +55,7 @@ class CategoryController extends Controller
             'pagination' => $pagination,
             'subcategories' => $products ? $products->getCategories() : array(),
             'filters' => $filters,
+            'filterPropertiesFacets' => $filterPropertiesFacets,
             'sorts' => $products ? $products->getMetadata()->getSorts() : array(),
             'url' => $products ? $products->getMetadata()->getUrl() : ''
         ), $responseStatus);

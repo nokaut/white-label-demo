@@ -56,6 +56,7 @@
 {% endif %}
 
 {% if products is defined and products.properties is not empty %}
+
 <div>
     <h2>
         <span class="text">
@@ -64,16 +65,30 @@
         <i>&nbsp;</i>
     </h2>
     <div>
-    {% for property in products.properties %}
-        <ul id="features{{ loop.index }}" class="list-group">
-            <li class="list-group-item">
-                <p class="featuresGroup">{{ property.name|raw }}<span>&nbsp;</span></p>
-                {% for value in property.values if value.isFilter==false %}
-                    <a href="{{ url(route, { (routeArgument): value.url|trim('/')}) }}" title="" class="link">{{ value.name|raw }} {{ property.unit|raw }}</a>
-                {% endfor %}
-            </li>
-        </ul>
-    {% endfor %}
+        {% for propertyFilter in filterPropertiesFacets if not propertyFilter.getIsExcluded() %}
+            <ul id="features{{ loop.index }}" class="list-group">
+                <li class="list-group-item">
+                    <p class="featuresGroup">{{ propertyFilter.name|raw }}<span>&nbsp;</span></p>
+                    {% for value in propertyFilter %}
+                        {% if value.isFilter %}
+                            <a class="bg-primary" href="{{ url(route, { (routeArgument): value.url|trim('/')}) }}" title="usuń" {% if value.isNofollow %}rel="nofollow"{% endif %}>{{ value.name|striptags }}{% if propertyFilter.unit %} {{ propertyFilter.unit }}{% endif %} &times;</a>
+                        {% else %}
+                            {% if value.total %}
+                                <a href="{{ url(route, { (routeArgument): value.url|trim('/')}) }}" {% if value.isNofollow %}rel="nofollow"{% endif %}>
+                                    {{ value.name|striptags }}{% if propertyFilter.unit %} {{ propertyFilter.unit }}{% endif %}
+                                    <small>({{ value.total }})</small>
+                                </a>
+                            {% else %}
+                                <s>{{ value.name|striptags }}{% if propertyFilter.unit %} {{ propertyFilter.unit }}{% endif %}</s>
+                            {% endif %}
+                        {% endif %}
+                    {% endfor %}
+                </li>
+            </ul>
+        {% endfor %}
     </div>
 </div>
+
+
+
 {% endif %}
