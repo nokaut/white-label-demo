@@ -44,7 +44,6 @@ class FilterProperties
                 $this->filterProperties($product->getProperties())
             );
         }
-        return $products;
     }
 
 } 

@@ -39,7 +39,7 @@ class SearchController extends Controller
         $facetsPropertiesConverter = new FacetsPropertiesConverter();
         $filterPropertiesFacets = $facetsPropertiesConverter->convert($products);
 
-        $filters = $this->getFilters($products);
+        $filters = $this->getFilters($products, $urlSearchPreparer);
 
         $breadcrumbs = $this->prepareBreadcrumbs($products, $filters);
 
@@ -49,13 +49,13 @@ class SearchController extends Controller
         }
 
         return $this->render('WLAppBundle:Search:index.html.twig', array(
-            'products' => $this->filterProducts($productsFetch),
+            'products' => $this->filterProducts($productsFetch, $urlSearchPreparer),
             'phrase' => $products ? $products->getMetadata()->getQuery()->getPhrase() : '',
             'breadcrumbs' => $breadcrumbs,
             'subcategories' => $products ? $products->getCategories() : array(),
             'filters' => $filters,
             'filterPropertiesFacets' => $filterPropertiesFacets,
-            'sorts' => $products ? $products->getMetadata()->getSorts() : array(),
+            'sorts' => $this->getSorts($products, $urlSearchPreparer),
             'pagination' => $pagination,
             'url' => $urlSearchPreparer->getReduceUrl($products->getMetadata()->getUrl()),
             'productsTop10' => $productsTopFetch->getResult()
@@ -64,9 +64,10 @@ class SearchController extends Controller
 
     /**
      * @param Products $products
+     * @param UrlSearch $urlSearchPreparer
      * @return Filter[]
      */
-    protected function getFilters($products)
+    protected function getFilters($products, UrlSearch $urlSearchPreparer)
     {
         if (is_null($products)) {
             return array();
@@ -78,7 +79,7 @@ class SearchController extends Controller
                 $filter = new Filter();
                 $filter->setName("Producent");
                 $filter->setValue($producer->getName());
-                $filter->setOutUrl($producer->getUrl());
+                $filter->setOutUrl($urlSearchPreparer->getReduceUrl($producer->getUrl()));
                 $filters[] = $filter;
             }
         }
@@ -87,7 +88,7 @@ class SearchController extends Controller
                 $filter = new Filter();
                 $filter->setName("Ceny");
                 $filter->setValue($this->prepareFilterPriceValue($price));
-                $filter->setOutUrl($price->getUrl());
+                $filter->setOutUrl($urlSearchPreparer->getReduceUrl($price->getUrl()));
                 $filters[] = $filter;
             }
         }
@@ -97,7 +98,7 @@ class SearchController extends Controller
                     $filter = new Filter();
                     $filter->setName($property->getName());
                     $filter->setValue($value->getName());
-                    $filter->setOutUrl($value->getUrl());
+                    $filter->setOutUrl($urlSearchPreparer->getReduceUrl($value->getUrl()));
                     $filters[] = $filter;
                 }
             }
@@ -125,15 +126,29 @@ class SearchController extends Controller
 
     /**
      * @param ProductsFetch $productsFetch
+     * @param UrlSearch $urlSearchPreparer
      * @return mixed
      */
-    protected function filterProducts($productsFetch)
+    protected function filterProducts($productsFetch, UrlSearch $urlSearchPreparer)
     {
         /** @var Products $products */
         $products = $productsFetch->getResult();
-        if ($products) {
-            $filterProperties = new FilterProperties();
-            return $filterProperties->filterPropertiesInProducts($products);
+        if (empty($products)) {
+            return $products;
+        }
+
+
+        $filterProperties = new FilterProperties();
+        $filterProperties->filterPropertiesInProducts($products);
+
+        foreach($products->getProducers() as $price) {
+            $reduceUrl = $urlSearchPreparer->getReduceUrl($price->getUrl());
+            $price->setUrl($reduceUrl);
+        }
+
+        foreach($products->getPrices() as $price) {
+            $reduceUrl = $urlSearchPreparer->getReduceUrl($price->getUrl());
+            $price->setUrl($reduceUrl);
         }
         return $products;
     }
@@ -182,6 +197,23 @@ class SearchController extends Controller
         $fieldsForList = ProductsRepository::$fieldsForList;
         $fieldsForList[] = '_categories.url_in';
         return $fieldsForList;
+    }
+
+    /**
+     * @param Products $products
+     * @param UrlSearch $urlSearchPreparer
+     * @return array
+     */
+    protected function getSorts($products, UrlSearch $urlSearchPreparer)
+    {
+        if (empty($products)) {
+            return array();
+        }
+        foreach ($products->getMetadata()->getSorts() as $sort) {
+            $reducedUrl = $urlSearchPreparer->getReduceUrl($sort->getUrl());
+            $sort->setUrl($reducedUrl);
+        }
+        return $products->getMetadata()->getSorts();
     }
 
 }
