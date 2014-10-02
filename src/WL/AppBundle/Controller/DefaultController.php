@@ -63,7 +63,7 @@ class DefaultController extends Controller
         $products = $products24Fetch->getResult();
         if ($products) {
             $filterProperties = new FilterProperties();
-            return $filterProperties->filterPropertiesInProducts($products);
+            $filterProperties->filterPropertiesInProducts($products);
         }
         return $products;
     }
