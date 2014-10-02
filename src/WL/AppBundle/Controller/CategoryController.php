@@ -12,7 +12,7 @@ use Nokaut\ApiKit\Repository\ProductsRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Response;
 use WL\AppBundle\Lib\BreadcrumbsBuilder;
-use WL\AppBundle\Lib\Filter\FilterProperties;
+use WL\AppBundle\Lib\Filter\PropertiesFilter;
 use WL\AppBundle\Lib\Pagination\Pagination;
 use WL\AppBundle\Lib\Type\Filter;
 use WL\AppBundle\Lib\Repository\ProductsAsyncRepository;
@@ -51,7 +51,7 @@ class CategoryController extends Controller
 
         return $this->render('WLAppBundle:Category:index.html.twig', array(
             'category' => $category,
-            'products' => $this->filterProducts($productsFetch),
+            'products' => $products,
             'productsTop10' => $productsTopFetch->getResult(),
             'breadcrumbs' => $breadcrumbs,
             'pagination' => $pagination,
@@ -69,7 +69,11 @@ class CategoryController extends Controller
      */
     protected function filter($products)
     {
-        //not implemented
+        if ($products === null) {
+            return;
+        }
+        $filterProperties = new PropertiesFilter();
+        $filterProperties->filterProducts($products);
     }
 
     /**
@@ -143,21 +147,6 @@ class CategoryController extends Controller
             $this->get('router')->generate('category', array('categoryUrlWithFilters' => ltrim($products->getMetadata()->getPaging()->getUrlTemplate(), '/')))
         );
         return $pagination;
-    }
-
-    /**
-     * @param ProductsFetch $productsFetch
-     * @return mixed
-     */
-    protected function filterProducts($productsFetch)
-    {
-        /** @var Products $products */
-        $products = $productsFetch->getResult();
-        if ($products) {
-            $filterProperties = new FilterProperties();
-            $filterProperties->filterPropertiesInProducts($products);
-        }
-        return $products;
     }
 
     /**

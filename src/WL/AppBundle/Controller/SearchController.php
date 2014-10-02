@@ -2,7 +2,6 @@
 
 namespace WL\AppBundle\Controller;
 
-use Nokaut\ApiKit\ClientApi\Rest\Fetch\ProductsFetch;
 use Nokaut\ApiKit\Collection\Products;
 use Nokaut\ApiKit\Entity\Category;
 use Nokaut\ApiKit\Entity\Metadata\Facet\PriceFacet;
@@ -11,7 +10,7 @@ use Nokaut\ApiKit\Repository\ProductsRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Response;
 use WL\AppBundle\Lib\BreadcrumbsBuilder;
-use WL\AppBundle\Lib\Filter\FilterProperties;
+use WL\AppBundle\Lib\Filter\PropertiesFilter;
 use WL\AppBundle\Lib\Helper\UrlSearch;
 use WL\AppBundle\Lib\Pagination\Pagination;
 use WL\AppBundle\Lib\Type\Breadcrumb;
@@ -53,7 +52,7 @@ class SearchController extends Controller
         }
 
         return $this->render('WLAppBundle:Search:index.html.twig', array(
-            'products' => $this->filterProducts($productsFetch, $urlSearchPreparer),
+            'products' => $products,
             'phrase' => $products ? $products->getMetadata()->getQuery()->getPhrase() : '',
             'breadcrumbs' => $breadcrumbs,
             'subcategories' => $products ? $products->getCategories() : array(),
@@ -72,8 +71,14 @@ class SearchController extends Controller
      */
     protected function filter($products)
     {
+        if ($products === null) {
+            return;
+        }
         $filterUrl = new UrlFilter($this->get('helper.url_search'));
         $filterUrl->filter($products);
+
+        $filterProperties = new PropertiesFilter();
+        $filterProperties->filterProducts($products);
     }
 
     /**
@@ -147,26 +152,6 @@ class SearchController extends Controller
             $this->get('router')->generate('search', array('phrase' => ltrim($products->getMetadata()->getPaging()->getUrlTemplate(), '/')))
         );
         return $pagination;
-    }
-
-    /**
-     * @param ProductsFetch $productsFetch
-     * @param UrlSearch $urlSearchPreparer
-     * @return mixed
-     */
-    protected function filterProducts($productsFetch, UrlSearch $urlSearchPreparer)
-    {
-        /** @var Products $products */
-        $products = $productsFetch->getResult();
-        if (empty($products)) {
-            return $products;
-        }
-
-
-        $filterProperties = new FilterProperties();
-        $filterProperties->filterPropertiesInProducts($products);
-
-        return $products;
     }
 
     /**

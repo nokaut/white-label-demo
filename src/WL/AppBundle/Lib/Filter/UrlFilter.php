@@ -12,7 +12,7 @@ namespace WL\AppBundle\Lib\Filter;
 use Nokaut\ApiKit\Collection\Products;
 use WL\AppBundle\Lib\Helper\UrlSearch;
 
-class UrlFilter implements FilterInterface
+class UrlFilter
 {
     /**
      * @var UrlSearch

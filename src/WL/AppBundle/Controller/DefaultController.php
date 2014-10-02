@@ -8,7 +8,7 @@ use Nokaut\ApiKit\Collection\Products;
 use Nokaut\ApiKit\Repository\ProductsRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use WL\AppBundle\Lib\CategoriesAllowed;
-use WL\AppBundle\Lib\Filter\FilterProperties;
+use WL\AppBundle\Lib\Filter\PropertiesFilter;
 use WL\AppBundle\Lib\Pagination\Pagination;
 use WL\AppBundle\Lib\Type\Breadcrumb;
 use WL\AppBundle\Lib\Repository\ProductsAsyncRepository;
@@ -28,12 +28,17 @@ class DefaultController extends Controller
         $productsTop10Fetch = $productsAsyncRepo->fetchTopProducts();
         $productsAsyncRepo->fetchAllAsync();
 
+        $products24 = $products24Fetch->getResult();
+        $productsTop10 = $productsTop10Fetch->getResult();
+        $this->filter($products24);
+        $this->filter($productsTop10);
+
 
         return $this->render('WLAppBundle:Default:index.html.twig',
             array(
                 'breadcrumbs' => $breadcrumbs,
-                'products24' => $this->filterProducts($products24Fetch),
-                'productsTop10' => $productsTop10Fetch->getResult()
+                'products24' => $products24,
+                'productsTop10' => $productsTop10
             ));
     }
 
@@ -54,18 +59,14 @@ class DefaultController extends Controller
     }
 
     /**
-     * @param ProductsFetch $products24Fetch
-     * @return mixed
+     * @param Products $products
      */
-    protected function filterProducts($products24Fetch)
+    protected function filter($products)
     {
-        /** @var Products $products */
-        $products = $products24Fetch->getResult();
         if ($products) {
-            $filterProperties = new FilterProperties();
-            $filterProperties->filterPropertiesInProducts($products);
+            $filterProperties = new PropertiesFilter();
+            $filterProperties->filterProducts($products);
         }
-        return $products;
     }
 
     /**

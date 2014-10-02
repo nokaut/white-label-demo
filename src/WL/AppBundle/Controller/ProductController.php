@@ -22,7 +22,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use WL\AppBundle\Lib\BreadcrumbsBuilder;
-use WL\AppBundle\Lib\Filter\FilterProperties;
+use WL\AppBundle\Lib\Filter\PropertiesFilter;
 use WL\AppBundle\Lib\Rating\RatingAdd;
 use WL\AppBundle\Lib\Type\Breadcrumb;
 use WL\AppBundle\Lib\Repository\ProductsAsyncRepository;
@@ -38,7 +38,7 @@ class ProductController extends Controller
         } catch (NotFoundException $e) {
             throw $this->createNotFoundException("not found product: " . $productUrl);
         }
-        $this->removeUselessProperties($product);
+        $this->filter($product);
 
         /** @var CategoriesAsyncRepository $categoriesRepo */
         $categoriesRepo = $this->get('repo.categories.async');
@@ -96,11 +96,10 @@ class ProductController extends Controller
         return $productsFetch;
     }
 
-    protected function removeUselessProperties(Product $product)
+    protected function filter(Product $product)
     {
-        $filter = new FilterProperties();
-        $filteredProperties = $filter->filterProperties($product->getProperties());
-        $product->setProperties($filteredProperties);
+        $filter = new PropertiesFilter();
+        $filter->filterProduct($product);
     }
 
     /**
