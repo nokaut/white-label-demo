@@ -16,6 +16,7 @@ use WL\AppBundle\Lib\Filter\FilterProperties;
 use WL\AppBundle\Lib\Pagination\Pagination;
 use WL\AppBundle\Lib\Type\Filter;
 use WL\AppBundle\Lib\Repository\ProductsAsyncRepository;
+use WL\AppBundle\Lib\View\Data\Collection\Filters\PropertyAbstract;
 use WL\AppBundle\Lib\View\Data\Converter\Filters\Facets\PropertiesConverter as FacetsPropertiesConverter;
 
 class CategoryController extends Controller
@@ -33,10 +34,11 @@ class CategoryController extends Controller
         /** @var Products $products */
         $products = $productsFetch->getResult();
 
+        $this->filter($products);
+
         $pagination = $this->preparePagination($products);
 
-        $facetsPropertiesConverter = new FacetsPropertiesConverter();
-        $filterPropertiesFacets = $facetsPropertiesConverter->convert($products);
+        $filterPropertiesFacets = $this->getFilterPropertiesFacet($products);
 
         $filters = $this->getFilters($products);
 
@@ -59,6 +61,26 @@ class CategoryController extends Controller
             'sorts' => $products ? $products->getMetadata()->getSorts() : array(),
             'url' => $products ? $products->getMetadata()->getUrl() : ''
         ), $responseStatus);
+    }
+
+    /**
+     * filtering products and facets etc...
+     * @param Products $products
+     */
+    protected function filter($products)
+    {
+        //not implemented
+    }
+
+    /**
+     * @param Products $products
+     * @return PropertyAbstract[]
+     */
+    protected function getFilterPropertiesFacet($products)
+    {
+        $facetsPropertiesConverter = new FacetsPropertiesConverter();
+        $filterPropertiesFacets = $facetsPropertiesConverter->convert($products);
+        return $filterPropertiesFacets;
     }
 
     /**

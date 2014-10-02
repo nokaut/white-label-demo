@@ -17,7 +17,9 @@ use WL\AppBundle\Lib\Pagination\Pagination;
 use WL\AppBundle\Lib\Type\Breadcrumb;
 use WL\AppBundle\Lib\Type\Filter;
 use WL\AppBundle\Lib\Repository\ProductsAsyncRepository;
+use WL\AppBundle\Lib\View\Data\Collection\Filters\PropertyAbstract;
 use WL\AppBundle\Lib\View\Data\Converter\Filters\Facets\PropertiesConverter as FacetsPropertiesConverter;
+use WL\AppBundle\Lib\Filter\UrlFilter;
 
 class SearchController extends Controller
 {
@@ -34,10 +36,12 @@ class SearchController extends Controller
         $productsRepo->fetchAllAsync();
         /** @var Products $products */
         $products = $productsFetch->getResult();
+
+        $this->filter($products);
+
         $pagination = $this->preparePagination($products);
 
-        $facetsPropertiesConverter = new FacetsPropertiesConverter();
-        $filterPropertiesFacets = $facetsPropertiesConverter->convert($products);
+        $filterPropertiesFacets = $this->getFilterPropertiesFacet($products);
 
         $filters = $this->getFilters($products, $urlSearchPreparer);
 
@@ -55,11 +59,32 @@ class SearchController extends Controller
             'subcategories' => $products ? $products->getCategories() : array(),
             'filters' => $filters,
             'filterPropertiesFacets' => $filterPropertiesFacets,
-            'sorts' => $this->getSorts($products, $urlSearchPreparer),
+            'sorts' => $products->getMetadata()->getSorts(),
             'pagination' => $pagination,
-            'url' => $urlSearchPreparer->getReduceUrl($products->getMetadata()->getUrl()),
+            'url' => $products ? $products->getMetadata()->getUrl() : '',
             'productsTop10' => $productsTopFetch->getResult()
         ), $responseStatus);
+    }
+
+    /**
+     * filtering products and facets etc...
+     * @param Products $products
+     */
+    protected function filter($products)
+    {
+        $filterUrl = new UrlFilter($this->get('helper.url_search'));
+        $filterUrl->filter($products);
+    }
+
+    /**
+     * @param $products
+     * @return PropertyAbstract[]
+     */
+    protected function getFilterPropertiesFacet($products)
+    {
+        $facetsPropertiesConverter = new FacetsPropertiesConverter();
+        $filterPropertiesFacets = $facetsPropertiesConverter->convert($products);
+        return $filterPropertiesFacets;
     }
 
     /**
@@ -141,15 +166,6 @@ class SearchController extends Controller
         $filterProperties = new FilterProperties();
         $filterProperties->filterPropertiesInProducts($products);
 
-        foreach($products->getProducers() as $price) {
-            $reduceUrl = $urlSearchPreparer->getReduceUrl($price->getUrl());
-            $price->setUrl($reduceUrl);
-        }
-
-        foreach($products->getPrices() as $price) {
-            $reduceUrl = $urlSearchPreparer->getReduceUrl($price->getUrl());
-            $price->setUrl($reduceUrl);
-        }
         return $products;
     }
 
@@ -197,23 +213,6 @@ class SearchController extends Controller
         $fieldsForList = ProductsRepository::$fieldsForList;
         $fieldsForList[] = '_categories.url_in';
         return $fieldsForList;
-    }
-
-    /**
-     * @param Products $products
-     * @param UrlSearch $urlSearchPreparer
-     * @return array
-     */
-    protected function getSorts($products, UrlSearch $urlSearchPreparer)
-    {
-        if (empty($products)) {
-            return array();
-        }
-        foreach ($products->getMetadata()->getSorts() as $sort) {
-            $reducedUrl = $urlSearchPreparer->getReduceUrl($sort->getUrl());
-            $sort->setUrl($reducedUrl);
-        }
-        return $products->getMetadata()->getSorts();
     }
 
 }
