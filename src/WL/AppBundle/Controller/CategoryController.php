@@ -133,7 +133,7 @@ class CategoryController extends Controller
         $products = $productsFetch->getResult();
         if ($products) {
             $filterProperties = new FilterProperties();
-            return $filterProperties->filterPropertiesInProducts($products);
+            $filterProperties->filterPropertiesInProducts($products);
         }
         return $products;
     }
