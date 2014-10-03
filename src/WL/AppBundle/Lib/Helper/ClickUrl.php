@@ -43,7 +43,7 @@ class ClickUrl
     public function prepareOfferClickUrl($offer)
     {
         if (self::REDIRECT == $this->clickMode) {
-            return $this->generateUrl('clickRedirect', array('clickUrl' => $offer->getClickUrl()));
+            return $this->generateUrl('clickRedirect', array('clickUrl' => urlencode($offer->getClickUrl())));
         }
 
         return $this->generateUrl('clickOffer', array('offerId' => $offer->getId()));
@@ -57,7 +57,7 @@ class ClickUrl
     public function prepareProductClickUrl($product)
     {
         if (self::REDIRECT == $this->clickMode) {
-            return $this->generateUrl('clickRedirect', array('clickUrl' => $product->getClickUrl()));
+            return $this->generateUrl('clickRedirect', array('clickUrl' => urlencode($product->getClickUrl())));
         }
 
         return $this->generateUrl('clickProduct', array('productId' => $product->getId()));
