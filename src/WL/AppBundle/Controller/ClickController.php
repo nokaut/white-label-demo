@@ -39,6 +39,11 @@ class ClickController extends Controller
         return $this->doIFrame($offer);
     }
 
+    public function clickRedirectAction($clickUrl)
+    {
+        return $this->redirect($this->container->getParameter('click_domain') .$clickUrl);
+    }
+
     /**
      * @param $id
      * @return Offer

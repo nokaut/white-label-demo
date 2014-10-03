@@ -32,11 +32,12 @@ rating_add:
 clickOffer:
     path:     /clickOffer/{offerId}
     defaults: { _controller: WLAppBundle:Click:clickOffer }
-    requirements:
-        clickUrl: ".+"
 clickProduct:
     path:     /clickProduct/{productId}
     defaults: { _controller: WLAppBundle:Click:clickProduct }
+clickRedirect:
+    path: /click{clickUrl}
+    defaults: { _controller: WLAppBundle:Click:clickRedirect }
     requirements:
         clickUrl: ".+"
 
