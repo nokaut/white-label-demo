@@ -60,7 +60,7 @@ class SearchController extends Controller
             'filterPropertiesFacets' => $filterPropertiesFacets,
             'sorts' => $products->getMetadata()->getSorts(),
             'pagination' => $pagination,
-            'url' => $products ? $products->getMetadata()->getUrl() : '',
+            'canonical' => $products ? $products->getMetadata()->getCanonical() : '',
             'productsTop10' => $productsTopFetch->getResult()
         ), $responseStatus);
     }

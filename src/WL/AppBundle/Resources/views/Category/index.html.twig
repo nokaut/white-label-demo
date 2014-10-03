@@ -22,7 +22,7 @@
 {% block head %}
     {{ parent() }}
 
-    <link rel="canonical" href="{{ url(route, { (routeArgument): url|trim('/')}) }}"/>
+    <link rel="canonical" href="{{ url(route, { (routeArgument): canonical|trim('/')}) }}"/>
 {% endblock %}
 
 

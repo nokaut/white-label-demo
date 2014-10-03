@@ -35,6 +35,7 @@ class UrlFilter
         $this->filterPhrase($products);
         $this->filterPagination($products);
         $this->filterUrl($products);
+        $this->filterCanonical($products);
     }
 
     /**
@@ -151,6 +152,18 @@ class UrlFilter
         }
         $reducedUrl = $this->urlSearch->getReduceUrl($products->getMetadata()->getUrl());
         $products->getMetadata()->setUrl($reducedUrl);
+    }
+
+    /**
+     * @param Products $products
+     */
+    protected function filterCanonical(Products $products)
+    {
+        if (!$products->getMetadata()) {
+            return;
+        }
+        $reducedUrl = $this->urlSearch->getReduceUrl($products->getMetadata()->getCanonical());
+        $products->getMetadata()->setCanonical($reducedUrl);
     }
 
 } 

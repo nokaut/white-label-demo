@@ -59,7 +59,7 @@ class CategoryController extends Controller
             'filters' => $filters,
             'filterPropertiesFacets' => $filterPropertiesFacets,
             'sorts' => $products ? $products->getMetadata()->getSorts() : array(),
-            'url' => $products ? $products->getMetadata()->getUrl() : ''
+            'canonical' => $products ? $products->getMetadata()->getCanonical() : ''
         ), $responseStatus);
     }
 
