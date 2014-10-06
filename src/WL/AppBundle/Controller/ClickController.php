@@ -114,7 +114,7 @@ class ClickController extends Controller
      */
     protected function doIFrame($offer)
     {
-        if ($this->iframeDisallowed($offer->getClickUrl())) {
+        if ($this->iframeDisallowed($offer->getUrl())) {
             return $this->redirect($this->container->getParameter('click_domain') . $offer->getClickUrl());
         }
 
@@ -143,7 +143,7 @@ class ClickController extends Controller
     protected function iframeDisallowed($clickUrl)
     {
         $client = new Client();
-        $request = $client->createRequest('PUT', $this->container->getParameter('click_domain') . $clickUrl);
+        $request = $client->createRequest('PUT', $clickUrl);
         try {
             $response = $client->send($request);
 
