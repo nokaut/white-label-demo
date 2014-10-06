@@ -2,6 +2,7 @@
 
 namespace WL\AppBundle\Controller;
 
+use Guzzle\Http\Client;
 use Nokaut\ApiKit\ClientApi\Rest\Fetch\OffersFetch;
 use Nokaut\ApiKit\ClientApi\Rest\Fetch\ProductsFetch;
 use Nokaut\ApiKit\ClientApi\Rest\Query\Filter\Single;
@@ -41,7 +42,7 @@ class ClickController extends Controller
 
     public function clickRedirectAction($clickUrl)
     {
-        return $this->redirect($this->container->getParameter('click_domain') .urldecode($clickUrl));
+        return $this->redirect($this->container->getParameter('click_domain') . urldecode($clickUrl));
     }
 
     /**
@@ -113,6 +114,10 @@ class ClickController extends Controller
      */
     protected function doIFrame($offer)
     {
+        if ($this->iframeDisallowed($offer->getClickUrl())) {
+            return $this->redirect($this->container->getParameter('click_domain') . $offer->getClickUrl());
+        }
+
         $clickMode = $this->container->getParameter('click_mode');
         $offers = $products = null;
         if ($clickMode == ClickUrl::FRAME_OFFERS_SHOP) {
@@ -133,6 +138,24 @@ class ClickController extends Controller
             'offers' => $offers ? $offers->getResult() : null,
             'offer' => $offer
         ));
+    }
+
+    protected function iframeDisallowed($clickUrl)
+    {
+        $client = new Client();
+        $request = $client->createRequest('PUT', $this->container->getParameter('click_domain') . $clickUrl);
+        try {
+            $response = $client->send($request);
+
+            $headerXFrameOptions = $response->getHeader('X-Frame-Options');
+            if ($headerXFrameOptions && in_array(strtoupper($headerXFrameOptions), array('SAMEORIGIN', 'DENY'))) {
+                return true;
+            }
+        } catch (\Exception $e) {
+            //nonetheless return frame allowed
+        }
+
+        return false;
     }
 
 }
