@@ -1,0 +1,34 @@
+<div class="row product product-details">
+    <div class="col-md-4 col-sm-12 gallery">
+        {% if product.photoIds|length > 0 %}
+            {% set photoId = product.photoIds[0] %}
+        {% else %}
+            {% set photoId = offer.photoId %}
+        {% endif %}
+        <img class="img-responsive" src="{{ nokaut_img_domain ~ nokaut_photo_url.prepare(photoId, '500x500', product.title) }}" alt="{{ product.title }}">
+    </div>
+
+
+    <div class="col-md-8 col-sm-12">
+        <div class="row">
+            <div class="col-md-8 col-sm-12">
+                <h1 class="price">{{ product.title|raw }}</h1>
+            </div>
+            <div class="col-md-4 col-sm-12 text-right">
+                <p class="lead price"><em>chwilowy brak towaru</em></p>
+            </div>
+        </div>
+        <div class="lower row">
+            <div class="col-md-12 col-sm-12">
+                {% include '@WLApp/Product/properties.html.twig' %}
+            </div>
+        </div>
+
+        <div class="lower row">
+            <div class="col-md-12 col-sm-12">
+                {{ product.descriptionHtml|raw }}
+            </div>
+        </div>
+
+    </div>
+</div>
