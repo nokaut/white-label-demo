@@ -4,22 +4,21 @@
 {% set routeArgument = route == 'search' ? 'phrase' : 'categoryUrlWithFilters' %}
 
 {% block head %}
-    <meta name="viewport" content="width=device-width">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
 {% endblock %}
 
 {% block stylesheets %}
-    <link rel="stylesheet" href="{{ asset('bundles/wlapp/css/bootstrap.min.css') }}" />
-    <link rel="stylesheet" href="{{ asset('bundles/wlapp/css/bootstrap-theme.min.css') }}" />
-    <link rel="stylesheet" href="{{ asset('bundles/wlapp/css/main.css') }}" />
-    <style>
-        body{ padding-top: 70px; }
-    </style>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="{{ asset('bundles/wlapp/css/bootstrap.css') }}" media="screen">
+    <link rel="stylesheet" href="{{ asset('bundles/wlapp/css/owl.carousel.css') }}">
+    <link rel="stylesheet" href="{{ asset('bundles/wlapp/css/jquery.bxslider.css') }}">
+    <link rel="stylesheet" href="{{ asset('bundles/wlapp/css/theme-bootstrap.css') }}">
+    <link rel="stylesheet" href="{{ asset('bundles/wlapp/css/ecommerce-theme-bootstrap.css') }}">
+    <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" rel="stylesheet">
 {% endblock %}
 
 {% block javascriptsTop %}
-    <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.0/jquery.min.js"></script>
-
-    <script src="{{ asset('bundles/wlapp/js/bootstrap.min.js') }}"></script>
+    <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
 
     <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
     <!--[if lt IE 9]>
@@ -45,131 +44,310 @@
 {% endblock %}
 
 {% block body %}
-    <div class="navbar navbar-fixed-top navbar-inverse" role="navigation">
-        <div class="container">
-            <div class="navbar-header">
-                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
-                    <span class="sr-only">Toggle navigation</span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                </button>
-                <a class="navbar-brand" href="/">White Label Nokaut.pl</a>
-            </div>
-            <div class="collapse navbar-collapse">
-                <ul class="nav navbar-nav">
-                {% for menuLink in menu_main %}
-                    <li class="dropdown {% if menuLink.subLinks|length>0 %}megamenu{% endif %}">
-                        <a class="dropdown-toggle" data-toggle="dropdown" href="javascript:void(0)">{{ menuLink.name }}{% if menuLink.subLinks|length>0 %} <span class="caret"></span>{% endif %}</a>
-                        {% if menuLink.subLinks|length>0 %}
-                            <div class="dropdown-menu megamenu container" role="menu">
-                                <div class="row">
-                                    <div class="col-sm-4">
-                                        <h3>Kategorie</h3>
-                                        <ul>
-                                        {% for subLink in menuLink.subLinks %}
-                                            <li><a href="{{  url('category', { 'categoryUrlWithFilters': subLink.url|trim('/')}) }}" title="{{ subLink.name|raw }}">{{ subLink.name|raw }}</a></li>
-                                        {% endfor %}
-                                        </ul>
-                                    </div>
-                                    {% if menuLink.topProducts|length>0 %}
-                                    <div class="col-md-8 hidden-sm hidden-xs">
-                                        <h3>Top produkty w {{ menuLink.name }}</h3>
-
-                                        <div class="row">
-                                            {% for productsChunk in menuLink.topProducts|chunk(3) %}
-                                                <div class="col-md-6 hidden-sm hidden-xs">
-                                                <ul class="list-unstyled">
-                                                    {% for productMenu in productsChunk %}
-                                                        {% set productMenuUrl = url('product', {'productUrl': productMenu.url|trim('/') }) %}
-                                                        <li class="product">
-                                                            <div class="row">
-                                                                <div class="col-md-3">
-                                                                    <a href="{{ productMenuUrl }}">
-                                                                        <img width="60" src="{{ nokaut_img_domain ~ nokaut_photo_url.prepare(productMenu.photoId, '90x90', productMenu.title) }}" alt="{{ productMenu.title }}">
-                                                                    </a>
-                                                                </div>
-
-                                                                <div class="col-md-9">
-                                                                    <h4><a href="{{ productMenuUrl }}">{{ productMenu.title|raw|truncate(40) }}</a></h4>
-                                                                    {% if productMenu.category %}
-                                                                        <span class="item-cat"><small><a title="{{ productMenu.category.name }}" href="{{  url('category', { 'categoryUrlWithFilters': productMenu.category.urlIn|trim('/')}) }}">{{ productMenu.category.name }}</a></small></span>
-                                                                    {% endif %}
-                                                                    <span class="price">od {{ productMenu.prices.min|number_format(2, ',', '') }} zł</span>
-                                                                </div>
-                                                            </div>
-                                                        </li>
-                                                    {% endfor %}
-                                                </ul>
-                                                </div>
-                                            {% endfor %}
-                                        </div>
-                                    </div>
-                                    {% endif %}
-                                </div>
-                            </div>
-                        {% endif %}
-                    </li>
-                {% endfor %}
-                </ul>
-                <form id="searchFrom" class="navbar-form navbar-left" role="search">
-                    <div class="form-group">
-                        <input type="text" id="phraseInput" class="form-control" placeholder="Szukaj">
-                    </div>
-                    <input type="submit" class="btn btn-default" value="Szukaj">
-                </form>
-            </div><!-- /.nav-collapse -->
-        </div><!-- /.container -->
-    </div><!-- /.navbar -->
-
+    <div class="navbar navbar-default navbar-fixed-top yamm">
     <div class="container">
+    <div class="navbar-header">
+        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-responsive-collapse">
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+        </button>
+        <a class="navbar-brand" href="index.html">Porownywarka</a>
+    </div>
+    <div class="navbar-collapse collapse navbar-responsive-collapse">
+    <ul class="nav navbar-nav">
+    <li class="dropdown yamm-fw">
+        <a href="#" data-toggle="dropdown" class="dropdown-toggle">Grupa kategorii <b class="caret"></b></a>
+        <ul class="dropdown-menu">
+            <li>
+                <div class="row">
 
-        <ol class="breadcrumb">
-            <li><a href="/">White Label Nokaut.pl</a></li>
-            {% for crumb in breadcrumbs %}
-                {% if loop.last or crumb.url is null %}
-                    <li class="active">{{ crumb.title }}</li>
-                {% else %}
+                    <div class="col-sm-3">
 
-                    <li><a href="{{ crumb.url }}">{{ crumb.title }}</a></li>
-                {% endif %}
-            {% endfor %}
-        </ol>
+                        <ul class="dropdown-menu dropdown-menu-inner">
+                            <li class="dropdown-header">Kategorie</li>
+                            <li><a href="#">Kategoria nazwa 1</a></li>
+                            <li><a href="#">Kategoria nazwa 2</a></li>
+                            <li><a href="#">Kategoria nazwa 3</a></li>
+                            <li><a href="#">Kategoria nazwa 4</a></li>
+                            <li><a href="#">Kategoria nazwa 5</a></li>
+                            <li><a href="#">Kategoria nazwa 6</a></li>
+                            <li><a href="#">Kategoria nazwa 7</a></li>
+                        </ul>
 
-        <div class="row row-offcanvas row-offcanvas-right">
-            <div class="col-xs-12 col-sm-9">
-                {% block content %}{% endblock %}
-            </div><!--/span-->
+                    </div>
+                    <div class="col-sm-9">
 
+                        <div class="row">
+                            <div class="col-sm-12 col-xs-12">
+                                <span class="dropdown-header dropdown-header-no-list">Popularne produkty</span>
+                            </div>
+                        </div>
 
-            <div class="col-xs-6 col-sm-3 sidebar-offcanvas" id="sidebar" role="navigation">
-                {% block rightColumn %}
-                {% endblock %}
+                        <div class="row">
+                            <div class="col-md-2 col-xs-4">
+                                <a href="#">
+                                    <div class="product tiny">
+                                        <div class="image">
+                                            <img class='img-responsive' src="http://placehold.it/90x90" />
+                                        </div>
+                                        <h5 class="title">Zegarek dla mężczyzny W-S200H-1A marki Casio, styl: sportowy</h5>
+                                        <div class="product-details-popup text-center">
+                                            <a href="produkt.html" data-container="body" data-placement="left" data-toggle="tooltip" >
+                                                <i class="fa fa-align-justify"></i>
+                                                <div class="tooltip_title_wrapper hidden">
+                                                    <p>Food truck fixie...</p><p>locavore, accusamus mcsweeney's marfa nulla single-origin coffee squid. Exercitation +1 labore velit, blog sartorial PBR leggings next level wes anderson artisan four loko farm-to-table craft beer twee. Qui photo booth letterpress, commodo enim craft beer mlkshk aliquip jean shorts ullamco ad vinyl cillum PBR. Homo nostrud organic, assumenda labore aesthetic magna delectus mollit</p>
+                                                </div>
+                                            </a>
+                                            <a href="produkt.html" data-container="body" data-placement="left" data-toggle="tooltip">
+                                                <i class="fa fa-tag"></i>
+                                                <div class="tooltip_title_wrapper hidden">
+                                                    Na tym produkcie możesz zaoszczędzić aż 20%
+                                                </div>
+                                            </a>
+                                            <a href="produkt.html"><i class="fa fa-link"></i></a>
+                                        </div>
+                                        <span class="price">117,99 PLN</span>
+                                    </div>
+                                </a>
+                            </div>
+                            <div class="col-md-2 col-xs-4">
+                                <a href="#">
+                                    <div class="product tiny">
+                                        <div class="image">
+                                            <img src="http://placehold.it/90x90" />
+                                        </div>
+                                        <h5 class="title">Zegarek dla mężczyzny W-S200H-1A marki Casio, styl: sportowy</h5>
+                                        <div class="product-details-popup text-center">
+                                            <a href="produkt.html" data-container="body" data-placement="left" data-toggle="tooltip" >
+                                                <i class="fa fa-align-justify"></i>
+                                                <div class="tooltip_title_wrapper hidden">
+                                                    <p>Food truck fixie...</p><p>locavore, accusamus mcsweeney's marfa nulla single-origin coffee squid. Exercitation +1 labore velit, blog sartorial PBR leggings next level wes anderson artisan four loko farm-to-table craft beer twee. Qui photo booth letterpress, commodo enim craft beer mlkshk aliquip jean shorts ullamco ad vinyl cillum PBR. Homo nostrud organic, assumenda labore aesthetic magna delectus mollit</p>
+                                                </div>
+                                            </a>
+                                            <a href="produkt.html" data-container="body" data-placement="left" data-toggle="tooltip">
+                                                <i class="fa fa-tag"></i>
+                                                <div class="tooltip_title_wrapper hidden">
+                                                    Na tym produkcie możesz zaoszczędzić aż 20%
+                                                </div>
+                                            </a>
+                                            <a href="produkt.html"><i class="fa fa-link"></i></a>
+                                        </div>
+                                        <span class="price">od 117,99 PLN</span>
+                                    </div>
+                                </a>
+                            </div>
+                            <div class="col-md-2 col-xs-4">
+                                <a href="#">
+                                    <div class="product tiny">
+                                        <div class="image">
+                                            <img src="http://placehold.it/90x90" />
+                                        </div>
+                                        <h5 class="title">Zegarek dla mężczyzny W-S200H-1A marki Casio, styl: sportowy</h5>
+                                        <div class="product-details-popup text-center">
+                                            <a href="produkt.html" data-container="body" data-placement="left" data-toggle="tooltip" >
+                                                <i class="fa fa-align-justify"></i>
+                                                <div class="tooltip_title_wrapper hidden">
+                                                    <p>Food truck fixie...</p><p>locavore, accusamus mcsweeney's marfa nulla single-origin coffee squid. Exercitation +1 labore velit, blog sartorial PBR leggings next level wes anderson artisan four loko farm-to-table craft beer twee. Qui photo booth letterpress, commodo enim craft beer mlkshk aliquip jean shorts ullamco ad vinyl cillum PBR. Homo nostrud organic, assumenda labore aesthetic magna delectus mollit</p>
+                                                </div>
+                                            </a>
+                                            <a href="produkt.html" data-container="body" data-placement="left" data-toggle="tooltip">
+                                                <i class="fa fa-tag"></i>
+                                                <div class="tooltip_title_wrapper hidden">
+                                                    Na tym produkcie możesz zaoszczędzić aż 20%
+                                                </div>
+                                            </a>
+                                            <a href="produkt.html"><i class="fa fa-link"></i></a>
+                                        </div>
+                                        <span class="price">117,99 PLN</span>
+                                    </div>
+                                </a>
+                            </div>
+                            <div class="col-md-2 col-xs-4">
+                                <a href="#">
+                                    <div class="product tiny">
+                                        <div class="image">
+                                            <img src="http://placehold.it/90x90" />
+                                        </div>
+                                        <h5 class="title">Zegarek dla mężczyzny W-S200H-1A marki Casio, styl: sportowy</h5>
+                                        <div class="product-details-popup text-center">
+                                            <a href="produkt.html" data-container="body" data-placement="left" data-toggle="tooltip" >
+                                                <i class="fa fa-align-justify"></i>
+                                                <div class="tooltip_title_wrapper hidden">
+                                                    <p>Food truck fixie...</p><p>locavore, accusamus mcsweeney's marfa nulla single-origin coffee squid. Exercitation +1 labore velit, blog sartorial PBR leggings next level wes anderson artisan four loko farm-to-table craft beer twee. Qui photo booth letterpress, commodo enim craft beer mlkshk aliquip jean shorts ullamco ad vinyl cillum PBR. Homo nostrud organic, assumenda labore aesthetic magna delectus mollit</p>
+                                                </div>
+                                            </a>
+                                            <a href="produkt.html" data-container="body" data-placement="left" data-toggle="tooltip">
+                                                <i class="fa fa-tag"></i>
+                                                <div class="tooltip_title_wrapper hidden">
+                                                    Na tym produkcie możesz zaoszczędzić aż 20%
+                                                </div>
+                                            </a>
+                                            <a href="produkt.html"><i class="fa fa-link"></i></a>
+                                        </div>
+                                        <span class="price">od 117,99 PLN</span>
+                                    </div>
+                                </a>
+                            </div>
+                            <div class="col-md-2 col-xs-4">
+                                <a href="#">
+                                    <div class="product tiny">
+                                        <div class="image">
+                                            <img src="http://placehold.it/90x90" />
+                                        </div>
+                                        <h5 class="title">Zegarek dla mężczyzny W-S200H-1A marki Casio, styl: sportowy</h5>
+                                        <div class="product-details-popup text-center">
+                                            <a href="produkt.html" data-container="body" data-placement="left" data-toggle="tooltip" >
+                                                <i class="fa fa-align-justify"></i>
+                                                <div class="tooltip_title_wrapper hidden">
+                                                    <p>Food truck fixie...</p><p>locavore, accusamus mcsweeney's marfa nulla single-origin coffee squid. Exercitation +1 labore velit, blog sartorial PBR leggings next level wes anderson artisan four loko farm-to-table craft beer twee. Qui photo booth letterpress, commodo enim craft beer mlkshk aliquip jean shorts ullamco ad vinyl cillum PBR. Homo nostrud organic, assumenda labore aesthetic magna delectus mollit</p>
+                                                </div>
+                                            </a>
+                                            <a href="produkt.html" data-container="body" data-placement="left" data-toggle="tooltip">
+                                                <i class="fa fa-tag"></i>
+                                                <div class="tooltip_title_wrapper hidden">
+                                                    Na tym produkcie możesz zaoszczędzić aż 20%
+                                                </div>
+                                            </a>
+                                            <a href="produkt.html"><i class="fa fa-link"></i></a>
+                                        </div>
+                                        <span class="price">od 117,99 PLN</span>
+                                    </div>
+                                </a>
+                            </div>
+                            <div class="col-md-2 col-xs-4">
+                                <a href="#">
+                                    <div class="product tiny">
+                                        <div class="image">
+                                            <img src="http://placehold.it/90x90" />
+                                        </div>
+                                        <h5 class="title">Zegarek dla mężczyzny W-S200H-1A marki Casio, styl: sportowy</h5>
+                                        <div class="product-details-popup text-center">
+                                            <a href="produkt.html" data-container="body" data-placement="left" data-toggle="tooltip" >
+                                                <i class="fa fa-align-justify"></i>
+                                                <div class="tooltip_title_wrapper hidden">
+                                                    <p>Food truck fixie...</p><p>locavore, accusamus mcsweeney's marfa nulla single-origin coffee squid. Exercitation +1 labore velit, blog sartorial PBR leggings next level wes anderson artisan four loko farm-to-table craft beer twee. Qui photo booth letterpress, commodo enim craft beer mlkshk aliquip jean shorts ullamco ad vinyl cillum PBR. Homo nostrud organic, assumenda labore aesthetic magna delectus mollit</p>
+                                                </div>
+                                            </a>
+                                            <a href="produkt.html" data-container="body" data-placement="left" data-toggle="tooltip">
+                                                <i class="fa fa-tag"></i>
+                                                <div class="tooltip_title_wrapper hidden">
+                                                    Na tym produkcie możesz zaoszczędzić aż 20%
+                                                </div>
+                                            </a>
+                                            <a href="produkt.html"><i class="fa fa-link"></i></a>
+                                        </div>
+                                        <span class="price">od 117,99 PLN</span>
+                                    </div>
+                                </a>
+                            </div>
+                        </div>
 
-                {% include 'WLAppBundle:Common:rightColumn.html.twig' %}
-            </div><!--/span-->
-
-        </div><!--/row-->
-
-    <hr>
-
-    <footer class="row">
-        <div class="col-xs-6 col-sm-6">
-            <a href="{{  url('map_categories') }}">Mapa kategorii</a>
+                    </div>
+                </div>
+            </li>
+        </ul>
+    </li>
+    <li class="dropdown">
+        <a href="#" class="dropdown-toggle" data-toggle="dropdown">Grupa kategorii <b class="caret"></b></a>
+        <ul class="dropdown-menu">
+            <li><a href="#">Action</a></li>
+            <li><a href="#">Another action</a></li>
+            <li><a href="#">Something else here</a></li>
+            <li class="divider"></li>
+            <li><a href="#">Separated link</a></li>
+        </ul>
+    </li>
+    <li class="dropdown">
+        <a href="#" class="dropdown-toggle" data-toggle="dropdown">Grupa kategorii <b class="caret"></b></a>
+        <ul class="dropdown-menu">
+            <li><a href="#">Action</a></li>
+            <li><a href="#">Another action</a></li>
+            <li><a href="#">Something else here</a></li>
+            <li class="divider"></li>
+            <li><a href="#">Separated link</a></li>
+        </ul>
+    </li>
+    <li class="dropdown">
+        <a href="#" class="dropdown-toggle" data-toggle="dropdown">Grupa kategorii <b class="caret"></b></a>
+        <ul class="dropdown-menu">
+            <li><a href="#">Action</a></li>
+            <li><a href="#">Another action</a></li>
+            <li><a href="#">Something else here</a></li>
+            <li class="divider"></li>
+            <li><a href="#">Separated link</a></li>
+        </ul>
+    </li>
+    </ul>
+    <form class="navbar-form navbar-right">
+        <div class="input-group input-group-with-btn">
+            <input type="text" class="form-control input-lg" placeholder="Szukam...">
+                <span class="input-group-btn">
+                  <button class="btn btn-link" type="button"><i class="fa fa-search"></i></button>
+                </span>
         </div>
-        <div class="col-xs-6 col-sm-6 text-right">
-            &copy; Nokaut.pl sp. z o.o. 2014
+    </form>
+    </div>
+    </div>
+    </div>
+
+
+
+    <div class="container top">
+
+        {% block topContent %}
+            {% if breadcrumbs is defined %}
+            <div class="row">
+                <div class="col-lg-12 col-md-12 col-sm-12">
+                    <ul class="breadcrumb">
+                        {% for crumb in breadcrumbs %}
+                            {% if loop.last or crumb.url is null %}
+                                <li class="active">{{ crumb.title }}</li>
+                            {% else %}
+
+                                <li><a href="{{ crumb.url }}">{{ crumb.title }}</a></li>
+                            {% endif %}
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>
+            {% endif %}
+        {% endblock %}
+
+        {% block content %}
+
+        {% endblock %}
+    </div>
+
+
+
+    <footer>
+        <div class="container">
+            <div class="row">
+                <div class="col-md-5">
+                    <h5>O nas</h5>
+                    <p>Porównywarka.co to serwis pozwalający na porównanie cen w najlepszych sklepach internetowych w Polsce. Został stworzony, by ułatwić użytkownikom Internetu znalezienie najniższych cen i wygodne e-zakupy. Porównaj oferty kilku tysięcy sklepów internetowych.</p>
+                </div>
+                <div class="col-md-7">
+                    <h5>Dla sklepów</h5>
+                    <p>Chcesz, aby znalazła się tutaj również oferta Twojego sklepu? Operatorem danych dla serwisu Porównywarka jest Nokaut.pl, porównywarka cen i sieć reklamowa odwiedzana przez kilka milionów użytkowników każdego miesiąca. Skontaktuj się pisząc na adres: <a href="mailto:kontakt@nokaut.pl">kontakt@nokaut.pl</a>.</p>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-12">
+                    Copyright © 2014. Wszystkie prawa zastrzeżone. Korzystanie z serwisu oznacza akceptację <a href="#">Regulamin</a> oraz <a href="#">Politykę cookies</a>.
+                </div>
+            </div>
         </div>
     </footer>
-
-    </div><!--/.container-->
-
-
 
 {% endblock %}
 
 
 {% block javascripts %}
-
+    <script src="{{ asset('bundles/wlapp/js/bootstrap.min.js') }}"></script>
+    <script src="{{ asset('bundles/wlapp/js/owl.carousel.min.js') }}"></script>
+    <script src="{{ asset('bundles/wlapp/js/jquery.bxslider.min.js') }}"></script>
+    <script src="{{ asset('bundles/wlapp/js/common.js') }}"></script>
 
 {% endblock %}

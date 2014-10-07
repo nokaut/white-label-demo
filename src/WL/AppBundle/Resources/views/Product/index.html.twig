@@ -17,74 +17,862 @@
 
 
 {% block content %}
-    <div class="page-header">
-        <h1>{{ product.title|raw }}</h1>
-    </div>
-    <div class="row">
-        <div class="col-xs-2 col-sm-2">
+
+    <div class="row product product-details">
+        <div class="col-md-4 col-sm-12 gallery">
+
+            <ul class="bxslider gallery-view">
                 {% for photoId in product.photoIds if photoId %}
-                    <a id="productImage{{ loop.index }}" target="_blank" href="{{ nokaut_img_domain ~ nokaut_photo_url.prepare(photoId, '500x500', product.title) }}"><img src="{{ nokaut_img_domain ~ nokaut_photo_url.prepare(photoId, '90x90', product.title) }}" alt="{{ product.title }}"></a>
+                    {% if loop.index < 11 %}
+                    <li><img class="img-responsive" src="{{ nokaut_img_domain ~ nokaut_photo_url.prepare(photoId, '500x500', product.title) }}" alt="{{ product.title }}"></li>
+                    {% endif %}
                 {% endfor %}
-        </div>
-        <div class="col-xs-9 col-sm-9">
-            <div>
-                {% for property in product.properties %}
-                    <strong>{{ property.name|raw }}:</strong>
-                    {% include '@WLApp/Product/property.html.twig' %}
-                    {% if loop.last == false %}
-                        |
+            </ul>
+
+            <div id="gallery-items" class="row gallery-items">
+                {% for photoId in product.photoIds if photoId %}
+                    {% if loop.index < 11 %}
+                        <div class="col-lg-3 col-md-4 col-sm-2 col-xs-3 gallery-item"><a data-slide-index="{{ loop.index0 }}" href=""><img class="img-responsive" src="{{ nokaut_img_domain ~ nokaut_photo_url.prepare(photoId, '90x90', product.title) }}" /></a></div>
                     {% endif %}
                 {% endfor %}
             </div>
-            <div>
-                <strong id="productRating" data-product="{{ product.id }}" >Ocena:</strong>
-                {% for i in 1..5 %}
-                    <span class="glyphicon glyphicon-star product-star" data-star-current="{{ product.rating ? product.rating.rating|round : 0 }}" data-star-nr="{{ i }}" style="color: {% if product.rating and product.rating.rating|round >= i%}orangered;{% else %}silver{% endif %}"></span>
-                {% endfor %}
-            </div>
 
-            <h2>Oferty</h2>
-            <table class="table">
-                {% for offer in offers %}
-                <tr>
-                    <td style="text-align: center;">
-                        <a target="_blank" rel="nofollow" href="{{ offer|click }}" title="{{ offer.title|raw }}" class="pull-left">
-                            {% if offer.shop.urlLogo %}
-                                <img src="{{ nokaut_img_domain ~ offer.shop.urlLogo }}" alt="{{ offer.shop.name }}">
-                            {% endif %}
-                            <br>
-                            {% for i in 1..5 %}
-                                <span class="glyphicon glyphicon-star" style="color: {% if offer.shop.opineoRating and (offer.shop.opineoRating.rating/2)|round > i%}orangered;{% else %}silver{% endif %}"></span>
-                            {% endfor %}
-                            <span class="small">{{ offer.shop.name|raw }}</span>
-                        </a>
-                    </td>
-                    <td>
-                        <a target="_blank" rel="nofollow" href="{{ offer|click }}" title="{{ offer.title|raw }}" class="pull-left">
-                            {% if offer.photoId %}
-                                <img width="80" height="80" src="{{ nokaut_img_domain ~ nokaut_photo_url.prepare(offer.photoId, '90x90', offer.title) }}" alt="{{ offer.title }}">
-                            {% endif %}
-                        </a>
-                    </td>
-                    <td>
-                        <a target="_blank" rel="nofollow" href="{{ offer|click }}" title="{{ offer.title|raw }}" class="pull-left">
-                            <span>{{ offer.title|raw }}</span>
-                            <span>{{ offer.price|number_format(2, ',', '') }} zł</span>
-                        </a>
-                    </td>
-                    <td>
-                        <a target="_blank" rel="nofollow" href="{{ offer|click }}" title="{{ offer.title|raw }}" class="btn btn-primary pull-left">Idź do sklepu</a>
-                    </td>
-                </tr>
-                {% endfor %}
-            </table>
-
-            <p>
-                <h4 class="title">Opis produktu</h4>
-                {{ product.descriptionHtml|raw }}
-            </p>
 
         </div>
+        <div class="col-md-8 col-sm-12">
+            <div class="row">
+                <div class="col-md-8 col-sm-12">
+                    <h1 class="price">{{ product.title|raw }}
+                        <small class="stars">Ocena produktu:
+                            {% for i in 1..5 %}
+                                {% if product.rating and product.rating.rating >= i %}
+                                    <i class="product-star fa fa-star" data-star-current="{{ product.rating ? product.rating.rating|round : 0 }}" data-star-nr="{{ i }}"></i>
+                                {% elseif product.rating and product.rating.rating|round >= i %}
+                                    <i class="product-star fa fa-star-half-o" data-star-current="{{ product.rating ? product.rating.rating|round : 0 }}" data-star-nr="{{ i }}"></i>
+                                {% else %}
+                                    <i class="product-star fa fa-star-o" data-star-current="{{ product.rating ? product.rating.rating|round : 0 }}" data-star-nr="{{ i }}"></i>
+                                {% endif %}
+                            {% endfor %}
+                        </small>
+                    </h1>
+                </div>
+                <div class="col-md-4 col-sm-12 text-right">
+                    <p class="lead price big"><small>od </small>{{ offers.metadata.priceMin|number_format(2, ',', '') }} PLN</p>
+                    {% set savePercent = helper_price.getSavePercent(product.prices) %}
+                    {% if savePercent > 0 %}
+                        <p class="price"><small>oszczędzasz do</small> {{ savePercent }}%</p>
+                    {% endif %}
+                </div>
+                <div class="col-md-12 col-sm-12">
+                    <ul class="features">
+                        <li>Producent: <em>{{ product.producerName|raw }}</em></li>
+                        <li>Kategoria: <em>{{ category.title|raw }}</em></li>
+                        {% for property in product.properties %}
+                            <li>{{ property.name|raw }}:
+                                <em>{% include '@WLApp/Product/property.html.twig' %}</em>
+                            </li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>
+
+            <ul class="nav nav-tabs">
+                <li class="active"><a href="#offers" data-toggle="tab">Oferty ({{ offers.metadata.total }})</a></li>
+                <li><a href="#desc" data-toggle="tab">Opis produktu</a></li>
+
+            </ul>
+            <div class="tab-content">
+                <div class="tab-pane fade active in" id="offers">
+
+                    <div class="row pull-right options">
+                        <div class="col-md-12 col-sm-12">
+                            <div class="btn-group">
+                                <a href="#" class="btn btn-link dropdown-toggle" data-toggle="dropdown">
+                                    <i class="fa fa-bars"></i>
+                                </a>
+                                <ul class="dropdown-menu dropdown-menu-right">
+                                    <li class="dropdown-header">Sortowanie</li>
+                                    <li class="active"><a href="#"><i class="fa fa-long-arrow-down"></i> domyślne</a></li>
+                                    <li><a href="#"><i class="fa fa-sort-numeric-asc"></i> od najtańszych</a></li>
+                                    <li><a href="#"><i class="fa fa-sort-numeric-desc"></i> od najdroższych</a></li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row offers">
+                        <!-- offer starts here -->
+                        <div class="col-sm-12 offer">
+                            <a href="#">
+                                <div class="row">
+                                    <div class="col-xs-4 col-sm-2">
+                                        <div class="image">
+                                            <img src="http://placehold.it/90x90" />
+                                        </div>
+                                    </div>
+                                    <div class="col-xs-8 col-sm-7">
+                                        <h5>Casio W-S200H-1AVEF - ZNALAZŁEŚ TANIEJ? >> NEGOCJUJ CENĘ! GWARANCJA CENY! DOSTAWA GLS GRATIS</h5>
+                                        <div class="pull-right">
+                                            <small class="stars">Ocena sklepu: <i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star-half"></i></small>
+                                            <img src="http://placehold.it/90x30" />
+                                        </div>
+                                    </div>
+                                    <div class="col-xs-12 col-sm-3 text-right">
+                                        <p class="lead price">123,45 PLN</p>
+                                        <a class="btn btn-success btn-success-outlined btn-icon-right">Zobacz w sklepie <i class="fa fa-angle-right"></i></a>
+                                    </div>
+                                </div>
+                            </a>
+                        </div>
+                        <!-- offer ends here -->
+                        <!-- offer starts here -->
+                        <div class="col-sm-12 offer">
+                            <a href="#">
+                                <div class="row">
+                                    <div class="col-xs-4 col-sm-2">
+                                        <div class="image">
+                                            <img src="http://placehold.it/90x90" />
+                                        </div>
+                                    </div>
+                                    <div class="col-xs-8 col-sm-7">
+                                        <h5>Casio W-S200H-1AVEF - ZNALAZŁEŚ TANIEJ? >> NEGOCJUJ CENĘ! GWARANCJA CENY! DOSTAWA GLS GRATIS</h5>
+                                        <div class="pull-right">
+                                            <small class="stars">Ocena sklepu: <i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star-half"></i></small>
+                                            <img src="http://placehold.it/90x30" />
+                                        </div>
+                                    </div>
+                                    <div class="col-xs-12 col-sm-3 text-right">
+                                        <p class="lead price">123,45 PLN</p>
+                                        <a class="btn btn-success btn-success-outlined btn-icon-right">Zobacz w sklepie <i class="fa fa-angle-right"></i></a>
+                                    </div>
+                                </div>
+                            </a>
+                        </div>
+                        <!-- offer ends here -->
+                        <!-- offer starts here -->
+                        <div class="col-sm-12 offer">
+                            <a href="#">
+                                <div class="row">
+                                    <div class="col-xs-4 col-sm-2">
+                                        <div class="image">
+                                            <img src="http://placehold.it/90x90" />
+                                        </div>
+                                    </div>
+                                    <div class="col-xs-8 col-sm-7">
+                                        <h5>Casio W-S200H-1AVEF - ZNALAZŁEŚ TANIEJ? >> NEGOCJUJ CENĘ! GWARANCJA CENY! DOSTAWA GLS GRATIS</h5>
+                                        <div class="pull-right">
+                                            <small class="stars">Ocena sklepu: <i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star-half"></i></small>
+                                            <img src="http://placehold.it/90x30" />
+                                        </div>
+                                    </div>
+                                    <div class="col-xs-12 col-sm-3 text-right">
+                                        <p class="lead price">123,45 PLN</p>
+                                        <a class="btn btn-success btn-success-outlined btn-icon-right">Zobacz w sklepie <i class="fa fa-angle-right"></i></a>
+                                    </div>
+                                </div>
+                            </a>
+                        </div>
+                        <!-- offer ends here -->
+                    </div>
+                </div>
+                <div class="tab-pane fade" id="desc">
+                    {{ product.descriptionHtml|raw }}
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+
+    <div class="row lower-double products">
+        <div class="col-xs-8">
+            <h4>Produkty podobne</h4>
+        </div>
+        <div class="col-xs-4 text-right">
+            <a id="products-similar-prev" class="btn btn-sm btn-primary btn-primary-outlined"><i class="fa fa-angle-left"></i></a>
+            <a id="products-similar-next" class="btn btn-sm btn-primary btn-primary-outlined"><i class="fa fa-angle-right"></i></a>
+        </div>
+    </div>
+    <div class="row">
+    <div id="products-similar" class=" owl-carousel">
+    <div>
+        <div class="col-xs-12 product-wrapper-grid">
+            <a href="#">
+                <div class="product normal">
+                    <div class="image">
+                        <img class="img-responsive" src="http://placehold.it/500x500" />
+                    </div>
+                    <h5 class="title">Zegarek dla mężczyzny W-S200H-1A marki Casio, styl: sportowy</h5>
+                    <div class="product-details-popup text-center">
+                            <span data-container="body" data-placement="left" data-toggle="tooltip" >
+                                <i class="fa fa-align-justify"></i>
+                                <div class="tooltip_title_wrapper hidden">
+                                    <p>Food truck fixie...</p><p>locavore, accusamus mcsweeney's marfa nulla single-origin coffee squid. Exercitation +1 labore velit, blog sartorial PBR leggings next level wes anderson artisan four loko farm-to-table craft beer twee. Qui photo booth letterpress, commodo enim craft beer mlkshk aliquip jean shorts ullamco ad vinyl cillum PBR. Homo nostrud organic, assumenda labore aesthetic magna delectus mollit</p>
+                                </div>
+                            </span>
+                            <span data-container="body" data-placement="left" data-toggle="tooltip">
+                                <i class="fa fa-tag"></i>
+                                <div class="tooltip_title_wrapper hidden">
+                                    Na tym produkcie możesz zaoszczędzić aż 20%
+                                </div>
+                            </span>
+                        <a href="produkt.html"><i class="fa fa-link"></i></a>
+                    </div>
+                    <div class="row">
+                        <div class="col-xs-12 text-center">
+                            <span class="price lead">117,99 PLN</span>
+                            <a class="btn btn-success btn-success-outlined btn-icon-right">Porównaj oferty <i class="fa fa-angle-right"></i></a>
+                        </div>
+                    </div>
+                </div>
+            </a>
+        </div>
+    </div>
+    <div>
+        <div class="col-xs-12 product-wrapper-grid">
+            <a href="#">
+                <div class="product normal">
+                    <div class="image">
+                        <img class="img-responsive" src="http://placehold.it/500x500" />
+                    </div>
+                    <h5 class="title">Zegarek dla mężczyzny W-S200H-1A marki Casio, styl: sportowy</h5>
+                    <div class="product-details-popup text-center">
+                            <span data-container="body" data-placement="left" data-toggle="tooltip" >
+                                <i class="fa fa-align-justify"></i>
+                                <div class="tooltip_title_wrapper hidden">
+                                    <p>Food truck fixie...</p><p>locavore, accusamus mcsweeney's marfa nulla single-origin coffee squid. Exercitation +1 labore velit, blog sartorial PBR leggings next level wes anderson artisan four loko farm-to-table craft beer twee. Qui photo booth letterpress, commodo enim craft beer mlkshk aliquip jean shorts ullamco ad vinyl cillum PBR. Homo nostrud organic, assumenda labore aesthetic magna delectus mollit</p>
+                                </div>
+                            </span>
+                            <span data-container="body" data-placement="left" data-toggle="tooltip">
+                                <i class="fa fa-tag"></i>
+                                <div class="tooltip_title_wrapper hidden">
+                                    Na tym produkcie możesz zaoszczędzić aż 20%
+                                </div>
+                            </span>
+                        <a href="produkt.html"><i class="fa fa-link"></i></a>
+                    </div>
+                    <div class="row">
+                        <div class="col-xs-12 text-center">
+                            <span class="price lead">117,99 PLN</span>
+                            <a class="btn btn-success btn-success-outlined btn-icon-right">Porównaj oferty <i class="fa fa-angle-right"></i></a>
+                        </div>
+                    </div>
+                </div>
+            </a>
+        </div>
+    </div>
+    <div>
+        <div class="col-xs-12 product-wrapper-grid">
+            <a href="#">
+                <div class="product normal">
+                    <div class="image">
+                        <img class="img-responsive" src="http://placehold.it/500x500" />
+                    </div>
+                    <h5 class="title">Zegarek dla mężczyzny W-S200H-1A marki Casio, styl: sportowy</h5>
+                    <div class="product-details-popup text-center">
+                            <span data-container="body" data-placement="left" data-toggle="tooltip" >
+                                <i class="fa fa-align-justify"></i>
+                                <div class="tooltip_title_wrapper hidden">
+                                    <p>Food truck fixie...</p><p>locavore, accusamus mcsweeney's marfa nulla single-origin coffee squid. Exercitation +1 labore velit, blog sartorial PBR leggings next level wes anderson artisan four loko farm-to-table craft beer twee. Qui photo booth letterpress, commodo enim craft beer mlkshk aliquip jean shorts ullamco ad vinyl cillum PBR. Homo nostrud organic, assumenda labore aesthetic magna delectus mollit</p>
+                                </div>
+                            </span>
+                            <span data-container="body" data-placement="left" data-toggle="tooltip">
+                                <i class="fa fa-tag"></i>
+                                <div class="tooltip_title_wrapper hidden">
+                                    Na tym produkcie możesz zaoszczędzić aż 20%
+                                </div>
+                            </span>
+                        <a href="produkt.html"><i class="fa fa-link"></i></a>
+                    </div>
+                    <div class="row">
+                        <div class="col-xs-12 text-center">
+                            <span class="price lead">117,99 PLN</span>
+                            <a class="btn btn-success btn-success-outlined btn-icon-right">Porównaj oferty <i class="fa fa-angle-right"></i></a>
+                        </div>
+                    </div>
+                </div>
+            </a>
+        </div>
+    </div>
+    <div>
+        <div class="col-xs-12 product-wrapper-grid">
+            <a href="#">
+                <div class="product normal">
+                    <div class="image">
+                        <img class="img-responsive" src="http://placehold.it/500x500" />
+                    </div>
+                    <h5 class="title">Zegarek dla mężczyzny W-S200H-1A marki Casio, styl: sportowy</h5>
+                    <div class="product-details-popup text-center">
+                            <span data-container="body" data-placement="left" data-toggle="tooltip" >
+                                <i class="fa fa-align-justify"></i>
+                                <div class="tooltip_title_wrapper hidden">
+                                    <p>Food truck fixie...</p><p>locavore, accusamus mcsweeney's marfa nulla single-origin coffee squid. Exercitation +1 labore velit, blog sartorial PBR leggings next level wes anderson artisan four loko farm-to-table craft beer twee. Qui photo booth letterpress, commodo enim craft beer mlkshk aliquip jean shorts ullamco ad vinyl cillum PBR. Homo nostrud organic, assumenda labore aesthetic magna delectus mollit</p>
+                                </div>
+                            </span>
+                            <span data-container="body" data-placement="left" data-toggle="tooltip">
+                                <i class="fa fa-tag"></i>
+                                <div class="tooltip_title_wrapper hidden">
+                                    Na tym produkcie możesz zaoszczędzić aż 20%
+                                </div>
+                            </span>
+                        <a href="produkt.html"><i class="fa fa-link"></i></a>
+                    </div>
+                    <div class="row">
+                        <div class="col-xs-12 text-center">
+                            <span class="price lead">117,99 PLN</span>
+                            <a class="btn btn-success btn-success-outlined btn-icon-right">Porównaj oferty <i class="fa fa-angle-right"></i></a>
+                        </div>
+                    </div>
+                </div>
+            </a>
+        </div>
+    </div>
+    <div>
+        <div class="col-xs-12 product-wrapper-grid">
+            <a href="#">
+                <div class="product normal">
+                    <div class="image">
+                        <img class="img-responsive" src="http://placehold.it/500x500" />
+                    </div>
+                    <h5 class="title">Zegarek dla mężczyzny W-S200H-1A marki Casio, styl: sportowy</h5>
+                    <div class="product-details-popup text-center">
+                            <span data-container="body" data-placement="left" data-toggle="tooltip" >
+                                <i class="fa fa-align-justify"></i>
+                                <div class="tooltip_title_wrapper hidden">
+                                    <p>Food truck fixie...</p><p>locavore, accusamus mcsweeney's marfa nulla single-origin coffee squid. Exercitation +1 labore velit, blog sartorial PBR leggings next level wes anderson artisan four loko farm-to-table craft beer twee. Qui photo booth letterpress, commodo enim craft beer mlkshk aliquip jean shorts ullamco ad vinyl cillum PBR. Homo nostrud organic, assumenda labore aesthetic magna delectus mollit</p>
+                                </div>
+                            </span>
+                            <span data-container="body" data-placement="left" data-toggle="tooltip">
+                                <i class="fa fa-tag"></i>
+                                <div class="tooltip_title_wrapper hidden">
+                                    Na tym produkcie możesz zaoszczędzić aż 20%
+                                </div>
+                            </span>
+                        <a href="produkt.html"><i class="fa fa-link"></i></a>
+                    </div>
+                    <div class="row">
+                        <div class="col-xs-12 text-center">
+                            <span class="price lead">117,99 PLN</span>
+                            <a class="btn btn-success btn-success-outlined btn-icon-right">Porównaj oferty <i class="fa fa-angle-right"></i></a>
+                        </div>
+                    </div>
+                </div>
+            </a>
+        </div>
+    </div>
+    <div>
+        <div class="col-xs-12 product-wrapper-grid">
+            <a href="#">
+                <div class="product normal">
+                    <div class="image">
+                        <img class="img-responsive" src="http://placehold.it/500x500" />
+                    </div>
+                    <h5 class="title">Zegarek dla mężczyzny W-S200H-1A marki Casio, styl: sportowy</h5>
+                    <div class="product-details-popup text-center">
+                            <span data-container="body" data-placement="left" data-toggle="tooltip" >
+                                <i class="fa fa-align-justify"></i>
+                                <div class="tooltip_title_wrapper hidden">
+                                    <p>Food truck fixie...</p><p>locavore, accusamus mcsweeney's marfa nulla single-origin coffee squid. Exercitation +1 labore velit, blog sartorial PBR leggings next level wes anderson artisan four loko farm-to-table craft beer twee. Qui photo booth letterpress, commodo enim craft beer mlkshk aliquip jean shorts ullamco ad vinyl cillum PBR. Homo nostrud organic, assumenda labore aesthetic magna delectus mollit</p>
+                                </div>
+                            </span>
+                            <span data-container="body" data-placement="left" data-toggle="tooltip">
+                                <i class="fa fa-tag"></i>
+                                <div class="tooltip_title_wrapper hidden">
+                                    Na tym produkcie możesz zaoszczędzić aż 20%
+                                </div>
+                            </span>
+                        <a href="produkt.html"><i class="fa fa-link"></i></a>
+                    </div>
+                    <div class="row">
+                        <div class="col-xs-12 text-center">
+                            <span class="price lead">117,99 PLN</span>
+                            <a class="btn btn-success btn-success-outlined btn-icon-right">Porównaj oferty <i class="fa fa-angle-right"></i></a>
+                        </div>
+                    </div>
+                </div>
+            </a>
+        </div>
+    </div>
+    <div>
+        <div class="col-xs-12 product-wrapper-grid">
+            <a href="#">
+                <div class="product normal">
+                    <div class="image">
+                        <img class="img-responsive" src="http://placehold.it/500x500" />
+                    </div>
+                    <h5 class="title">Zegarek dla mężczyzny W-S200H-1A marki Casio, styl: sportowy</h5>
+                    <div class="product-details-popup text-center">
+                            <span data-container="body" data-placement="left" data-toggle="tooltip" >
+                                <i class="fa fa-align-justify"></i>
+                                <div class="tooltip_title_wrapper hidden">
+                                    <p>Food truck fixie...</p><p>locavore, accusamus mcsweeney's marfa nulla single-origin coffee squid. Exercitation +1 labore velit, blog sartorial PBR leggings next level wes anderson artisan four loko farm-to-table craft beer twee. Qui photo booth letterpress, commodo enim craft beer mlkshk aliquip jean shorts ullamco ad vinyl cillum PBR. Homo nostrud organic, assumenda labore aesthetic magna delectus mollit</p>
+                                </div>
+                            </span>
+                            <span data-container="body" data-placement="left" data-toggle="tooltip">
+                                <i class="fa fa-tag"></i>
+                                <div class="tooltip_title_wrapper hidden">
+                                    Na tym produkcie możesz zaoszczędzić aż 20%
+                                </div>
+                            </span>
+                        <a href="produkt.html"><i class="fa fa-link"></i></a>
+                    </div>
+                    <div class="row">
+                        <div class="col-xs-12 text-center">
+                            <span class="price lead">117,99 PLN</span>
+                            <a class="btn btn-success btn-success-outlined btn-icon-right">Porównaj oferty <i class="fa fa-angle-right"></i></a>
+                        </div>
+                    </div>
+                </div>
+            </a>
+        </div>
+    </div>
+    <div>
+        <div class="col-xs-12 product-wrapper-grid">
+            <a href="#">
+                <div class="product normal">
+                    <div class="image">
+                        <img class="img-responsive" src="http://placehold.it/500x500" />
+                    </div>
+                    <h5 class="title">Zegarek dla mężczyzny W-S200H-1A marki Casio, styl: sportowy</h5>
+                    <div class="product-details-popup text-center">
+                            <span data-container="body" data-placement="left" data-toggle="tooltip" >
+                                <i class="fa fa-align-justify"></i>
+                                <div class="tooltip_title_wrapper hidden">
+                                    <p>Food truck fixie...</p><p>locavore, accusamus mcsweeney's marfa nulla single-origin coffee squid. Exercitation +1 labore velit, blog sartorial PBR leggings next level wes anderson artisan four loko farm-to-table craft beer twee. Qui photo booth letterpress, commodo enim craft beer mlkshk aliquip jean shorts ullamco ad vinyl cillum PBR. Homo nostrud organic, assumenda labore aesthetic magna delectus mollit</p>
+                                </div>
+                            </span>
+                            <span data-container="body" data-placement="left" data-toggle="tooltip">
+                                <i class="fa fa-tag"></i>
+                                <div class="tooltip_title_wrapper hidden">
+                                    Na tym produkcie możesz zaoszczędzić aż 20%
+                                </div>
+                            </span>
+                        <a href="produkt.html"><i class="fa fa-link"></i></a>
+                    </div>
+                    <div class="row">
+                        <div class="col-xs-12 text-center">
+                            <span class="price lead">117,99 PLN</span>
+                            <a class="btn btn-success btn-success-outlined btn-icon-right">Porównaj oferty <i class="fa fa-angle-right"></i></a>
+                        </div>
+                    </div>
+                </div>
+            </a>
+        </div>
+    </div>
+    <div>
+        <div class="col-xs-12 product-wrapper-grid">
+            <a href="#">
+                <div class="product normal">
+                    <div class="image">
+                        <img class="img-responsive" src="http://placehold.it/500x500" />
+                    </div>
+                    <h5 class="title">Zegarek dla mężczyzny W-S200H-1A marki Casio, styl: sportowy</h5>
+                    <div class="product-details-popup text-center">
+                            <span data-container="body" data-placement="left" data-toggle="tooltip" >
+                                <i class="fa fa-align-justify"></i>
+                                <div class="tooltip_title_wrapper hidden">
+                                    <p>Food truck fixie...</p><p>locavore, accusamus mcsweeney's marfa nulla single-origin coffee squid. Exercitation +1 labore velit, blog sartorial PBR leggings next level wes anderson artisan four loko farm-to-table craft beer twee. Qui photo booth letterpress, commodo enim craft beer mlkshk aliquip jean shorts ullamco ad vinyl cillum PBR. Homo nostrud organic, assumenda labore aesthetic magna delectus mollit</p>
+                                </div>
+                            </span>
+                            <span data-container="body" data-placement="left" data-toggle="tooltip">
+                                <i class="fa fa-tag"></i>
+                                <div class="tooltip_title_wrapper hidden">
+                                    Na tym produkcie możesz zaoszczędzić aż 20%
+                                </div>
+                            </span>
+                        <a href="produkt.html"><i class="fa fa-link"></i></a>
+                    </div>
+                    <div class="row">
+                        <div class="col-xs-12 text-center">
+                            <span class="price lead">117,99 PLN</span>
+                            <a class="btn btn-success btn-success-outlined btn-icon-right">Porównaj oferty <i class="fa fa-angle-right"></i></a>
+                        </div>
+                    </div>
+                </div>
+            </a>
+        </div>
+    </div>
+    <div>
+        <div class="col-xs-12 product-wrapper-grid">
+            <a href="#">
+                <div class="product normal">
+                    <div class="image">
+                        <img class="img-responsive" src="http://placehold.it/500x500" />
+                    </div>
+                    <h5 class="title">Zegarek dla mężczyzny W-S200H-1A marki Casio, styl: sportowy</h5>
+                    <div class="product-details-popup text-center">
+                            <span data-container="body" data-placement="left" data-toggle="tooltip" >
+                                <i class="fa fa-align-justify"></i>
+                                <div class="tooltip_title_wrapper hidden">
+                                    <p>Food truck fixie...</p><p>locavore, accusamus mcsweeney's marfa nulla single-origin coffee squid. Exercitation +1 labore velit, blog sartorial PBR leggings next level wes anderson artisan four loko farm-to-table craft beer twee. Qui photo booth letterpress, commodo enim craft beer mlkshk aliquip jean shorts ullamco ad vinyl cillum PBR. Homo nostrud organic, assumenda labore aesthetic magna delectus mollit</p>
+                                </div>
+                            </span>
+                            <span data-container="body" data-placement="left" data-toggle="tooltip">
+                                <i class="fa fa-tag"></i>
+                                <div class="tooltip_title_wrapper hidden">
+                                    Na tym produkcie możesz zaoszczędzić aż 20%
+                                </div>
+                            </span>
+                        <a href="produkt.html"><i class="fa fa-link"></i></a>
+                    </div>
+                    <div class="row">
+                        <div class="col-xs-12 text-center">
+                            <span class="price lead">117,99 PLN</span>
+                            <a class="btn btn-success btn-success-outlined btn-icon-right">Porównaj oferty <i class="fa fa-angle-right"></i></a>
+                        </div>
+                    </div>
+                </div>
+            </a>
+        </div>
+    </div>
+    </div>
+    </div>
+
+
+
+
+    <div class="row lower-double products">
+        <div class="col-xs-8">
+            <h4>Produkty najpopularniejsze w kategorii <a href="#">Kategoria XYZ</a></h4>
+        </div>
+        <div class="col-xs-4 text-right">
+            <a id="products-top-prev" class="btn btn-sm btn-primary btn-primary-outlined"><i class="fa fa-angle-left"></i></a>
+            <a id="products-top-next" class="btn btn-sm btn-primary btn-primary-outlined"><i class="fa fa-angle-right"></i></a>
+        </div>
+    </div>
+    <div class="row">
+    <div id="products-top" class=" owl-carousel">
+    <div>
+        <div class="col-xs-12 product-wrapper-grid">
+            <a href="#">
+                <div class="product normal">
+                    <div class="image">
+                        <img class="img-responsive" src="http://placehold.it/500x500" />
+                    </div>
+                    <h5 class="title">Zegarek dla mężczyzny W-S200H-1A marki Casio, styl: sportowy</h5>
+                    <div class="product-details-popup text-center">
+                            <span data-container="body" data-placement="left" data-toggle="tooltip" >
+                                <i class="fa fa-align-justify"></i>
+                                <div class="tooltip_title_wrapper hidden">
+                                    <p>Food truck fixie...</p><p>locavore, accusamus mcsweeney's marfa nulla single-origin coffee squid. Exercitation +1 labore velit, blog sartorial PBR leggings next level wes anderson artisan four loko farm-to-table craft beer twee. Qui photo booth letterpress, commodo enim craft beer mlkshk aliquip jean shorts ullamco ad vinyl cillum PBR. Homo nostrud organic, assumenda labore aesthetic magna delectus mollit</p>
+                                </div>
+                            </span>
+                            <span data-container="body" data-placement="left" data-toggle="tooltip">
+                                <i class="fa fa-tag"></i>
+                                <div class="tooltip_title_wrapper hidden">
+                                    Na tym produkcie możesz zaoszczędzić aż 20%
+                                </div>
+                            </span>
+                        <a href="produkt.html"><i class="fa fa-link"></i></a>
+                    </div>
+                    <div class="row">
+                        <div class="col-xs-12 text-center">
+                            <span class="price lead">od 117,99 PLN</span>
+                            <a class="btn btn-success btn-success-outlined btn-icon-right">Porównaj oferty <i class="fa fa-angle-right"></i></a>
+                        </div>
+                    </div>
+                </div>
+            </a>
+        </div>
+    </div>
+    <div>
+        <div class="col-xs-12 product-wrapper-grid">
+            <a href="#">
+                <div class="product normal">
+                    <div class="image">
+                        <img class="img-responsive" src="http://placehold.it/500x500" />
+                    </div>
+                    <h5 class="title">Zegarek dla mężczyzny W-S200H-1A marki Casio, styl: sportowy</h5>
+                    <div class="product-details-popup text-center">
+                            <span data-container="body" data-placement="left" data-toggle="tooltip" >
+                                <i class="fa fa-align-justify"></i>
+                                <div class="tooltip_title_wrapper hidden">
+                                    <p>Food truck fixie...</p><p>locavore, accusamus mcsweeney's marfa nulla single-origin coffee squid. Exercitation +1 labore velit, blog sartorial PBR leggings next level wes anderson artisan four loko farm-to-table craft beer twee. Qui photo booth letterpress, commodo enim craft beer mlkshk aliquip jean shorts ullamco ad vinyl cillum PBR. Homo nostrud organic, assumenda labore aesthetic magna delectus mollit</p>
+                                </div>
+                            </span>
+                            <span data-container="body" data-placement="left" data-toggle="tooltip">
+                                <i class="fa fa-tag"></i>
+                                <div class="tooltip_title_wrapper hidden">
+                                    Na tym produkcie możesz zaoszczędzić aż 20%
+                                </div>
+                            </span>
+                        <a href="produkt.html"><i class="fa fa-link"></i></a>
+                    </div>
+                    <div class="row">
+                        <div class="col-xs-12 text-center">
+                            <span class="price lead">117,99 PLN</span>
+                            <a class="btn btn-success btn-success-outlined btn-icon-right">Zobacz w sklepie <i class="fa fa-angle-right"></i></a>
+                        </div>
+                    </div>
+                </div>
+            </a>
+        </div>
+    </div>
+    <div>
+        <div class="col-xs-12 product-wrapper-grid">
+            <a href="#">
+                <div class="product normal">
+                    <div class="image">
+                        <img class="img-responsive" src="http://placehold.it/500x500" />
+                    </div>
+                    <h5 class="title">Zegarek dla mężczyzny W-S200H-1A marki Casio, styl: sportowy</h5>
+                    <div class="product-details-popup text-center">
+                            <span data-container="body" data-placement="left" data-toggle="tooltip" >
+                                <i class="fa fa-align-justify"></i>
+                                <div class="tooltip_title_wrapper hidden">
+                                    <p>Food truck fixie...</p><p>locavore, accusamus mcsweeney's marfa nulla single-origin coffee squid. Exercitation +1 labore velit, blog sartorial PBR leggings next level wes anderson artisan four loko farm-to-table craft beer twee. Qui photo booth letterpress, commodo enim craft beer mlkshk aliquip jean shorts ullamco ad vinyl cillum PBR. Homo nostrud organic, assumenda labore aesthetic magna delectus mollit</p>
+                                </div>
+                            </span>
+                            <span data-container="body" data-placement="left" data-toggle="tooltip">
+                                <i class="fa fa-tag"></i>
+                                <div class="tooltip_title_wrapper hidden">
+                                    Na tym produkcie możesz zaoszczędzić aż 20%
+                                </div>
+                            </span>
+                        <a href="produkt.html"><i class="fa fa-link"></i></a>
+                    </div>
+                    <div class="row">
+                        <div class="col-xs-12 text-center">
+                            <span class="price lead">117,99 PLN</span>
+                            <a class="btn btn-success btn-success-outlined btn-icon-right">Porównaj oferty <i class="fa fa-angle-right"></i></a>
+                        </div>
+                    </div>
+                </div>
+            </a>
+        </div>
+    </div>
+    <div>
+        <div class="col-xs-12 product-wrapper-grid">
+            <a href="#">
+                <div class="product normal">
+                    <div class="image">
+                        <img class="img-responsive" src="http://placehold.it/500x500" />
+                    </div>
+                    <h5 class="title">Zegarek dla mężczyzny W-S200H-1A marki Casio, styl: sportowy</h5>
+                    <div class="product-details-popup text-center">
+                            <span data-container="body" data-placement="left" data-toggle="tooltip" >
+                                <i class="fa fa-align-justify"></i>
+                                <div class="tooltip_title_wrapper hidden">
+                                    <p>Food truck fixie...</p><p>locavore, accusamus mcsweeney's marfa nulla single-origin coffee squid. Exercitation +1 labore velit, blog sartorial PBR leggings next level wes anderson artisan four loko farm-to-table craft beer twee. Qui photo booth letterpress, commodo enim craft beer mlkshk aliquip jean shorts ullamco ad vinyl cillum PBR. Homo nostrud organic, assumenda labore aesthetic magna delectus mollit</p>
+                                </div>
+                            </span>
+                            <span data-container="body" data-placement="left" data-toggle="tooltip">
+                                <i class="fa fa-tag"></i>
+                                <div class="tooltip_title_wrapper hidden">
+                                    Na tym produkcie możesz zaoszczędzić aż 20%
+                                </div>
+                            </span>
+                        <a href="produkt.html"><i class="fa fa-link"></i></a>
+                    </div>
+                    <div class="row">
+                        <div class="col-xs-12 text-center">
+                            <span class="price lead">117,99 PLN</span>
+                            <a class="btn btn-success btn-success-outlined btn-icon-right">Porównaj oferty <i class="fa fa-angle-right"></i></a>
+                        </div>
+                    </div>
+                </div>
+            </a>
+        </div>
+    </div>
+    <div>
+        <div class="col-xs-12 product-wrapper-grid">
+            <a href="#">
+                <div class="product normal">
+                    <div class="image">
+                        <img class="img-responsive" src="http://placehold.it/500x500" />
+                    </div>
+                    <h5 class="title">Zegarek dla mężczyzny W-S200H-1A marki Casio, styl: sportowy</h5>
+                    <div class="product-details-popup text-center">
+                            <span data-container="body" data-placement="left" data-toggle="tooltip" >
+                                <i class="fa fa-align-justify"></i>
+                                <div class="tooltip_title_wrapper hidden">
+                                    <p>Food truck fixie...</p><p>locavore, accusamus mcsweeney's marfa nulla single-origin coffee squid. Exercitation +1 labore velit, blog sartorial PBR leggings next level wes anderson artisan four loko farm-to-table craft beer twee. Qui photo booth letterpress, commodo enim craft beer mlkshk aliquip jean shorts ullamco ad vinyl cillum PBR. Homo nostrud organic, assumenda labore aesthetic magna delectus mollit</p>
+                                </div>
+                            </span>
+                            <span data-container="body" data-placement="left" data-toggle="tooltip">
+                                <i class="fa fa-tag"></i>
+                                <div class="tooltip_title_wrapper hidden">
+                                    Na tym produkcie możesz zaoszczędzić aż 20%
+                                </div>
+                            </span>
+                        <a href="produkt.html"><i class="fa fa-link"></i></a>
+                    </div>
+                    <div class="row">
+                        <div class="col-xs-12 text-center">
+                            <span class="price lead">117,99 PLN</span>
+                            <a class="btn btn-success btn-success-outlined btn-icon-right">Porównaj oferty <i class="fa fa-angle-right"></i></a>
+                        </div>
+                    </div>
+                </div>
+            </a>
+        </div>
+    </div>
+    <div>
+        <div class="col-xs-12 product-wrapper-grid">
+            <a href="#">
+                <div class="product normal">
+                    <div class="image">
+                        <img class="img-responsive" src="http://placehold.it/500x500" />
+                    </div>
+                    <h5 class="title">Zegarek dla mężczyzny W-S200H-1A marki Casio, styl: sportowy</h5>
+                    <div class="product-details-popup text-center">
+                            <span data-container="body" data-placement="left" data-toggle="tooltip" >
+                                <i class="fa fa-align-justify"></i>
+                                <div class="tooltip_title_wrapper hidden">
+                                    <p>Food truck fixie...</p><p>locavore, accusamus mcsweeney's marfa nulla single-origin coffee squid. Exercitation +1 labore velit, blog sartorial PBR leggings next level wes anderson artisan four loko farm-to-table craft beer twee. Qui photo booth letterpress, commodo enim craft beer mlkshk aliquip jean shorts ullamco ad vinyl cillum PBR. Homo nostrud organic, assumenda labore aesthetic magna delectus mollit</p>
+                                </div>
+                            </span>
+                            <span data-container="body" data-placement="left" data-toggle="tooltip">
+                                <i class="fa fa-tag"></i>
+                                <div class="tooltip_title_wrapper hidden">
+                                    Na tym produkcie możesz zaoszczędzić aż 20%
+                                </div>
+                            </span>
+                        <a href="produkt.html"><i class="fa fa-link"></i></a>
+                    </div>
+                    <div class="row">
+                        <div class="col-xs-12 text-center">
+                            <span class="price lead">117,99 PLN</span>
+                            <a class="btn btn-success btn-success-outlined btn-icon-right">Porównaj oferty <i class="fa fa-angle-right"></i></a>
+                        </div>
+                    </div>
+                </div>
+            </a>
+        </div>
+    </div>
+    <div>
+        <div class="col-xs-12 product-wrapper-grid">
+            <a href="#">
+                <div class="product normal">
+                    <div class="image">
+                        <img class="img-responsive" src="http://placehold.it/500x500" />
+                    </div>
+                    <h5 class="title">Zegarek dla mężczyzny W-S200H-1A marki Casio, styl: sportowy</h5>
+                    <div class="product-details-popup text-center">
+                            <span data-container="body" data-placement="left" data-toggle="tooltip" >
+                                <i class="fa fa-align-justify"></i>
+                                <div class="tooltip_title_wrapper hidden">
+                                    <p>Food truck fixie...</p><p>locavore, accusamus mcsweeney's marfa nulla single-origin coffee squid. Exercitation +1 labore velit, blog sartorial PBR leggings next level wes anderson artisan four loko farm-to-table craft beer twee. Qui photo booth letterpress, commodo enim craft beer mlkshk aliquip jean shorts ullamco ad vinyl cillum PBR. Homo nostrud organic, assumenda labore aesthetic magna delectus mollit</p>
+                                </div>
+                            </span>
+                            <span data-container="body" data-placement="left" data-toggle="tooltip">
+                                <i class="fa fa-tag"></i>
+                                <div class="tooltip_title_wrapper hidden">
+                                    Na tym produkcie możesz zaoszczędzić aż 20%
+                                </div>
+                            </span>
+                        <a href="produkt.html"><i class="fa fa-link"></i></a>
+                    </div>
+                    <div class="row">
+                        <div class="col-xs-12 text-center">
+                            <span class="price lead">117,99 PLN</span>
+                            <a class="btn btn-success btn-success-outlined btn-icon-right">Porównaj oferty <i class="fa fa-angle-right"></i></a>
+                        </div>
+                    </div>
+                </div>
+            </a>
+        </div>
+    </div>
+    <div>
+        <div class="col-xs-12 product-wrapper-grid">
+            <a href="#">
+                <div class="product normal">
+                    <div class="image">
+                        <img class="img-responsive" src="http://placehold.it/500x500" />
+                    </div>
+                    <h5 class="title">Zegarek dla mężczyzny W-S200H-1A marki Casio, styl: sportowy</h5>
+                    <div class="product-details-popup text-center">
+                            <span data-container="body" data-placement="left" data-toggle="tooltip" >
+                                <i class="fa fa-align-justify"></i>
+                                <div class="tooltip_title_wrapper hidden">
+                                    <p>Food truck fixie...</p><p>locavore, accusamus mcsweeney's marfa nulla single-origin coffee squid. Exercitation +1 labore velit, blog sartorial PBR leggings next level wes anderson artisan four loko farm-to-table craft beer twee. Qui photo booth letterpress, commodo enim craft beer mlkshk aliquip jean shorts ullamco ad vinyl cillum PBR. Homo nostrud organic, assumenda labore aesthetic magna delectus mollit</p>
+                                </div>
+                            </span>
+                            <span data-container="body" data-placement="left" data-toggle="tooltip">
+                                <i class="fa fa-tag"></i>
+                                <div class="tooltip_title_wrapper hidden">
+                                    Na tym produkcie możesz zaoszczędzić aż 20%
+                                </div>
+                            </span>
+                        <a href="produkt.html"><i class="fa fa-link"></i></a>
+                    </div>
+                    <div class="row">
+                        <div class="col-xs-12 text-center">
+                            <span class="price lead">117,99 PLN</span>
+                            <a class="btn btn-success btn-success-outlined btn-icon-right">Porównaj oferty <i class="fa fa-angle-right"></i></a>
+                        </div>
+                    </div>
+                </div>
+            </a>
+        </div>
+    </div>
+    <div>
+        <div class="col-xs-12 product-wrapper-grid">
+            <a href="#">
+                <div class="product normal">
+                    <div class="image">
+                        <img class="img-responsive" src="http://placehold.it/500x500" />
+                    </div>
+                    <h5 class="title">Zegarek dla mężczyzny W-S200H-1A marki Casio, styl: sportowy</h5>
+                    <div class="product-details-popup text-center">
+                            <span data-container="body" data-placement="left" data-toggle="tooltip" >
+                                <i class="fa fa-align-justify"></i>
+                                <div class="tooltip_title_wrapper hidden">
+                                    <p>Food truck fixie...</p><p>locavore, accusamus mcsweeney's marfa nulla single-origin coffee squid. Exercitation +1 labore velit, blog sartorial PBR leggings next level wes anderson artisan four loko farm-to-table craft beer twee. Qui photo booth letterpress, commodo enim craft beer mlkshk aliquip jean shorts ullamco ad vinyl cillum PBR. Homo nostrud organic, assumenda labore aesthetic magna delectus mollit</p>
+                                </div>
+                            </span>
+                            <span data-container="body" data-placement="left" data-toggle="tooltip">
+                                <i class="fa fa-tag"></i>
+                                <div class="tooltip_title_wrapper hidden">
+                                    Na tym produkcie możesz zaoszczędzić aż 20%
+                                </div>
+                            </span>
+                        <a href="produkt.html"><i class="fa fa-link"></i></a>
+                    </div>
+                    <div class="row">
+                        <div class="col-xs-12 text-center">
+                            <span class="price lead">117,99 PLN</span>
+                            <a class="btn btn-success btn-success-outlined btn-icon-right">Porównaj oferty <i class="fa fa-angle-right"></i></a>
+                        </div>
+                    </div>
+                </div>
+            </a>
+        </div>
+    </div>
+    <div>
+        <div class="col-xs-12 product-wrapper-grid">
+            <a href="#">
+                <div class="product normal">
+                    <div class="image">
+                        <img class="img-responsive" src="http://placehold.it/500x500" />
+                    </div>
+                    <h5 class="title">Zegarek dla mężczyzny W-S200H-1A marki Casio, styl: sportowy</h5>
+                    <div class="product-details-popup text-center">
+                            <span data-container="body" data-placement="left" data-toggle="tooltip" >
+                                <i class="fa fa-align-justify"></i>
+                                <div class="tooltip_title_wrapper hidden">
+                                    <p>Food truck fixie...</p><p>locavore, accusamus mcsweeney's marfa nulla single-origin coffee squid. Exercitation +1 labore velit, blog sartorial PBR leggings next level wes anderson artisan four loko farm-to-table craft beer twee. Qui photo booth letterpress, commodo enim craft beer mlkshk aliquip jean shorts ullamco ad vinyl cillum PBR. Homo nostrud organic, assumenda labore aesthetic magna delectus mollit</p>
+                                </div>
+                            </span>
+                            <span data-container="body" data-placement="left" data-toggle="tooltip">
+                                <i class="fa fa-tag"></i>
+                                <div class="tooltip_title_wrapper hidden">
+                                    Na tym produkcie możesz zaoszczędzić aż 20%
+                                </div>
+                            </span>
+                        <a href="produkt.html"><i class="fa fa-link"></i></a>
+                    </div>
+                    <div class="row">
+                        <div class="col-xs-12 text-center">
+                            <span class="price lead">117,99 PLN</span>
+                            <a class="btn btn-success btn-success-outlined btn-icon-right">Porównaj oferty <i class="fa fa-angle-right"></i></a>
+                        </div>
+                    </div>
+                </div>
+            </a>
+        </div>
+    </div>
+    </div>
     </div>
 
 {% endblock %}
@@ -121,7 +909,7 @@
                     .done(function (data) {
                         if (data != -1) {
                             selectStars(Math.round(data));
-                            $("#productRating").unbind("click").css('cursor','default');
+                            $(".product-star").unbind().css('cursor','default');
                             alert('Dziękujemy za dodanie oceny')
                         } else {
                             alert('Nie można dodać oceny. Proszę spróbować później');
@@ -130,9 +918,11 @@
         }
 
         function selectStars(countSelectedStars) {
-            $('.product-star').css('color','silver');
+            $('.product-star').removeClass('fa-star','silver');
+            $('.product-star').addClass('fa-star-o','silver');
             for(var i=1; i<=countSelectedStars; ++i) {
-                $('.product-star[data-star-nr='+i+']').css('color','orangered');
+                $('.product-star[data-star-nr='+i+']').removeClass('fa-star-o','silver');
+                $('.product-star[data-star-nr='+i+']').addClass('fa-star','silver');
             }
         }
     </script>

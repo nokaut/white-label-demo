@@ -1,0 +1,26 @@
+{% extends "WLAppBundle::layout.html.twig" %}
+
+{% block title %}
+White Label - Demo
+{% endblock %}
+
+{% block head %}
+    {{ parent() }}
+
+    <link rel="canonical" href="{{ app.request.host }}" />
+{% endblock %}
+
+
+{% block content %}
+    <div class="jumbotron">
+        <h1>White Label Demo</h1>
+        <p>Demonstracyjna wersja WhiteLebel-a, przedstawiająca strony: główną, kategorii, produktu i mapę kategorii</p>
+    </div>
+
+    <div class="row">
+        {% for product in products24 %}
+            {% include 'WLAppBundle:Common:productItem.html.twig' with {'product': product } %}
+        {% endfor %}
+    </div><!--/row-->
+
+{% endblock %}
