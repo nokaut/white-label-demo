@@ -12,6 +12,8 @@ namespace WL\AppBundle\Controller;
 use Nokaut\ApiKit\ClientApi\Rest\Exception\NotFoundException;
 use Nokaut\ApiKit\ClientApi\Rest\Fetch\OffersFetch;
 use Nokaut\ApiKit\ClientApi\Rest\Fetch\ProductsFetch;
+use Nokaut\ApiKit\ClientApi\Rest\Query\Filter\Single;
+use Nokaut\ApiKit\ClientApi\Rest\Query\ProductsQuery;
 use Nokaut\ApiKit\Entity\Category;
 use Nokaut\ApiKit\Entity\Product;
 use Nokaut\ApiKit\Repository\CategoriesAsyncRepository;
@@ -50,6 +52,7 @@ class ProductController extends Controller
         $offersFetch = $offersRepo->fetchOffersByProductId($product->getId(), OffersRepository::$fieldsForProductPage);
 
         $productsFromCategoryFetch = $this->fetchProductsFromCategory($product->getCategoryId());
+        $productsSimilarFetch = $this->fetchSimilarProducts($product);
 
         $categoriesRepo->fetchAllAsync();
         /** @var Category $category */
@@ -61,6 +64,7 @@ class ProductController extends Controller
             'product' => $product,
             'offers' => $offersFetch->getResult(),
             'productsTop10' => $productsFromCategoryFetch->getResult(),
+            'productsSimilar' => $productsSimilarFetch->getResult(),
             'breadcrumbs' => $breadcrumbs,
             'category' => $category,
             'canAddRating' => RatingAdd::canAddRate($product->getId())
@@ -129,5 +133,24 @@ class ProductController extends Controller
         );
         $breadcrumbs[] = new Breadcrumb($product->getTitle());
         return $breadcrumbs;
+    }
+
+    /**
+     * @param Product $product
+     * @return ProductsFetch
+     */
+    protected function fetchSimilarProducts($product)
+    {
+        $query = new ProductsQuery($this->container->getParameter('api_url'));
+        $query->setFields(ProductsRepository::$fieldsForProductBox);
+        $query->setLimit(10);
+        $query->setCategoryIds(array($product->getCategoryId()));
+        $query->setProducerName($product->getProducerName());
+//        $query->setPhrase($product->getTitle());
+//        $query->setQuality(60);
+        /** @var ProductsAsyncRepository $productsRepo */
+        $productsRepo = $this->get('repo.products.async');
+        $productsFetch = $productsRepo->fetchProductsByQuery($query);
+        return $productsFetch;
     }
 }

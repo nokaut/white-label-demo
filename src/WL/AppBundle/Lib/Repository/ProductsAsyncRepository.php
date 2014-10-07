@@ -45,7 +45,7 @@ class ProductsAsyncRepository extends \Nokaut\ApiKit\Repository\ProductsAsyncRep
     {
         $query = new ProductsQuery($this->apiBaseUrl);
         $query->setLimit($limit);
-        $query->setOrder('popularity', 'asc');
+        $query->setOrder('views', 'desc');
         if ($categoriesIds) {
             $query->setCategoryIds($categoriesIds);
         } else {

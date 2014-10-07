@@ -1,0 +1,60 @@
+{% if product.offerCount == 1 %}
+    {% set productUrl = product|click %}
+{% else %}
+    {% set productUrl = path('product', {'productUrl': product.url|trim('/')}) %}
+{% endif %}
+<div>
+    <div class="col-xs-12 product-wrapper-grid">
+        <div class="product normal">
+            <a {% if product.offerCount == 1 %}target="_blank"{% endif %} href="{{ productUrl }}">
+                <div class="image">
+                    <img class="img-responsive" title="{{ product.title|raw }}"
+                         src="{{ nokaut_img_domain ~ nokaut_photo_url.prepare(product.photoId, '500x500', product.title) }}"/>
+                </div>
+            </a>
+            <a {% if product.offerCount == 1 %}target="_blank"{% endif %} href="{{ productUrl }}">
+                <h5 class="title">{{ product.title|raw }}</h5>
+            </a>
+
+            <div class="product-details-popup text-center">
+                <a {% if product.offerCount == 1 %}target="_blank"{% endif %} href="{{ productUrl }}" data-container="body" data-placement="left" data-toggle="tooltip">
+                    <i class="fa fa-align-justify"></i>
+                    <div class="tooltip_title_wrapper hidden">
+                        <p>Food truck fixie...</p>
+
+                        <p>locavore, accusamus mcsweeney's marfa nulla single-origin coffee squid.
+                            Exercitation +1 labore velit, blog sartorial PBR leggings next level wes
+                            anderson artisan four loko farm-to-table craft beer twee. Qui photo booth
+                            letterpress, commodo enim craft beer mlkshk aliquip jean shorts ullamco ad vinyl
+                            cillum PBR. Homo nostrud organic, assumenda labore aesthetic magna delectus
+                            mollit</p>
+                    </div>
+                </a>
+
+                {% set savePercent = helper_price.getSavePercent(product.prices) %}
+                {% if savePercent > 0 %}
+                    <a {% if product.offerCount == 1 %}target="_blank"{% endif %} href="{{ productUrl }}" data-container="body" data-placement="left" data-toggle="tooltip">
+                        <i class="fa fa-tag"></i>
+
+                        <div class="tooltip_title_wrapper hidden">
+                            Na tym produkcie możesz zaoszczędzić aż  {{ savePercent }}%
+                        </div>
+                    </a>
+                {% endif %}
+                {% if product.offerCount == 1 %}
+                    <a href="{{ url('product', {'productUrl': product.url|trim('/') }) }}"><i class="fa fa-link"></i></a>
+                {% endif %}
+            </div>
+            <a {% if product.offerCount == 1 %}target="_blank"{% endif %} href="{{ productUrl }}">
+                <div class="row">
+                    <div class="col-xs-12 text-center">
+                        <span class="price lead">{% if product.offerCount > 1 %}od {% endif %}{{ product.prices.min|number_format(2,',',' ') }} PLN</span>
+                            <span class="btn btn-success btn-success-outlined btn-icon-right">Porównaj oferty
+                                <i class="fa fa-angle-right"></i>
+                            </span>
+                    </div>
+                </div>
+            </a>
+        </div>
+    </div>
+</div>
