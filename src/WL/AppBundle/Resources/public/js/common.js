@@ -68,7 +68,7 @@ $(document).ready(function() {
 	
 	
 	$( window ).scroll(function() {
-		if($( "body" ).scrollTop() > 5)
+		if($( window ).scrollTop() > 5)
 		{
 			$( ".navbar" ).addClass( "navbar-scrolled" );
 		}
