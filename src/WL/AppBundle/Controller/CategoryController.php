@@ -199,7 +199,7 @@ class CategoryController extends Controller
     {
         $converterFilter = new Data\Converter\Filters\PriceRangesConverter();
         $priceRangesSelectedFilter = $converterFilter->convert($products, array(
-            new Data\Converter\Filters\Callback\PriceRanges\SetIsNofollow()
+            new Data\Converter\Filters\Callback\PriceRanges\SetIsNofollow(),
         ));
         return $priceRangesSelectedFilter;
     }

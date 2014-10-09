@@ -2,64 +2,12 @@
 // -----------------------------------------------------
 
 // Core variables and mixins
-@import "variables";
-@import "mixins";
+@import "variables.less";
+@import "mixins.less";
 
 
 // Category =====================================================================
 .category {
-  &-grid {
-    margin-bottom: 30px;
-    
-    &.normal {
-      &.inner {
-        .content {
-          position: absolute;
-          padding: 20px;
-          top: 0;
-          left: 0;
-          right: 0;
-          bottom: 0;
-          text-align: center;
-          vertical-align: middle;
-          opacity: 0;
-          h4 {
-            font-size: 16px;
-            letter-spacing: -1px;
-            color: @brand-success;
-            margin-bottom: 20px;
-          }
-          &:hover {
-            opacity: 1;
-          }
-        }
-        &.col-md-8 {
-          .content {
-            padding-top: 30%;
-          }
-        }
-      }
-      .image img {
-        -webkit-transition: all 0.2s ease; /* Safari and Chrome */
-        -moz-transition: all 0.2s ease; /* Firefox */
-        -ms-transition: all 0.2s ease; /* IE 9 */
-        -o-transition: all 0.2s ease; /* Opera */
-        transition: all 0.2s ease;
-      }
-      
-      &:hover {
-        .image img {
-          -webkit-transform:scale(1.05); /* Safari and Chrome */
-          -moz-transform:scale(1.05); /* Firefox */
-          -ms-transform:scale(1.05); /* IE 9 */
-          -o-transform:scale(1.05); /* Opera */
-           transform:scale(1.05);
-           opacity: 0.2;
-        }
-      }
-    }
-  }
-  
   &-filters {
     .category-filter {
       margin-bottom: 25px;
@@ -125,6 +73,8 @@
         &.disabled {
           border-left-color: transparent !important;
           text-decoration: line-through;
+          -moz-text-decoration-color: @gray-lighter;
+          text-decoration-color: @gray-lighter;
           a,
           a:hover {
             color: @gray-lighter;
@@ -231,6 +181,76 @@
 
 .product {
   
+  &-grid {
+    margin-bottom: 30px;
+    
+    &.normal {
+      &.inner {
+        .content {
+          position: absolute;
+          padding: 10px 20px 10px 20px;
+          top: 0;
+          left: 0;
+          right: 0;
+          bottom: 0;
+          text-align: center;
+          vertical-align: middle;
+          opacity: 0;
+          h5 {
+            font-size: 16px;
+            letter-spacing: -1px;
+            color: @brand-success;
+            margin-bottom: 20px;
+            max-height: 3.9em;
+            overflow: hidden;
+            display: block; /* Fallback for non-webkit */
+            display: -webkit-box;
+            max-width: 400px;
+            height: 3.9em; /* Fallback for non-webkit */
+            margin: 10px auto 0 auto;
+            line-height: 1.3em;
+            -webkit-line-clamp: 3;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+            text-overflow: ellipsis;
+          }
+          .price {
+            display: block;
+            color: @brand-success;
+            font-weight: 700;
+            letter-spacing: -1px;
+          }
+          &:hover {
+            opacity: 1;
+          }
+        }
+        &.col-md-8 {
+          .content {
+            padding-top: 30%;
+          }
+        }
+      }
+      .image img {
+        -webkit-transition: all 0.2s ease; /* Safari and Chrome */
+        -moz-transition: all 0.2s ease; /* Firefox */
+        -ms-transition: all 0.2s ease; /* IE 9 */
+        -o-transition: all 0.2s ease; /* Opera */
+        transition: all 0.2s ease;
+      }
+      
+      &:hover {
+        .image img {
+          -webkit-transform:scale(1.05); /* Safari and Chrome */
+          -moz-transform:scale(1.05); /* Firefox */
+          -ms-transform:scale(1.05); /* IE 9 */
+          -o-transform:scale(1.05); /* Opera */
+           transform:scale(1.05);
+           opacity: 0.2;
+        }
+      }
+    }
+  }
+  
   &-details {
     .options {
       margin-top: -40px;
@@ -273,6 +293,16 @@
         margin-top: 0;
         padding-top: 0;
       }
+    }
+    
+    h3 {
+      color: @gray;
+      font-size: 18px;
+      margin-top: 15px;
+    }
+    
+    .description {
+      padding-top: 20px;
     }
     
     ul.features {

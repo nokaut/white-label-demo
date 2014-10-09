@@ -29,14 +29,14 @@
     <div class="panel panel-default category-filter">
         <div class="panel-heading">
             <h4 class="panel-title">
-                <a data-toggle="collapse" data-parent="#accordion" href="#collapse{{ boxId }}" class="category-filter-title collapsed">
+                <a data-toggle="collapse" href="#collapse{{ boxId }}" class="category-filter-title collapsed">
                     {{ filter.name }}
                     <i class="filter-open fa fa-angle-down"></i>
                     <i class="filter-close fa fa-angle-up"></i>
                 </a>
             </h4>
         </div>
-        <div id="collapse{{ boxId }}" class="panel-collapse collapse" style="height: 0px;">
+        <div id="collapse{{ boxId }}" class="panel-collapse {% if filter.isActive %}in{% else %}collapse{% endif %}" style="{% if filter.isActive %}height: auto;{% else %}height: 0;{% endif %};">
             <div class="panel-body">
                 <ul>
                     {% set selectedValue = false %}
@@ -95,7 +95,7 @@
                 </div>
                 <div id="collapseThree" class="panel-collapse collapse in">
                     <div class="panel-body">
-                        {{ category.description }}
+                        {{ category.description|raw }}
                     </div>
                 </div>
             </div>
