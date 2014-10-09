@@ -36,7 +36,7 @@
                 </a>
             </h4>
         </div>
-        <div id="collapse{{ boxId }}" class="panel-collapse {% if filter.isActive %}in{% else %}collapse{% endif %}" style="{% if filter.isActive %}height: auto;{% else %}height: 0;{% endif %};">
+        <div  data-links='keep-view' id="collapse{{ boxId }}" class="panel-collapse {% if filter.isActive %}in{% else %}collapse{% endif %}" style="{% if filter.isActive %}height: auto;{% else %}height: 0;{% endif %};">
             <div class="panel-body">
                 <ul>
                     {% set selectedValue = false %}
@@ -69,6 +69,9 @@
         </div>
     </div>
 {% endmacro %}
+
+
+
 {% block content %}
     <div class="row category">
 
@@ -102,9 +105,7 @@
             {% endif %}
         </div>
 
-
     </div>
-
 
 
     <div class="col-md-9 col-sm-12">
@@ -239,7 +240,7 @@
 
     </div>
     <div class="row">
-        <div class="col-xs-12 text-center">
+        <div class="col-xs-12 text-center" data-links='keep-view'>
             {% include '@WLApp/paginator.html.twig' %}
         </div>
     </div>
