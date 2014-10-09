@@ -85,7 +85,7 @@
                 {{ _self.filterView(filter, false, '-properites-' ~ loop.index, route, routeArgument) }}
             {% endfor %}
 
-            {% if category.description %}
+            {% if category is defined and category.description %}
             <div class="panel panel-default category-filter">
                 <div class="panel-heading">
                     <h4 class="panel-title">
