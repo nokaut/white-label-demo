@@ -26,7 +26,6 @@ class CategoryController extends Controller
         /** @var ProductsAsyncRepository $productsAsyncRepo */
         $productsAsyncRepo = $this->get('repo.products.async');
         $productsFetch = $productsAsyncRepo->fetchProductsByUrl($categoryUrlWithFilters, $this->getProductFields(), 24);
-        $productsTopFetch = $productsAsyncRepo->fetchTopProducts(10, array($category->getId()));
         $productsAsyncRepo->fetchAllAsync();
 
         /** @var Products $products */
@@ -46,13 +45,16 @@ class CategoryController extends Controller
 
         $responseStatus = null;
         if ($products->getMetadata()->getTotal() == 0) {
-            $responseStatus = new Response('', 404);
+            return $this->render('WLAppBundle:Category:nonResult.html.twig', array(
+                'breadcrumbs' => $breadcrumbs,
+                'selectedFilters' => $selectedFilters,
+                'canonical' => $products ? $products->getMetadata()->getCanonical() : '',
+            ), new Response('', 404));
         }
 
         return $this->render('WLAppBundle:Category:index.html.twig', array(
             'category' => $category,
             'products' => $products,
-            'productsTop10' => $productsTopFetch->getResult(),
             'breadcrumbs' => $breadcrumbs,
             'pagination' => $pagination,
             'subcategories' => $products ? $products->getCategories() : array(),
@@ -61,8 +63,9 @@ class CategoryController extends Controller
             'propertiesFilters' => $propertiesFilters,
             'selectedFilters' => $selectedFilters,
             'sorts' => $products ? $products->getMetadata()->getSorts() : array(),
-            'canonical' => $products ? $products->getMetadata()->getCanonical() : ''
-        ), $responseStatus);
+            'canonical' => $products ? $products->getMetadata()->getCanonical() : '',
+            'h1' => $category->getTitle()
+        ));
     }
 
     /**

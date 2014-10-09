@@ -79,6 +79,29 @@
     <div class="col-md-3 col-sm-12 category-filters">
         <div class="panel-group" id="accordion">
 
+            <div class="panel panel-default category-filter">
+                <div class="panel-heading">
+                    <h4 class="panel-title">
+                        <a data-toggle="collapse" href="#collapseCategory" class="category-filter-title collapsed">
+                            Kategorie
+                            <i class="filter-open fa fa-angle-down"></i>
+                            <i class="filter-close fa fa-angle-up"></i>
+                        </a>
+                    </h4>
+                </div>
+                <div  data-links='keep-view' id="collapseCategory" class="panel-collapse in" style="height: auto;">
+                    <div class="panel-body">
+                        <ul>
+                            {% for category in subcategories %}
+                                <li><a href="{{ url(route, { (routeArgument) : category.urlIn|trim('/')}) }}">
+                                    <span class="badge pull-right">{{ category.total }}</span> {{ category.name|raw }}</a>
+                                </li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
             {{ _self.filterView(priceFilters, true, '-prices', route, routeArgument) }}
             {{ _self.filterView(producersFilters, false, '-producers', route, routeArgument) }}
             {% for filter in propertiesFilters if not filter.isExcluded %}
@@ -113,14 +136,23 @@
     <div class="row category-details">
         <div class="col-xs-11">
             <h1>
-                <span class="name">{{ category.title }} <small>{{ products.metadata.total|varietyProducts }}</small></span>
+                <span class="name">{{ h1|raw }} <small>{{ products.metadata.total|varietyProducts }}</small></span>
+                {% if products.phrase is not null and route == 'search'  %}
+                    <span>
+                        <span class="badge-name">szukasz:</span>
+                        <span class="badge">
+                            <button type="button" onclick="document.location.href='{{ products.phrase.urlOut == '/' ? '/' : url(route, { (routeArgument): products.phrase.urlOut|trim('/') }) }}'" class="close">×</button>
+                            <span>{{ products.phrase.value|raw }}</span>
+                        </span>
+                    </span>
+                {% endif %}
                 {% for filter in selectedFilters if filter is not empty %}
                 <span>
                     <span class="badge-name">{{ filter.name }}:</span>
                     {% for value in filter %}
                     <span class="badge">
-                        <button type="button" onclick="document.location.href='{{ url('category', {'categoryUrlWithFilters': value.url|trim('/') }) }}'" class="close">×</button>
-                        <span>{{ value.name }}</span>
+                        <button type="button" onclick="document.location.href='{{ url(route, { (routeArgument): value.url|trim('/') }) }}'" class="close">×</button>
+                        <span>{{ value.name }} {{ filter.unit }}</span>
                     </span>
                     {% endfor %}
                 </span>
@@ -214,8 +246,11 @@
                                 {% endif %}
                             </div>
                             <ul class="features">
-                                <li>Styl: <em>sportowy, sportowy</em></li>
-                                <li>Mechanizm: <em>kwarcowy</em></li>
+                                {% for property in product.properties %}
+                                    <li>{{ property.name|raw }}:
+                                        <em>{% include '@WLApp/Product/property.html.twig' %}</em>
+                                    </li>
+                                {% endfor %}
                             </ul>
                         </div>
                         <div class="col-lg-3 col-sm-4 col-xs-12 price">
@@ -227,15 +262,7 @@
             </div>
         </div>
         <!---- product ends here ---->
-    {% else %}
-        <div class="alert alert-warning" role="alert">Brak produktów z wybranymi filrami</div>
     {% endfor %}
-
-
-
-
-
-
 
 
     </div>

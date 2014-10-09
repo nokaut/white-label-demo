@@ -1052,12 +1052,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/nokaut/api-kit.git",
-                "reference": "f0ee1419a021424138a900f33a172020e7ef5a0e"
+                "reference": "86a4c41bcb033080b7aabcb6948e97dbe4efda12"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/nokaut/api-kit/zipball/f0ee1419a021424138a900f33a172020e7ef5a0e",
-                "reference": "f0ee1419a021424138a900f33a172020e7ef5a0e",
+                "url": "https://api.github.com/repos/nokaut/api-kit/zipball/86a4c41bcb033080b7aabcb6948e97dbe4efda12",
+                "reference": "86a4c41bcb033080b7aabcb6948e97dbe4efda12",
                 "shasum": ""
             },
             "require": {
@@ -1096,7 +1096,7 @@
                 "source": "https://github.com/nokaut/api-kit/tree/dwilkiewicz-ext",
                 "issues": "https://github.com/nokaut/api-kit/issues"
             },
-            "time": "2014-10-09 06:21:46"
+            "time": "2014-10-09 12:11:08"
         },
         {
             "name": "psr/log",
