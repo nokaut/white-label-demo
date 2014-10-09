@@ -157,7 +157,7 @@ class CategoryController extends Controller
         }
 
         $producersSelectedFilters = $this->getProducersSelectedFilters($products);
-        if ($priceSelectedFilters->count()) {
+        if ($producersSelectedFilters->count()) {
             $selectedFilters[] = $producersSelectedFilters;
         }
 

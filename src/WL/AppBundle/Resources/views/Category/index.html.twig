@@ -45,7 +45,7 @@
                             {% set selectedValue = value %}
                         {% endif %}
                         <li class="{% if value.isFilter %}active{% elseif value.total==0 %}disabled{% endif %}"><a href="{{ url(route, { (routeArgument) : value.url|trim('/')}) }}">
-                                <span class="badge pull-right">{{ value.total }}</span> {{ value.name }} {{ filter.unit }}</a>
+                                <span class="badge pull-right">{{ value.total }}</span> {{ value.name|raw }} {{ filter.unit }}</a>
                         </li>
                     {% endfor %}
 
