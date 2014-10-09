@@ -10,6 +10,8 @@ namespace WL\AppBundle\Lib;
 
 
 use Nokaut\ApiKit\Entity\Category;
+use Nokaut\ApiKit\Ext\Data\Collection\Filters\FiltersAbstract;
+use Nokaut\ApiKit\Ext\Data\Entity\Filter\FilterAbstract;
 use WL\AppBundle\Lib\Type\Breadcrumb;
 use WL\AppBundle\Lib\Type\Filter;
 
@@ -55,15 +57,19 @@ class BreadcrumbsBuilder
 
     /**
      * @param Breadcrumb[] $breadcrumbs
-     * @param Filter[] $filters
+     * @param FiltersAbstract[] $filters
      * @return Breadcrumb[]
      */
     public function appendFilter(&$breadcrumbs, $filters)
     {
         $breadcrumbsFilers = '';
         foreach ($filters as $filter) {
-            $breadcrumbsFilers .= $filter->getName() . ": " . $filter->getValue();
-            $breadcrumbsFilers .= ', ';
+            $breadcrumbsFilers .= $filter->getName() . ": ";
+            foreach($filter as $value) {
+                /** @var FilterAbstract $value */
+                $breadcrumbsFilers .= $value->getName();
+                $breadcrumbsFilers .= ', ';
+            }
         }
         if ($breadcrumbsFilers) {
             $breadcrumbs[] = new Breadcrumb(trim($breadcrumbsFilers, ', '));
