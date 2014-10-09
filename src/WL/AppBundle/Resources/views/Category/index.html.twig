@@ -252,3 +252,19 @@
 
 {% endblock %}
 
+{% block javascripts %}
+    {{ parent() }}
+
+    {% if category is defined %}
+    <script type="text/javascript">
+        $(function() {
+            if('{{ category.viewType }}' == "list") {
+                $( "#category-view-list" ).trigger( "click" );
+            } else {
+                $( "#category-view-grid" ).trigger( "click" );
+            }
+        });
+    </script>
+    {% endif %}
+{% endblock %}
+
