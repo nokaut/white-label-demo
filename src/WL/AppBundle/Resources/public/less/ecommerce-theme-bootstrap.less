@@ -230,22 +230,36 @@
           }
         }
       }
-      .image img {
-        -webkit-transition: all 0.2s ease; /* Safari and Chrome */
-        -moz-transition: all 0.2s ease; /* Firefox */
-        -ms-transition: all 0.2s ease; /* IE 9 */
-        -o-transition: all 0.2s ease; /* Opera */
-        transition: all 0.2s ease;
+      .image {
+        border-bottom: 1px solid #fff;
+        -webkit-transition: all 0.05s ease; /* Safari and Chrome */
+        -moz-transition: all 0.05s ease; /* Firefox */
+        -ms-transition: all 0.05s ease; /* IE 9 */
+        -o-transition: all 0.05s ease; /* Opera */
+        transition: all 0.05s ease;
+        background: @gray-light;
+        img {
+          -webkit-transition: all 0.2s ease; /* Safari and Chrome */
+          -moz-transition: all 0.2s ease; /* Firefox */
+          -ms-transition: all 0.2s ease; /* IE 9 */
+          -o-transition: all 0.2s ease; /* Opera */
+          transition: all 0.2s ease;
+          opacity: 0.93;
+        }
       }
       
       &:hover {
-        .image img {
-          -webkit-transform:scale(1.05); /* Safari and Chrome */
-          -moz-transform:scale(1.05); /* Firefox */
-          -ms-transform:scale(1.05); /* IE 9 */
-          -o-transform:scale(1.05); /* Opera */
-           transform:scale(1.05);
-           opacity: 0.2;
+        .image {
+          border-bottom: 1px solid @brand-success;
+          background: transparent;
+          img {
+            -webkit-transform:scale(1.05); /* Safari and Chrome */
+            -moz-transform:scale(1.05); /* Firefox */
+            -ms-transform:scale(1.05); /* IE 9 */
+            -o-transform:scale(1.05); /* Opera */
+             transform:scale(1.05);
+             opacity: 0.05;
+          }
         }
       }
     }
