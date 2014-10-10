@@ -38,6 +38,7 @@ class CategoryController extends Controller
         $priceFilters = $this->getPriceFilters($products);
         $producersFilters = $this->getProducersFilters($products);
         $propertiesFilters = $this->getPropertiesFilter($products);
+        $categoriesFilters = $this->getCategoriesFilter($products);
 
         $selectedFilters = $this->getSelectedFilters($products);
 
@@ -57,7 +58,7 @@ class CategoryController extends Controller
             'products' => $products,
             'breadcrumbs' => $breadcrumbs,
             'pagination' => $pagination,
-            'subcategories' => $products ? $products->getCategories() : array(),
+            'subcategories' => $categoriesFilters,
             'priceFilters' => $priceFilters,
             'producersFilters' => $producersFilters,
             'propertiesFilters' => $propertiesFilters,
@@ -254,12 +255,21 @@ class CategoryController extends Controller
      */
     protected function getPropertiesFilter($products)
     {
-        $converterSelectedFilter = new Data\Converter\Filters\PropertiesConverter();
-        $propertiesFilter = $converterSelectedFilter->convert($products,array(
+        $converterFilter = new Data\Converter\Filters\PropertiesConverter();
+        $propertiesFilter = $converterFilter->convert($products,array(
             new Data\Converter\Filters\Callback\Property\SetIsActive(),
             new Data\Converter\Filters\Callback\Property\SetIsExcluded(),
             new Data\Converter\Filters\Callback\Property\SetIsNofollow(),
             new Data\Converter\Filters\Callback\Property\SortDefault(),
+        ));
+        return $propertiesFilter;
+    }
+
+    protected function getCategoriesFilter($products)
+    {
+        $converterFilter = new Data\Converter\Filters\CategoriesConverter();
+        $propertiesFilter = $converterFilter->convert($products,array(
+            new Data\Converter\Filters\Callback\Categories\SetIsExcluded(),
         ));
         return $propertiesFilter;
     }

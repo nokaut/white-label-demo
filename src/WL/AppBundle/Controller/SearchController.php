@@ -38,6 +38,7 @@ class SearchController extends CategoryController
         $priceFilters = $this->getPriceFilters($products);
         $producersFilters = $this->getProducersFilters($products);
         $propertiesFilters = $this->getPropertiesFilter($products);
+        $categoriesFilters = $this->getCategoriesFilter($products);
 
         $selectedFilters = $this->getSelectedFilters($products);
 
@@ -60,7 +61,7 @@ class SearchController extends CategoryController
             'phrase' => $phrase,
             'breadcrumbs' => $breadcrumbs,
             'pagination' => $pagination,
-            'subcategories' => $products ? $products->getCategories() : array(),
+            'subcategories' => $categoriesFilters,
             'priceFilters' => $priceFilters,
             'producersFilters' => $producersFilters,
             'propertiesFilters' => $propertiesFilters,

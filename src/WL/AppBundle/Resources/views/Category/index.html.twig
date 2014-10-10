@@ -79,6 +79,7 @@
     <div class="col-md-3 col-sm-12 category-filters">
         <div class="panel-group" id="accordion">
 
+            {% if not subcategories.isExcluded %}
             <div class="panel panel-default category-filter">
                 <div class="panel-heading">
                     <h4 class="panel-title">
@@ -101,6 +102,7 @@
                     </div>
                 </div>
             </div>
+            {% endif %}
 
             {{ _self.filterView(priceFilters, true, '-prices', route, routeArgument) }}
             {{ _self.filterView(producersFilters, false, '-producers', route, routeArgument) }}
@@ -205,7 +207,7 @@
     <div class="row category-products">
 
     {% for product in products %}
-        {% if product.offerCount == 1 %}
+        {% if product.offerCount == 1 and product.clickUrl is not empty %}
             {% set productUrl = product|click %}
         {% else %}
             {% set productUrl = path('product', {'productUrl': product.url|trim('/')}) %}
@@ -213,7 +215,7 @@
         <!---- product starts here ---->
         <div class="col-lg-3 col-md-4 col-sm-6 col-xs-12 product-wrapper-grid">
             <div class="product normal">
-                <a {% if product.offerCount == 1 %}target="_blank"{% endif %} href="{{ productUrl }}">
+                <a {% if product.clickUrl is not empty %}target="_blank"{% endif %} href="{{ productUrl }}">
                     <div class="image">
                         <img class="img-responsive" src="{{ nokaut_img_domain ~ nokaut_photo_url.prepare(product.photoId, '500x500', product.title) }}" title="{{ product.title|raw }}" />
                     </div>
@@ -221,12 +223,12 @@
                 <div class="product-details">
                     <div class="row">
                         <div class="col-lg-9 col-sm-8 col-xs-12 title-features">
-                            <a {% if product.offerCount == 1 %}target="_blank"{% endif %} href="{{ productUrl }}">
+                            <a {% if product.clickUrl is not empty %}target="_blank"{% endif %} href="{{ productUrl }}">
                                 <h5 class="title">{{ product.title|raw }}</h5>
                             </a>
                             <div class="product-details-popup text-center">
                                 {% if product.descriptionShort %}
-                                <a {% if product.offerCount == 1 %}target="_blank"{% endif %} href="{{ productUrl }}" data-container="body" data-placement="left" data-toggle="tooltip" >
+                                <a {% if product.clickUrl is not empty %}target="_blank"{% endif %} href="{{ productUrl }}" data-container="body" data-placement="left" data-toggle="tooltip" >
                                     <i class="fa fa-align-justify"></i>
                                     <div class="tooltip_title_wrapper hidden">
                                         <p>{{ product.descriptionShort|raw }}</p>
@@ -235,7 +237,7 @@
                                 {% endif %}
                                 {% set savePercent = helper_price.getSavePercent(product.prices) %}
                                 {% if savePercent > 0 %}
-                                    <a {% if product.offerCount == 1 %}target="_blank"{% endif %} href="{{ productUrl }}" data-container="body" data-placement="left" data-toggle="tooltip">
+                                    <a {% if product.clickUrl is not empty %}target="_blank"{% endif %} href="{{ productUrl }}" data-container="body" data-placement="left" data-toggle="tooltip">
                                         <i class="fa fa-tag"></i>
 
                                         <div class="tooltip_title_wrapper hidden">
@@ -243,7 +245,7 @@
                                         </div>
                                     </a>
                                 {% endif %}
-                                {% if product.offerCount == 1 %}
+                                {% if product.clickUrl is not empty %}
                                     <a href="{{ url('product', {'productUrl': product.url|trim('/') }) }}"><i class="fa fa-link"></i></a>
                                 {% endif %}
                             </div>
@@ -256,8 +258,8 @@
                             </ul>
                         </div>
                         <div class="col-lg-3 col-sm-4 col-xs-12 price">
-                            <a {% if product.offerCount == 1 %}target="_blank"{% endif %} href="{{ productUrl }}"><span class="price lead">{{ product.prices.min|number_format(2,',',' ') }} PLN</span></a>
-                            <a {% if product.offerCount == 1 %}target="_blank"{% endif %} href="{{ productUrl }}" class="btn btn-success btn-success-outlined btn-icon-right">Porównaj oferty <i class="fa fa-angle-right"></i></a>
+                            <a {% if product.clickUrl is not empty %}target="_blank"{% endif %} href="{{ productUrl }}"><span class="price lead">{{ product.prices.min|number_format(2,',',' ') }} PLN</span></a>
+                            <a {% if product.clickUrl is not empty %}target="_blank"{% endif %} href="{{ productUrl }}" class="btn btn-success btn-success-outlined btn-icon-right">Porównaj oferty <i class="fa fa-angle-right"></i></a>
                         </div>
                     </div>
                 </div>
