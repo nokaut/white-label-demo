@@ -152,10 +152,8 @@ class ClickController extends Controller
                 return true;
             }
         } catch (\Exception $e) {
-            //nonetheless return frame allowed
+            return true;
         }
-
-        return false;
     }
 
 }
