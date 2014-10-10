@@ -20,206 +20,109 @@ White Label - Demo
     </div>
 {% endblock %}
 
+{% macro productGridView(product) %}
+    {% if product.offerCount == 1 %}
+        {% set productUrl = product|click %}
+    {% else %}
+        {% set productUrl = path('product', {'productUrl': product.url|trim('/')}) %}
+    {% endif %}
+    <div class="image">
+        <a href="{{ productUrl }}"><img class="img-responsive" src="{{ nokaut_img_domain ~ nokaut_photo_url.prepare(product.photoId, '500x500', product.title) }}"/></a>
+        <a href="{{ productUrl }}">
+            <span class="content">
+                <h5>{{ product.title|raw }}</h5>
+                <span class="price">{{ product.prices.min|number_format(2,',',' ') }} PLN</span>
+                <button class="btn btn-success btn-success-outlined btn-icon-right">Zobacz <i class="fa fa-angle-right"></i></button>
+            </span>
+        </a>
+    </div>
+{% endmacro %}
+
 {% block content %}
 
 
     <div class="row">
         <div id="categories-groups" class="owl-carousel">
-            {% for category in 1..3 %}
+            {% for products in productsGroupCategory %}
                 <div>
-                    <div class="col-xs-12">
+                <div class="col-xs-12">
 
-                        <!-- categories in the group starts here -->
-                        <div class="row lower">
-                            <div class="col-xs-6">
-                                <div class="row">
-                                    <div class="category-grid col-md-8 col-sm-12 normal inner">
-                                        <div class="image">
-                                            <a href="kategoria.html"><img class="img-responsive" src="http://placehold.it/500x500" /></
-                                            <a href="kategoria.html"><span class="content">
-                                                    <h4>Bardzo bardzo długa nazwa kategorii</h4>
-                                                    <button class="btn btn-success btn-success-outlined btn-icon-right" href="kategoria.html">Zobacz <i class="fa fa-angle-right"></i></button>
-                                                  </span>
-                                            </a>
-                                        </div>
-                                        </a>
-                                    </div>
-                                    <div class="category-grid col-md-4 hidden-sm hidden-xs normal inner">
-                                        <div class="image">
-                                            <a href="kategoria.html"><img class="img-responsive" src="http://placehold.it/500x500" /></
-                                            <a href="kategoria.html"><span class="content">
-                                                    <h4>Bardzo bardzo długa nazwa kategorii</h4>
-                                                    <button class="btn btn-success btn-success-outlined btn-icon-right" href="kategoria.html">Zobacz <i class="fa fa-angle-right"></i></button>
-                                                  </span>
-                                            </a>
-                                        </div>
-                                    </div>
-                                    <div class="category-grid col-md-4 hidden-sm hidden-xs normal inner">
-                                        <div class="image">
-                                            <a href="kategoria.html"><img class="img-responsive" src="http://placehold.it/500x500" /></
-                                            <a href="kategoria.html"><span class="content">
-                                                    <h4>Bardzo bardzo długa nazwa kategorii</h4>
-                                                    <button class="btn btn-success btn-success-outlined btn-icon-right" href="kategoria.html">Zobacz <i class="fa fa-angle-right"></i></button>
-                                                  </span>
-                                            </a>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="row">
-                                    <div class="category-grid col-md-4 hidden-sm hidden-xs normal inner">
-                                        <div class="image">
-                                            <a href="kategoria.html"><img class="img-responsive" src="http://placehold.it/500x500" /></
-                                            <a href="kategoria.html"><span class="content">
-                                                    <h4>Bardzo bardzo długa nazwa kategorii</h4>
-                                                    <button class="btn btn-success btn-success-outlined btn-icon-right" href="kategoria.html">Zobacz <i class="fa fa-angle-right"></i></button>
-                                                  </span>
-                                            </a>
-                                        </div>
-                                    </div>
-                                    <div class="category-grid col-md-4 hidden-sm hidden-xs normal inner">
-                                        <div class="image">
-                                            <a href="kategoria.html"><img class="img-responsive" src="http://placehold.it/500x500" /></
-                                            <a href="kategoria.html"><span class="content">
-                                                    <h4>Bardzo bardzo długa nazwa kategorii</h4>
-                                                    <button class="btn btn-success btn-success-outlined btn-icon-right" href="kategoria.html">Zobacz <i class="fa fa-angle-right"></i></button>
-                                                  </span>
-                                            </a>
-                                        </div>
-                                    </div>
-                                    <div class="category-grid col-md-4 hidden-sm hidden-xs normal inner">
-                                        <div class="image">
-                                            <a href="kategoria.html"><img class="img-responsive" src="http://placehold.it/500x500" /></
-                                            <a href="kategoria.html"><span class="content">
-                                                    <h4>Bardzo bardzo długa nazwa kategorii</h4>
-                                                    <button class="btn btn-success btn-success-outlined btn-icon-right" href="kategoria.html">Zobacz <i class="fa fa-angle-right"></i></button>
-                                                  </span>
-                                            </a>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-xs-6">
-                                <div class="row">
-                                    <div class="category-grid col-md-4 hidden-sm hidden-xs normal inner">
-                                        <div class="image">
-                                            <a href="kategoria.html"><img class="img-responsive" src="http://placehold.it/500x500" /></
-                                            <a href="kategoria.html"><span class="content">
-                                                    <h4>Bardzo bardzo długa nazwa kategorii</h4>
-                                                    <button class="btn btn-success btn-success-outlined btn-icon-right" href="kategoria.html">Zobacz <i class="fa fa-angle-right"></i></button>
-                                                  </span>
-                                            </a>
-                                        </div>
-                                    </div>
-                                    <div class="category-grid col-md-4 hidden-sm hidden-xs normal inner">
-                                        <div class="image">
-                                            <a href="kategoria.html"><img class="img-responsive" src="http://placehold.it/500x500" /></
-                                            <a href="kategoria.html"><span class="content">
-                                                    <h4>Bardzo bardzo długa nazwa kategorii</h4>
-                                                    <button class="btn btn-success btn-success-outlined btn-icon-right" href="kategoria.html">Zobacz <i class="fa fa-angle-right"></i></button>
-                                                  </span>
-                                            </a>
-                                        </div>
-                                    </div>
-                                    <div class="category-grid col-md-4 hidden-sm hidden-xs normal inner">
-                                        <div class="image">
-                                            <a href="kategoria.html"><img class="img-responsive" src="http://placehold.it/500x500" /></
-                                            <a href="kategoria.html"><span class="content">
-                                                    <h4>Bardzo bardzo długa nazwa kategorii</h4>
-                                                    <button class="btn btn-success btn-success-outlined btn-icon-right" href="kategoria.html">Zobacz <i class="fa fa-angle-right"></i></button>
-                                                  </span>
-                                            </a>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="row">
-                                    <div class="category-grid col-md-8 col-sm-12 normal inner">
-                                        <div class="image">
-                                            <a href="kategoria.html"><img class="img-responsive" src="http://placehold.it/500x500" /></
-                                            <a href="kategoria.html"><span class="content">
-                                                    <h4>Bardzo bardzo długa nazwa kategorii</h4>
-                                                    <button class="btn btn-success btn-success-outlined btn-icon-right" href="kategoria.html">Zobacz <i class="fa fa-angle-right"></i></button>
-                                                  </span>
-                                            </a>
-                                        </div>
-                                    </div>
-                                    <div class="category-grid col-md-4 hidden-sm hidden-xs normal inner">
-                                        <div class="image">
-                                            <a href="kategoria.html"><img class="img-responsive" src="http://placehold.it/500x500" /></
-                                            <a href="kategoria.html"><span class="content">
-                                                    <h4>Bardzo bardzo długa nazwa kategorii</h4>
-                                                    <button class="btn btn-success btn-success-outlined btn-icon-right" href="kategoria.html">Zobacz <i class="fa fa-angle-right"></i></button>
-                                                  </span>
-                                            </a>
-                                        </div>
-                                    </div>
-                                    <div class="category-grid col-md-4 hidden-sm hidden-xs normal inner">
-                                        <div class="image">
-                                            <a href="kategoria.html"><img class="img-responsive" src="http://placehold.it/500x500" /></
-                                            <a href="kategoria.html"><span class="content">
-                                                    <h4>Bardzo bardzo długa nazwa kategorii</h4>
-                                                    <button class="btn btn-success btn-success-outlined btn-icon-right" href="kategoria.html">Zobacz <i class="fa fa-angle-right"></i></button>
-                                                  </span>
-                                            </a>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
+                <!-- products in the group starts here -->
+                <div class="row lower">
+                <div class="col-xs-6">
+                    <div class="row">
+                        <div class="product-grid col-md-8 col-sm-12 normal inner">
+                            {{ _self.productGridView(products.item(0)) }}
                         </div>
-                        <!-- categories in the group ends here -->
-                        <!-- products in the group starts here -->
-                        <div class="row lower-double">
-                            {% for product in 1..6 %}
-                                <div class="col-md-2 col-sm-4 col-xs-6 product-wrapper-grid">
-                                    <a href="klik.html">
-                                        <div class="product normal">
-                                            <div class="image">
-                                                <img class="img-responsive" src="http://placehold.it/500x500" />
-                                            </div>
-                                            <h5 class="title">Zegarek dla mężczyzny W-S200H-1A marki Casio, styl: sportowy</h5>
-                                            <div class="product-details-popup text-center">
-                                                <a href="produkt.html" data-container="body" data-placement="left" data-toggle="tooltip" >
-                                                    <i class="fa fa-align-justify"></i>
-                                                    <div class="tooltip_title_wrapper hidden">
-                                                        <p>Food truck fixie...</p><p>locavore, accusamus mcsweeney's marfa nulla single-origin coffee squid. Exercitation +1 labore velit, blog sartorial PBR leggings next level wes anderson artisan four loko farm-to-table craft beer twee. Qui photo booth letterpress, commodo enim craft beer mlkshk aliquip jean shorts ullamco ad vinyl cillum PBR. Homo nostrud organic, assumenda labore aesthetic magna delectus mollit</p>
-                                                    </div>
-                                                </a>
-                                                <a href="produkt.html" data-container="body" data-placement="left" data-toggle="tooltip">
-                                                    <i class="fa fa-tag"></i>
-                                                    <div class="tooltip_title_wrapper hidden">
-                                                        Na tym produkcie możesz zaoszczędzić aż 20%
-                                                    </div>
-                                                </a>
-                                                <a href="produkt.html"><i class="fa fa-link"></i></a>
-                                            </div>
-                                            <div class="product-details-popup text-center">
-                                                <a href="produkt.html" data-container="body" data-placement="left" data-toggle="tooltip" >
-                                                    <i class="fa fa-align-justify"></i>
-                                                    <div class="tooltip_title_wrapper hidden">
-                                                        <p>Food truck fixie...</p><p>locavore, accusamus mcsweeney's marfa nulla single-origin coffee squid. Exercitation +1 labore velit, blog sartorial PBR leggings next level wes anderson artisan four loko farm-to-table craft beer twee. Qui photo booth letterpress, commodo enim craft beer mlkshk aliquip jean shorts ullamco ad vinyl cillum PBR. Homo nostrud organic, assumenda labore aesthetic magna delectus mollit</p>
-                                                    </div>
-                                                </a>
-                                                <a href="produkt.html" data-container="body" data-placement="left" data-toggle="tooltip">
-                                                    <i class="fa fa-tag"></i>
-                                                    <div class="tooltip_title_wrapper hidden">
-                                                        Na tym produkcie możesz zaoszczędzić aż 20%
-                                                    </div>
-                                                </a>
-                                                <a href="produkt.html"><i class="fa fa-link"></i></a>
-                                            </div>
-                                            <div class="row">
-                                                <div class="col-xs-12 text-center">
-                                                    <a href="klik.html"><span class="price lead">od 117,99 PLN</span></a>
-                                                    <a href="klik.html" class="btn btn-success btn-success-outlined btn-icon-right">Porównaj oferty <i class="fa fa-angle-right"></i></a>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </a>
-                                </div>
-                            {% endfor %}
+                        <div class="product-grid col-md-4 hidden-sm hidden-xs normal inner">
+                            {{ _self.productGridView(products.item(1)) }}
                         </div>
-                        <!-- products in the group ends here -->
-
+                        <div class="product-grid col-md-4 hidden-sm hidden-xs normal inner">
+                            {{ _self.productGridView(products.item(2)) }}
+                        </div>
                     </div>
+                    <div class="row">
+                        <div class="product-grid col-md-4 hidden-sm hidden-xs normal inner">
+                            {{ _self.productGridView(products.item(3)) }}
+                        </div>
+                        <div class="product-grid col-md-4 hidden-sm hidden-xs normal inner">
+                            {{ _self.productGridView(products.item(4)) }}
+                        </div>
+                        <div class="product-grid col-md-4 hidden-sm hidden-xs normal inner">
+                            {{ _self.productGridView(products.item(5)) }}
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="product-grid col-md-4 hidden-sm hidden-xs normal inner">
+                            {{ _self.productGridView(products.item(6)) }}
+                        </div>
+                        <div class="product-grid col-md-4 hidden-sm hidden-xs normal inner">
+                            {{ _self.productGridView(products.item(7)) }}
+                        </div>
+                        <div class="product-grid col-md-4 hidden-sm hidden-xs normal inner">
+                            {{ _self.productGridView(products.item(8)) }}
+                        </div>
+                    </div>
+                </div>
+                <div class="col-xs-6">
+                    <div class="row">
+                        <div class="product-grid col-md-4 hidden-sm hidden-xs normal inner">
+                            {{ _self.productGridView(products.item(9)) }}
+                        </div>
+                        <div class="product-grid col-md-4 hidden-sm hidden-xs normal inner">
+                            {{ _self.productGridView(products.item(10)) }}
+                        </div>
+                        <div class="product-grid col-md-4 hidden-sm hidden-xs normal inner">
+                            {{ _self.productGridView(products.item(11)) }}
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="product-grid col-md-8 col-sm-12 normal inner">
+                            {{ _self.productGridView(products.item(12)) }}
+                        </div>
+                        <div class="product-grid col-md-4 hidden-sm hidden-xs normal inner">
+                            {{ _self.productGridView(products.item(13)) }}
+                        </div>
+                        <div class="product-grid col-md-4 hidden-sm hidden-xs normal inner">
+                            {{ _self.productGridView(products.item(14)) }}
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="product-grid col-md-4 hidden-sm hidden-xs normal inner">
+                            {{ _self.productGridView(products.item(15)) }}
+                        </div>
+                        <div class="product-grid col-md-4 hidden-sm hidden-xs normal inner">
+                            {{ _self.productGridView(products.item(16)) }}
+                        </div>
+                        <div class="product-grid col-md-4 hidden-sm hidden-xs normal inner">
+                            {{ _self.productGridView(products.item(17)) }}
+                        </div>
+                    </div>
+                </div>
+                </div>
+                <!-- products in the group ends here -->
+
+                </div>
                 </div>
             {% endfor %}
         </div>
