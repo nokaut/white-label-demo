@@ -13,6 +13,7 @@ use Nokaut\ApiKit\Repository\OffersAsyncRepository;
 use Nokaut\ApiKit\Repository\OffersRepository;
 use Nokaut\ApiKit\Repository\ProductsRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Component\HttpFoundation\Session\Session;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use WL\AppBundle\Lib\Helper\ClickUrl;
 use WL\AppBundle\Lib\Repository\ProductsAsyncRepository;
@@ -114,7 +115,7 @@ class ClickController extends Controller
      */
     protected function doIFrame($offer)
     {
-        if ($this->iframeDisallowed($offer->getUrl())) {
+        if ($this->iframeDisallowed($offer)) {
             return $this->redirect($this->container->getParameter('click_domain') . $offer->getClickUrl());
         }
 
@@ -140,20 +141,63 @@ class ClickController extends Controller
         ));
     }
 
-    protected function iframeDisallowed($clickUrl)
+    /**
+     * @param Offer $offer
+     * @return mixed|string
+     */
+    protected function iframeDisallowed($offer)
     {
+        $checkFromCache = $this->getCheckFromCache($offer->getShop()->getId());
+        if (null !== $checkFromCache) {
+            return $checkFromCache;
+        }
         $client = new Client();
-        $request = $client->createRequest('PUT', $clickUrl);
+        $request = $client->createRequest('GET', $offer->getUrl());
+        $result = false;
         try {
             $response = $client->send($request);
 
             $headerXFrameOptions = $response->getHeader('X-Frame-Options');
             if ($headerXFrameOptions && in_array(strtoupper($headerXFrameOptions), array('SAMEORIGIN', 'DENY'))) {
-                return true;
+                $result = true;
             }
         } catch (\Exception $e) {
-            return true;
+            $result = true;
         }
+        $this->saveCheckToCache($offer->getShop()->getId(), $result);
+        return $result;
+    }
+
+    /**
+     * @param $shopId
+     * @return mixed
+     */
+    protected function getCheckFromCache($shopId)
+    {
+        $session = new Session();
+        $cacheKey = $this->getCacheKey($shopId);
+        $cacheValue = $session->get($cacheKey);
+        return $cacheValue !== null  ? (bool)$cacheValue : null;
+    }
+
+    /**
+     * @param string $clickUrl
+     * @param bool $value
+     */
+    protected function saveCheckToCache($clickUrl, $value)
+    {
+        $cacheKey = $this->getCacheKey($clickUrl);
+        $session = new Session();
+        $session->set($cacheKey, $value);
+    }
+
+    /**
+     * @param $shopId
+     * @return string
+     */
+    protected function getCacheKey($shopId)
+    {
+        return 'iframe-check-' . md5($shopId);
     }
 
 }
