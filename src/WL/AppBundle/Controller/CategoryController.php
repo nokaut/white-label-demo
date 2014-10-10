@@ -7,7 +7,6 @@ use Nokaut\ApiKit\Collection\Products;
 use Nokaut\ApiKit\Entity\Category;
 use Nokaut\ApiKit\Ext\Data;
 use Nokaut\ApiKit\Repository\CategoriesRepository;
-use Nokaut\ApiKit\Repository\ProductsRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Response;
 use WL\AppBundle\Lib\BreadcrumbsBuilder;
@@ -15,6 +14,7 @@ use WL\AppBundle\Lib\Filter\PropertiesFilter;
 use WL\AppBundle\Lib\Filter\SortFilter;
 use WL\AppBundle\Lib\Pagination\Pagination;
 use WL\AppBundle\Lib\Repository\ProductsAsyncRepository;
+use WL\AppBundle\Lib\Repository\ProductsRepository;
 use WL\AppBundle\Lib\View\Data\Converter\Filters\Callback\PriceRanges;
 
 class CategoryController extends Controller

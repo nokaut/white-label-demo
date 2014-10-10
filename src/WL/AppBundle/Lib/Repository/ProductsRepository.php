@@ -11,6 +11,12 @@ namespace WL\AppBundle\Lib\Repository;
 
 class ProductsRepository extends \Nokaut\ApiKit\Repository\ProductsRepository
 {
+    public static $fieldsForProductBox = array(
+        'id', 'url', 'product_id', 'title', 'prices', 'offer_count', 'shop_count', 'category_id', 'offer_id',
+        'url_original', 'offer_shop_id', 'shop_name', 'shop_url', 'top_category_id', 'top_position', 'photo_id',
+        'click_url', 'click_value', 'shop', 'shop.url_logo', 'shop.name','description_short',
+    );
+
     public static $fieldsForList = array(
         'id', 'product_id', 'title', 'prices', 'offer_count', 'url', 'shop', 'shop.url_logo', 'shop_count', 'category_id',
         'offer_id', 'click_url', 'click_value', 'url_original', 'producer_name', 'offer_shop_id', 'shop.name', 'shop_url',

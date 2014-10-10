@@ -13,7 +13,6 @@ use Nokaut\ApiKit\ClientApi\ClientApiInterface;
 use Nokaut\ApiKit\ClientApi\Rest\Fetch\ProductsFetch;
 use Nokaut\ApiKit\ClientApi\Rest\Query\ProductsQuery;
 use Nokaut\ApiKit\Config;
-use Nokaut\ApiKit\Repository\ProductsRepository;
 use WL\AppBundle\Lib\CategoriesAllowed;
 
 class ProductsAsyncRepository extends \Nokaut\ApiKit\Repository\ProductsAsyncRepository
