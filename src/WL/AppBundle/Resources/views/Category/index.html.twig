@@ -25,6 +25,28 @@
     <link rel="canonical" href="{{ url(route, { (routeArgument): canonical|trim('/')}) }}"/>
 {% endblock %}
 
+{% block javascriptsTop %}
+    {{ parent() }}
+    <script type="text/javascript">
+        function filterRanges(template, inputFromId, inputToId) {
+            var valueFrom = $('#' + inputFromId).val();
+            var valueTo = $('#' + inputToId).val();
+            if (!valueFrom && !valueTo) {
+                alert('Proszę podać wartości w polach koło przycisku "zastosuj"');
+                return;
+            }
+            var url = template.replace('%25s~%25s', parseRangeValue(valueFrom) + '~' + parseRangeValue(valueTo));
+            document.location.href = url;
+        }
+
+        function parseRangeValue(inputValue) {
+            var value = parseFloat(inputValue);
+            return value ? value : '';
+        }
+    </script>
+
+{% endblock %}
+
 {% macro filterView(filter, includeRange, boxId, route, routeArgument) %}
     <div class="panel panel-default category-filter">
         <div class="panel-heading">
@@ -53,12 +75,12 @@
                         <li class="lower">
                             <form class="form" role="form">
                                 <div class="input-group">
-                                    <input value="{{ selectedValue ? selectedValue.min : '' }}" type="text" class="form-control input-sm" placeholder="od">
+                                    <input id="{{ boxId }}-range-from" value="{{ selectedValue ? selectedValue.min : '' }}" type="text" class="form-control input-sm" placeholder="od">
                                     <div class="input-group-addon">-</div>
-                                    <input value="{{ selectedValue ? selectedValue.max : '' }}" type="text" class="form-control input-sm" placeholder="do">
+                                    <input id="{{ boxId }}-range-to" value="{{ selectedValue ? selectedValue.max : '' }}" type="text" class="form-control input-sm" placeholder="do">
                                     <div class="input-group-addon">PLN</div>
                                     <span class="input-group-btn pull-right filter-submit">
-                                      <button class="btn btn-sm btn-link" type="button">zastosuj</button>
+                                      <button onclick="filterRanges('{{ url(route, { (routeArgument): filter.urlInTemplate|trim('/')|raw}) }}', '{{ boxId }}-range-from', '{{ boxId }}-range-to')" class="btn btn-sm btn-link" type="button">zastosuj</button>
                                     </span>
                                 </div>
                             </form>
