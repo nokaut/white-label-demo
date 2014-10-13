@@ -115,7 +115,7 @@
                 <div  data-links='keep-view' id="collapseCategory" class="panel-collapse in" style="height: auto;">
                     <div class="panel-body">
                         <ul>
-                            {% for category in subcategories %}
+                            {% for category in subcategories if not category.isFilter %}
                                 <li><a href="{{ url(route, { (routeArgument) : category.urlIn|trim('/')}) }}">
                                     <span class="badge pull-right">{{ category.total }}</span> {{ category.name|raw }}</a>
                                 </li>
