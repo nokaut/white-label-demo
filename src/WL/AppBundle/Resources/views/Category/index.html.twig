@@ -47,7 +47,7 @@
 
 {% endblock %}
 
-{% macro filterView(filter, includeRange, boxId, route, routeArgument) %}
+{% macro filterView(filter, includeRange, boxId, route, routeArgument, isActive = false) %}
     <div class="panel panel-default category-filter">
         <div class="panel-heading">
             <h4 class="panel-title">
@@ -58,7 +58,7 @@
                 </a>
             </h4>
         </div>
-        <div  data-links='keep-view' id="collapse{{ boxId }}" class="panel-collapse {% if filter.isActive %}in{% else %}collapse{% endif %}" style="{% if filter.isActive %}height: auto;{% else %}height: 0;{% endif %};">
+        <div  data-links='keep-view' id="collapse{{ boxId }}" class="panel-collapse {% if filter.isActive or isActive %}in{% else %}collapse{% endif %}" style="{% if filter.isActive or isActive %}height: auto;{% else %}height: 0;{% endif %};">
             <div class="panel-body">
                 <ul>
                     {% set selectedValue = false %}
@@ -126,7 +126,7 @@
             </div>
             {% endif %}
 
-            {{ _self.filterView(priceFilters, true, '-prices', route, routeArgument) }}
+            {{ _self.filterView(priceFilters, true, '-prices', route, routeArgument, true ) }}
             {{ _self.filterView(producersFilters, false, '-producers', route, routeArgument) }}
             {% for filter in propertiesFilters if not filter.isExcluded %}
                 {{ _self.filterView(filter, false, '-properites-' ~ loop.index, route, routeArgument) }}

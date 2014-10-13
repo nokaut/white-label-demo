@@ -231,6 +231,7 @@ class CategoryController extends Controller
         $producersSelectedFilter = $converterFilter->convert($products, array(
             new Data\Converter\Filters\Callback\Producers\SetIsNofollow(),
             new Data\Converter\Filters\Callback\Producers\SetIsPopular(),
+            new Data\Converter\Filters\Callback\Producers\SetIsActive(),
             new Data\Converter\Filters\Callback\Producers\SortByName(),
         ));
         return $producersSelectedFilter;
