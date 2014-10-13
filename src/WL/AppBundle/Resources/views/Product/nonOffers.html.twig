@@ -3,7 +3,7 @@
         {% if product.photoIds|length > 0 %}
             {% set photoId = product.photoIds[0] %}
         {% else %}
-            {% set photoId = offer.photoId %}
+            {% set photoId = null %}
         {% endif %}
         <img class="img-responsive" src="{{ nokaut_img_domain ~ nokaut_photo_url.prepare(photoId, '500x500', product.title) }}" alt="{{ product.title }}">
     </div>
@@ -25,7 +25,7 @@
         </div>
 
         <div class="lower row">
-            <div class="col-md-12 col-sm-12">
+            <div class="col-md-12 col-sm-12 description">
                 {{ product.descriptionHtml|raw }}
             </div>
         </div>

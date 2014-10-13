@@ -3,7 +3,7 @@
 
         <ul class="bxslider gallery-view">
             {% for photoId in product.photoIds if photoId %}
-                {% if loop.index < 11 %}
+                {% if loop.index < 5 %}
                     <li><img class="img-responsive" src="{{ nokaut_img_domain ~ nokaut_photo_url.prepare(photoId, '500x500', product.title) }}" alt="{{ product.title }}"></li>
                 {% endif %}
             {% endfor %}
@@ -11,7 +11,7 @@
 
         <div id="gallery-items" class="row gallery-items">
             {% for photoId in product.photoIds if photoId %}
-                {% if loop.index < 11 %}
+                {% if loop.index < 5 %}
                     <div class="col-lg-3 col-md-4 col-sm-2 col-xs-3 gallery-item"><a data-slide-index="{{ loop.index0 }}" href=""><img class="img-responsive" src="{{ nokaut_img_domain ~ nokaut_photo_url.prepare(photoId, '90x90', product.title) }}" /></a></div>
                 {% endif %}
             {% endfor %}
@@ -75,7 +75,7 @@
                 <div id="offersContainer" class="row offers">
                     {% for offer in offers %}
                         <!-- offer starts here -->
-                        <div class="col-sm-12 offer" data-lp="{{ loop.index }}" data-price="{{ offer.price|number_format(2, '.', '') }}">
+                        <div class="col-sm-12 offer" style="height: 115px;" data-lp="{{ loop.index }}" data-price="{{ offer.price|number_format(2, '.', '') }}">
                             <a rel="nofollow" target="_blank" href="{{ offer|click }}">
                                 <div class="row">
                                     <div class="col-xs-4 col-sm-2">
@@ -112,7 +112,7 @@
                     {% endfor %}
                 </div>
             </div>
-            <div class="tab-pane fade" id="desc">
+            <div class="tab-pane fade description" id="desc">
                 {{ product.descriptionHtml|raw }}
             </div>
         </div>

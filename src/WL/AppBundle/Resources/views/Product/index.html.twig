@@ -77,7 +77,7 @@
     <script type="text/javascript">
         $('#offersContainer').isotope({
             itemSelector : '.offer',
-            layoutMode : 'fitRows',
+            layoutMode : 'vertical',
             getSortData : {
                 price : function ( $elem ) {
                     return parseFloat($($elem).attr('data-price'));
