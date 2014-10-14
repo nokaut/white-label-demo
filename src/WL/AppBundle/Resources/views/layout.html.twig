@@ -27,16 +27,23 @@
     <![endif]-->
 
     <script type="text/javascript">
-        $(function(){
-            $('#searchFrom').on('submit', function() {
-                var url = '{{ url('search', {'phrase': 'produkt:_PHRASE_VALUE_.html'}) }}';
-                var phrase = $('#phraseInput').val().trim().toLowerCase();
-                if(!phrase) {
-                    alert('Pole do wyszukiwania nie może być puste');
-                    return false;
-                }
-                location.href = url.replace('_PHRASE_VALUE_',  encodeURIComponent(phrase));
+        function search() {
+            var url = '{{ url('search', {'phrase': 'produkt:_PHRASE_VALUE_.html'}) }}';
+            var phrase = $('#phraseInput').val().trim().toLowerCase();
+            if(!phrase) {
+                alert('Pole do wyszukiwania nie może być puste');
                 return false;
+            }
+            phrase = phrase.replace(/\s+/g,  '-');
+            location.href = url.replace('_PHRASE_VALUE_',  encodeURIComponent(phrase));
+            return false;
+        }
+        $(function(){
+            $('#searchFrom').on('submit', function () {
+                return search()
+            });
+            $('#buttonSearch').on('click', function () {
+                return search()
             });
         });
     </script>
@@ -116,7 +123,7 @@
         <div class="input-group input-group-with-btn">
             <input id="phraseInput" type="text" class="form-control input-lg" value="{% if phrase is defined %}{{ phrase }}{% endif %}" placeholder="Szukam...">
                 <span class="input-group-btn">
-                  <button class="btn btn-link" type="button"><i class="fa fa-search"></i></button>
+                  <button id="buttonSearch" class="btn btn-link" type="button"><i class="fa fa-search"></i></button>
                 </span>
         </div>
     </form>
