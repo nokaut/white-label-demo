@@ -19,18 +19,31 @@ class DictionaryExtension extends \Twig_Extension
     }
 
     /**
-     * @param $count
+     * @param $number
      * @return string
      */
-    function varietyProducts($count)
+    function varietyProducts($number)
     {
-        if ($count == 1) {
-            return $count . " produkt";
+        $listOfVariety = array('produkt', 'produkty', 'produktów');
+
+        if ($number == 0) {
+            return $number . " " . $listOfVariety[2];
         }
-        if ($count > 1 && $count < 5) {
-            return $count . " produkty";
+        if ($number == 1) {
+            return $number . " " . $listOfVariety[0];
         }
-        return $count . " produktów";
+        if ($number < 5) {
+            return $number . " " . $listOfVariety[1];
+        }
+        if ($number <= 21) {
+            return $number . " " . $listOfVariety[2];
+        }
+        $mod = $number % 10;
+        if ($mod >= 2 && $mod <= 4) {
+            return $number . " " . $listOfVariety[1];
+        } else {
+            return $number . " " . $listOfVariety[2];
+        }
     }
 
     /**
