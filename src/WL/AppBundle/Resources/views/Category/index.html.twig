@@ -176,7 +176,7 @@
                     {% for value in filter %}
                     <span class="badge">
                         <button type="button" onclick="document.location.href='{{ url(route, { (routeArgument): value.url|trim('/') }) }}'" class="close">×</button>
-                        <span>{{ value.name }} {{ filter.unit }}</span>
+                        <span>{{ value.name|raw }} {{ filter.unit }}</span>
                     </span>
                     {% endfor %}
                 </span>

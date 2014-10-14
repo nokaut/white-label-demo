@@ -15,6 +15,7 @@ use WL\AppBundle\Lib\Type\Breadcrumb;
 use WL\AppBundle\Lib\Repository\ProductsAsyncRepository;
 use WL\AppBundle\Lib\View\Data\Converter\Filters\Callback;
 use Nokaut\ApiKit\Ext\Data;
+use WL\AppBundle\Lib\View\Data\Converter\Filters\Callback\Categories\ReduceAllSelected;
 
 class SearchController extends CategoryController
 {
@@ -37,10 +38,11 @@ class SearchController extends CategoryController
 
         $priceFilters = $this->getPriceFilters($products);
         $producersFilters = $this->getProducersFilters($products);
-        $propertiesFilters = $this->getPropertiesFilter($products);
-        $categoriesFilters = $this->getCategoriesFilter($products);
+        $propertiesFilters = $this->getPropertiesFilters($products);
+        $categoriesFilters = $this->getCategoriesFilters($products);
 
         $selectedFilters = $this->getSelectedFilters($products);
+        $selectedCategoriesFilters = $this->getCategoriesSelectedFilters($products);
 
         $breadcrumbs = $this->prepareBreadcrumbs($products, $selectedFilters);
 
@@ -68,7 +70,7 @@ class SearchController extends CategoryController
             'selectedFilters' => $selectedFilters,
             'sorts' => $products ? $products->getMetadata()->getSorts() : array(),
             'canonical' => $products ? $products->getMetadata()->getCanonical() : '',
-            'h1' => $phrase
+            'h1' => $this->prepareH1($selectedCategoriesFilters)
         ), $responseStatus);
     }
 
@@ -114,11 +116,33 @@ class SearchController extends CategoryController
     protected function prepareBreadcrumbs($products, array $filters)
     {
         $breadcrumbs = array();
-        $breadcrumbs[] = new Breadcrumb("Szukaj: " . $products->getMetadata()->getQuery()->getPhrase());
+        $breadcrumbs[] = new Breadcrumb("Szukasz: " . $products->getMetadata()->getQuery()->getPhrase());
         /** @var BreadcrumbsBuilder $breadcrumbsBuilder */
         $breadcrumbsBuilder = $this->get('breadcrumb.builder');
         $breadcrumbsBuilder->appendFilter($breadcrumbs, $filters);
         return $breadcrumbs;
+    }
+
+    protected function getCategoriesSelectedFilters($products)
+    {
+        $converterFilter = new Data\Converter\Filters\Selected\CategoriesConverter();
+        $categoriesFilter = $converterFilter->convert($products, array(
+            new ReduceAllSelected(),
+        ));
+        return $categoriesFilter;
+    }
+
+    /**
+     * @param Data\Collection\Filters\Categories[] $selectedCategoriesFilters
+     * @return string
+     */
+    protected function prepareH1($selectedCategoriesFilters)
+    {
+        $result = '';
+        foreach ($selectedCategoriesFilters as $entity) {
+            $result .= $entity->getName() . ', ';
+        }
+        return trim($result, ', ');
     }
 
 }

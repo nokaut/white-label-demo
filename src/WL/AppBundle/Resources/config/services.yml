@@ -12,7 +12,7 @@ services:
         factory_method: getProductsRepository
     repo.products.async:
         factory_service: repo.factory
-        class: WL\AppBundle\Repository\ProductsAsyncRepository
+        class: WL\AppBundle\Lib\Repository\ProductsAsyncRepository
         factory_method: getProductsAsyncRepository
 
     repo.categories:

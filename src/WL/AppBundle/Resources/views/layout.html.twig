@@ -114,7 +114,7 @@
     </ul>
     <form id="searchFrom" class="navbar-form navbar-right">
         <div class="input-group input-group-with-btn">
-            <input id="phraseInput" type="text" class="form-control input-lg" placeholder="Szukam...">
+            <input id="phraseInput" type="text" class="form-control input-lg" value="{% if phrase is defined %}{{ phrase }}{% endif %}" placeholder="Szukam...">
                 <span class="input-group-btn">
                   <button class="btn btn-link" type="button"><i class="fa fa-search"></i></button>
                 </span>
@@ -135,10 +135,10 @@
                     <ul class="breadcrumb">
                         {% for crumb in breadcrumbs %}
                             {% if loop.last or crumb.url is null %}
-                                <li class="active">{{ crumb.title }}</li>
+                                <li class="active">{{ crumb.title|raw }}</li>
                             {% else %}
 
-                                <li><a href="{{ crumb.url }}">{{ crumb.title }}</a></li>
+                                <li><a href="{{ crumb.url }}">{{ crumb.title|raw }}</a></li>
                             {% endif %}
                         {% endfor %}
                     </ul>

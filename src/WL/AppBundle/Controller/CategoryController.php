@@ -37,8 +37,8 @@ class CategoryController extends Controller
 
         $priceFilters = $this->getPriceFilters($products);
         $producersFilters = $this->getProducersFilters($products);
-        $propertiesFilters = $this->getPropertiesFilter($products);
-        $categoriesFilters = $this->getCategoriesFilter($products);
+        $propertiesFilters = $this->getPropertiesFilters($products);
+        $categoriesFilters = $this->getCategoriesFilters($products);
 
         $selectedFilters = $this->getSelectedFilters($products);
 
@@ -254,7 +254,7 @@ class CategoryController extends Controller
      * @param Products $products
      * @return Data\Collection\Filters\PropertyAbstract[]
      */
-    protected function getPropertiesFilter($products)
+    protected function getPropertiesFilters($products)
     {
         $converterFilter = new Data\Converter\Filters\PropertiesConverter();
         $propertiesFilter = $converterFilter->convert($products,array(
@@ -266,12 +266,12 @@ class CategoryController extends Controller
         return $propertiesFilter;
     }
 
-    protected function getCategoriesFilter($products)
+    protected function getCategoriesFilters($products)
     {
         $converterFilter = new Data\Converter\Filters\CategoriesConverter();
-        $propertiesFilter = $converterFilter->convert($products,array(
+        $categoriesFilter = $converterFilter->convert($products,array(
             new Data\Converter\Filters\Callback\Categories\SetIsExcluded(),
         ));
-        return $propertiesFilter;
+        return $categoriesFilter;
     }
 }
