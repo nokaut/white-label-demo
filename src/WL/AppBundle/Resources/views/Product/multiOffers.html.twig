@@ -75,7 +75,7 @@
                 <div id="offersContainer" class="row offers">
                     {% for offer in offers %}
                         <!-- offer starts here -->
-                        <div class="col-sm-12 offer" style="height: 115px;" data-lp="{{ loop.index }}" data-price="{{ offer.price|number_format(2, '.', '') }}">
+                        <div class="col-sm-12 offer" data-lp="{{ loop.index }}" data-price="{{ offer.price|number_format(2, '.', '') }}">
                             <a rel="nofollow" target="_blank" href="{{ offer|click }}">
                                 <div class="row">
                                     <div class="col-xs-4 col-sm-2">
