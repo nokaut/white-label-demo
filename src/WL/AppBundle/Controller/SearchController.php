@@ -86,8 +86,7 @@ class SearchController extends CategoryController
         $filterUrl = new UrlFilter($this->get('helper.url_search'));
         $filterUrl->filter($products);
 
-        $filterProperties = new PropertiesFilter();
-        $filterProperties->filterProducts($products);
+        parent::filter($products);
     }
 
     /**
