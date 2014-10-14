@@ -1,12 +1,15 @@
 {% extends "WLAppBundle::layout.html.twig" %}
 
 {% block title %}
-{{ product.title|raw }}  - White Label Nokaut.pl
+{{ product.title|raw }}  - {{ parent() }}
 {% endblock %}
 
-{% block desc %}
-{{ product.description|raw|truncate(150) }}
-{% endblock %}
+{% block desc %}{% spaceless %}{{ category.title|raw }}; Producent: {{ product.producerName }};
+    {% for property in product.properties %}
+        {{ property.name|raw }}: {% include '@WLApp/Product/property.html.twig' %};
+    {% endfor %}
+    {{ product.descriptionHtml|striptags|truncate(200) }}
+{% endspaceless %}{% endblock %}
 
 {% block head %}
     {{ parent() }}

@@ -1,8 +1,6 @@
 {% extends "WLAppBundle::layout.html.twig" %}
 
-{% block title %}
-White Label - Demo
-{% endblock %}
+{% block title %}{{ parent() }}{% endblock %}
 
 {% block head %}
     {{ parent() }}

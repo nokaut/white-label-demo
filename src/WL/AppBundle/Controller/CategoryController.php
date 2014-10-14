@@ -271,6 +271,7 @@ class CategoryController extends Controller
         $converterFilter = new Data\Converter\Filters\CategoriesConverter();
         $categoriesFilter = $converterFilter->convert($products,array(
             new Data\Converter\Filters\Callback\Categories\SetIsExcluded(),
+            new Data\Converter\Filters\Callback\Categories\SortByName(),
         ));
         return $categoriesFilter;
     }
