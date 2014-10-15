@@ -10,12 +10,14 @@
 
 
 {% block topContent %}
-    <div class="row">
-        <div class="col-xs-12 text-right">
-            <a id="categories-groups-prev" class="btn btn-sm btn-primary btn-primary-outlined"><i class="fa fa-angle-left"></i></a>
-            <a id="categories-groups-next" class="btn btn-sm btn-primary btn-primary-outlined"><i class="fa fa-angle-right"></i></a>
+    {% if productsGroupCategory|length > 1 %}
+        <div class="row">
+            <div class="col-xs-12 text-right">
+                <a id="categories-groups-prev" class="btn btn-sm btn-primary btn-primary-outlined"><i class="fa fa-angle-left"></i></a>
+                <a id="categories-groups-next" class="btn btn-sm btn-primary btn-primary-outlined"><i class="fa fa-angle-right"></i></a>
+            </div>
         </div>
-    </div>
+    {% endif %}
 {% endblock %}
 
 {% macro productGridView(product) %}
