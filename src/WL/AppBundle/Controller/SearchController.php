@@ -140,6 +140,7 @@ class SearchController extends CategoryController
     {
         $converterFilter = new Data\Converter\Filters\CategoriesConverter();
         $categoriesFilter = $converterFilter->convert($products,array(
+            new Callback\Categories\ReduceIncorrectCategories(),
             new Data\Converter\Filters\Callback\Categories\SetIsExcluded(),
             new Data\Converter\Filters\Callback\Categories\SortByName(),
         ));
