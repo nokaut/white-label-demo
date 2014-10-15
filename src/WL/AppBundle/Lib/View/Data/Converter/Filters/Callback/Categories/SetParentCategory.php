@@ -10,7 +10,9 @@ namespace WL\AppBundle\Lib\View\Data\Converter\Filters\Callback\Categories;
 
 
 
+use Nokaut\ApiKit\Collection\Products;
 use Nokaut\ApiKit\Entity\Category;
+use Nokaut\ApiKit\Ext\Data\Collection\Filters\Categories;
 use WL\AppBundle\Lib\CategoriesAllowed;
 
 class SetParentCategory extends \Nokaut\ApiKit\Ext\Data\Converter\Filters\Callback\Categories\SetParentCategory
@@ -27,12 +29,31 @@ class SetParentCategory extends \Nokaut\ApiKit\Ext\Data\Converter\Filters\Callba
     }
 
 
-    protected function prepareParentCategory($path)
+    /**
+     * @param Categories $categories
+     * @param Products $products
+     */
+    public function __invoke(Categories $categories, Products $products)
     {
-        if (in_array($path->getId(),$this->categoriesAllowed->getAllowedCategories())) {
-            return parent::prepareParentCategory($path);
+        $pathList = $this->currentCategory->getPath();
+
+        if($this->isAllowedParentCategory()) {
+            foreach ($pathList as $item) {
+                if ($item->getId() == $this->currentCategory->getParentId()) {
+                    $parentCategory = $this->prepareParentCategory($item);
+                    $categories->setParentCategory($parentCategory);
+                    return;
+                }
+            }
         }
-        return null;
+    }
+
+    /**
+     * @return bool
+     */
+    protected function isAllowedParentCategory()
+    {
+        return in_array($this->currentCategory->getParentId(), $this->categoriesAllowed->getAllowedCategories());
     }
 
 
