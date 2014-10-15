@@ -109,9 +109,9 @@
                     <div class="panel-body">
                         <ul>
                             {% if subcategories.parentCategory %}
-                                <li>
+                                <li class="active">
                                     <a href="{{ url(route, { (routeArgument) : subcategories.parentCategory.url|trim('/')}) }}">
-                                    {{ subcategories.parentCategory.name }} <i class="fa fa-level-up"></i>
+                                        <span class="badge pull-right">{{ products.metadata.total }}</span> {{ category.title|raw }} <i class="fa fa-level-up"></i>
                                     </a>
                                 </li>
                             {% endif %}
