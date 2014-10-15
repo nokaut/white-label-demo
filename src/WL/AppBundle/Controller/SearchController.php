@@ -147,7 +147,7 @@ class SearchController extends CategoryController
     }
 
     /**
-     * @param Data\Collection\Filters\Categories[] $selectedCategoriesFilters
+     * @param Data\Collection\Filters\Categories $selectedCategoriesFilters
      * @return string
      */
     protected function prepareH1($selectedCategoriesFilters)
