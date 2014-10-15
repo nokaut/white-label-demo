@@ -70,7 +70,8 @@ class SearchController extends CategoryController
             'selectedFilters' => $selectedFilters,
             'sorts' => $products ? $products->getMetadata()->getSorts() : array(),
             'canonical' => $products ? $products->getMetadata()->getCanonical() : '',
-            'h1' => $this->prepareH1($selectedCategoriesFilters)
+            'h1' => $this->prepareH1($selectedCategoriesFilters),
+            'metadataTitle' => $this->prepareSearchMetadataTitle($phrase, $pagination)
         ), $responseStatus);
     }
 
@@ -156,6 +157,21 @@ class SearchController extends CategoryController
             $result .= $entity->getName() . ', ';
         }
         return trim($result, ', ');
+    }
+
+    /**
+     * @param $phrase
+     * @param Pagination $pagination
+     * @return string
+     */
+    protected function prepareSearchMetadataTitle($phrase, $pagination)
+    {
+        $title = $phrase;
+
+        if ($pagination->getCurrentPage() > 1) {
+            $title .= " (str. " . $pagination->getCurrentPage() . ")";
+        }
+        return $title;
     }
 
 }

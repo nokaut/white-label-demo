@@ -15,6 +15,7 @@ use WL\AppBundle\Lib\Filter\SortFilter;
 use WL\AppBundle\Lib\Pagination\Pagination;
 use WL\AppBundle\Lib\Repository\ProductsAsyncRepository;
 use WL\AppBundle\Lib\Repository\ProductsRepository;
+use WL\AppBundle\Lib\Type\Breadcrumb;
 use WL\AppBundle\Lib\View\Data\Converter\Filters\Callback\Categories\SetParentCategory;
 use WL\AppBundle\Lib\View\Data\Converter\Filters\Callback\PriceRanges;
 
@@ -66,7 +67,8 @@ class CategoryController extends Controller
             'selectedFilters' => $selectedFilters,
             'sorts' => $products ? $products->getMetadata()->getSorts() : array(),
             'canonical' => $products ? $products->getMetadata()->getCanonical() : '',
-            'h1' => $category->getTitle()
+            'h1' => $category->getTitle(),
+            'metadataTitle' => $this->prepareMetadataTitle($breadcrumbs, $selectedFilters, $pagination)
         ));
     }
 
@@ -281,5 +283,25 @@ class CategoryController extends Controller
             new SetParentCategory($category, $this->get('categories.allowed'))
         ));
         return $categoriesFilter;
+    }
+
+    /**
+     * @param Breadcrumb[] $breadcrumbs
+     * @param array $selectedFilters
+     * @param Pagination $pagination
+     * @return string
+     */
+    protected function prepareMetadataTitle($breadcrumbs, $selectedFilters, $pagination)
+    {
+        $title = "";
+        if ($selectedFilters && count($breadcrumbs) > 1) {
+            $title .= $breadcrumbs[count($breadcrumbs) -2]->getTitle();
+        }
+        $title .= " " . $breadcrumbs[count($breadcrumbs) -1]->getTitle();
+
+        if ($pagination->getCurrentPage() > 1) {
+            $title .= " (str. " . $pagination->getCurrentPage() . ")";
+        }
+        return $title;
     }
 }

@@ -1,12 +1,10 @@
 {% extends "WLAppBundle:Category:index.html.twig" %}
 
-{% block title %}
-{{ phrase }} {% if pagination.currentPage>1 %}(str. [nr. {{ pagination.currentPage }}]){% endif %} - {{ parent() }}
-{% endblock %}
+
 {% block desc %}{% endblock %}
+
 {% block content %}
 
     {{ parent() }}
-
 
 {% endblock %}

@@ -1,13 +1,9 @@
 {% extends "WLAppBundle::layout.html.twig" %}
 
 {% block title %}
-    {% for crumbs in breadcrumbs %}
-        {{ crumbs.title }}
-        {% if loop.last == false %}
-            /
-        {% endif %}
-    {% endfor %}
-    {% if pagination.currentPage > 1 %}(str. {{ pagination.currentPage }}){% endif %} - {{ parent() }}
+    {% spaceless %}
+        {{ metadataTitle }} - {{ parent() }}
+    {% endspaceless %}
 {% endblock %}
 
 {% block desc %}{{ category.description|striptags }}{% endblock %}
