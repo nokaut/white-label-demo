@@ -161,7 +161,7 @@
                     <span>
                         <span class="badge-name">szukasz:</span>
                         <span class="badge">
-                            <button type="button" onclick="document.location.href='{{ products.phrase.urlOut == '/' ? '/' : url(route, { (routeArgument): products.phrase.urlOut|trim('/') }) }}'" class="close">×</button>
+                            <button type="button" onclick="document.location.href='{{ products.phrase.urlOut == '/' ? '/' : url('category', { 'categoryUrlWithFilters': products.phrase.urlOut|trim('/') }) }}'" class="close">×</button>
                             <span>{{ products.phrase.value|raw }}</span>
                         </span>
                     </span>
