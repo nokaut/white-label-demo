@@ -16,8 +16,7 @@ use WL\AppBundle\Lib\Pagination\Pagination;
 use WL\AppBundle\Lib\Repository\ProductsAsyncRepository;
 use WL\AppBundle\Lib\Repository\ProductsRepository;
 use WL\AppBundle\Lib\Type\Breadcrumb;
-use WL\AppBundle\Lib\View\Data\Converter\Filters\Callback\Categories\SetParentCategory;
-use WL\AppBundle\Lib\View\Data\Converter\Filters\Callback\PriceRanges;
+use WL\AppBundle\Lib\View\Data\Converter\Filters\Callback;
 
 class CategoryController extends Controller
 {
@@ -193,7 +192,7 @@ class CategoryController extends Controller
         $converterSelectedFilter = new Data\Converter\Filters\Selected\PriceRangesConverter();
         $priceRangesSelectedFilter = $converterSelectedFilter->convert($products, array(
             new Data\Converter\Filters\Callback\PriceRanges\SetIsNofollow(),
-            new PriceRanges\SetName()
+            new Callback\PriceRanges\SetName()
         ));
         return $priceRangesSelectedFilter;
     }
@@ -278,9 +277,10 @@ class CategoryController extends Controller
     {
         $converterFilter = new Data\Converter\Filters\CategoriesConverter();
         $categoriesFilter = $converterFilter->convert($products,array(
+            new Callback\Categories\ReduceIncorrectCategories(),
             new Data\Converter\Filters\Callback\Categories\SetIsExcluded(),
             new Data\Converter\Filters\Callback\Categories\SortByName(),
-            new SetParentCategory($category, $this->get('categories.allowed'))
+            new Callback\Categories\SetParentCategory($category, $this->get('categories.allowed'))
         ));
         return $categoriesFilter;
     }

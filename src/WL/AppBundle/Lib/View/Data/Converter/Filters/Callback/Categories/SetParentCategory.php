@@ -12,6 +12,7 @@ namespace WL\AppBundle\Lib\View\Data\Converter\Filters\Callback\Categories;
 
 use Nokaut\ApiKit\Collection\Products;
 use Nokaut\ApiKit\Entity\Category;
+use Nokaut\ApiKit\Entity\Category\Path;
 use Nokaut\ApiKit\Ext\Data\Collection\Filters\Categories;
 use WL\AppBundle\Lib\CategoriesAllowed;
 
@@ -37,7 +38,7 @@ class SetParentCategory extends \Nokaut\ApiKit\Ext\Data\Converter\Filters\Callba
     {
         $pathList = $this->currentCategory->getPath();
 
-        if($this->isAllowedParentCategory()) {
+        if($this->isAllowedParentCategory($pathList)) {
             foreach ($pathList as $item) {
                 if ($item->getId() == $this->currentCategory->getParentId()) {
                     $parentCategory = $this->prepareParentCategory($item);
@@ -49,11 +50,20 @@ class SetParentCategory extends \Nokaut\ApiKit\Ext\Data\Converter\Filters\Callba
     }
 
     /**
+     * @param Path[] $pathList
      * @return bool
      */
-    protected function isAllowedParentCategory()
+    protected function isAllowedParentCategory($pathList)
     {
-        return in_array($this->currentCategory->getParentId(), $this->categoriesAllowed->getAllowedCategories());
+        foreach ($pathList as $path) {
+            if (in_array($path->getId(), $this->categoriesAllowed->getAllowedCategories())) {
+                return true;
+            }
+            if ($this->currentCategory->getParentId() == $path->getId()) {
+                return false;
+            }
+        }
+        return false;
     }
 
 
