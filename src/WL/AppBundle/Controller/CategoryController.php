@@ -294,10 +294,12 @@ class CategoryController extends Controller
     protected function prepareMetadataTitle($breadcrumbs, $selectedFilters, $pagination)
     {
         $title = "";
-        if ($selectedFilters && count($breadcrumbs) > 1) {
-            $title .= $breadcrumbs[count($breadcrumbs) -2]->getTitle();
+        if (count($breadcrumbs)) {
+            if ($selectedFilters && count($breadcrumbs) > 1) {
+                $title .= $breadcrumbs[count($breadcrumbs) -2]->getTitle();
+            }
+            $title .= " " . $breadcrumbs[count($breadcrumbs) -1]->getTitle();
         }
-        $title .= " " . $breadcrumbs[count($breadcrumbs) -1]->getTitle();
 
         if ($pagination->getCurrentPage() > 1) {
             $title .= " (str. " . $pagination->getCurrentPage() . ")";
