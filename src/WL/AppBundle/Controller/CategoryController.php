@@ -15,6 +15,7 @@ use WL\AppBundle\Lib\Filter\SortFilter;
 use WL\AppBundle\Lib\Pagination\Pagination;
 use WL\AppBundle\Lib\Repository\ProductsAsyncRepository;
 use WL\AppBundle\Lib\Repository\ProductsRepository;
+use WL\AppBundle\Lib\View\Data\Converter\Filters\Callback\Categories\SetParentCategory;
 use WL\AppBundle\Lib\View\Data\Converter\Filters\Callback\PriceRanges;
 
 class CategoryController extends Controller
@@ -38,7 +39,7 @@ class CategoryController extends Controller
         $priceFilters = $this->getPriceFilters($products);
         $producersFilters = $this->getProducersFilters($products);
         $propertiesFilters = $this->getPropertiesFilters($products);
-        $categoriesFilters = $this->getCategoriesFilters($products);
+        $categoriesFilters = $this->getCategoriesFilters($category, $products);
 
         $selectedFilters = $this->getSelectedFilters($products);
 
@@ -266,12 +267,18 @@ class CategoryController extends Controller
         return $propertiesFilter;
     }
 
-    protected function getCategoriesFilters($products)
+    /**
+     * @param Category $category
+     * @param Products $products
+     * @return Data\Collection\Filters\Categories
+     */
+    protected function getCategoriesFilters($category, $products)
     {
         $converterFilter = new Data\Converter\Filters\CategoriesConverter();
         $categoriesFilter = $converterFilter->convert($products,array(
             new Data\Converter\Filters\Callback\Categories\SetIsExcluded(),
             new Data\Converter\Filters\Callback\Categories\SortByName(),
+            new SetParentCategory($category, $this->get('categories.allowed'))
         ));
         return $categoriesFilter;
     }

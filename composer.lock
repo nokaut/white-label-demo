@@ -50,12 +50,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/desarrolla2/Cache.git",
-                "reference": "1f48380045787851c60bc796cd46e358d3ed6821"
+                "reference": "55761d842bc3d8484a39dae941e3b9189dec2816"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/desarrolla2/Cache/zipball/1f48380045787851c60bc796cd46e358d3ed6821",
-                "reference": "1f48380045787851c60bc796cd46e358d3ed6821",
+                "url": "https://api.github.com/repos/desarrolla2/Cache/zipball/55761d842bc3d8484a39dae941e3b9189dec2816",
+                "reference": "55761d842bc3d8484a39dae941e3b9189dec2816",
                 "shasum": ""
             },
             "require": {
@@ -94,7 +94,7 @@
                 "mysql",
                 "redis"
             ],
-            "time": "2014-02-24 09:30:14"
+            "time": "2014-10-13 14:12:44"
         },
         {
             "name": "doctrine/annotations",
@@ -1052,12 +1052,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/nokaut/api-kit.git",
-                "reference": "d71ac16da14e569059cddf2ee2e81f7525aff8f0"
+                "reference": "207ca06d8f019a26fbac9f86ba014fe8a5d35563"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/nokaut/api-kit/zipball/d71ac16da14e569059cddf2ee2e81f7525aff8f0",
-                "reference": "d71ac16da14e569059cddf2ee2e81f7525aff8f0",
+                "url": "https://api.github.com/repos/nokaut/api-kit/zipball/207ca06d8f019a26fbac9f86ba014fe8a5d35563",
+                "reference": "207ca06d8f019a26fbac9f86ba014fe8a5d35563",
                 "shasum": ""
             },
             "require": {
@@ -1096,7 +1096,7 @@
                 "source": "https://github.com/nokaut/api-kit/tree/dwilkiewicz-ext",
                 "issues": "https://github.com/nokaut/api-kit/issues"
             },
-            "time": "2014-10-10 12:46:22"
+            "time": "2014-10-14 12:23:03"
         },
         {
             "name": "psr/log",
@@ -1730,16 +1730,16 @@
         },
         {
             "name": "twig/twig",
-            "version": "v1.16.0",
+            "version": "v1.16.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/fabpot/Twig.git",
-                "reference": "8ce37115802e257a984a82d38254884085060024"
+                "reference": "7c4c01dcf578523cfcddf383641a4f12790270ec"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/fabpot/Twig/zipball/8ce37115802e257a984a82d38254884085060024",
-                "reference": "8ce37115802e257a984a82d38254884085060024",
+                "url": "https://api.github.com/repos/fabpot/Twig/zipball/7c4c01dcf578523cfcddf383641a4f12790270ec",
+                "reference": "7c4c01dcf578523cfcddf383641a4f12790270ec",
                 "shasum": ""
             },
             "require": {
@@ -1783,26 +1783,26 @@
             "keywords": [
                 "templating"
             ],
-            "time": "2014-07-05 12:19:05"
+            "time": "2014-10-10 14:09:53"
         }
     ],
     "packages-dev": [
         {
             "name": "doctrine/instantiator",
-            "version": "1.0.3",
+            "version": "1.0.4",
             "source": {
                 "type": "git",
                 "url": "https://github.com/doctrine/instantiator.git",
-                "reference": "8806c41c178ad4a2e87294b851d730779555d252"
+                "reference": "f976e5de371104877ebc89bd8fecb0019ed9c119"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/doctrine/instantiator/zipball/8806c41c178ad4a2e87294b851d730779555d252",
-                "reference": "8806c41c178ad4a2e87294b851d730779555d252",
+                "url": "https://api.github.com/repos/doctrine/instantiator/zipball/f976e5de371104877ebc89bd8fecb0019ed9c119",
+                "reference": "f976e5de371104877ebc89bd8fecb0019ed9c119",
                 "shasum": ""
             },
             "require": {
-                "php": "~5.3"
+                "php": ">=5.3,<8.0-DEV"
             },
             "require-dev": {
                 "athletic/athletic": "~0.1.8",
@@ -1839,7 +1839,7 @@
                 "constructor",
                 "instantiate"
             ],
-            "time": "2014-10-04 22:48:25"
+            "time": "2014-10-13 12:58:55"
         },
         {
             "name": "phpunit/php-code-coverage",

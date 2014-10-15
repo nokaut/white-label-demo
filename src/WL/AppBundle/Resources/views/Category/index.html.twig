@@ -94,7 +94,7 @@
     <div class="col-md-3 col-sm-12 category-filters">
         <div class="panel-group" id="accordion">
 
-            {% if not subcategories.isExcluded %}
+            {% if not subcategories.isExcluded or subcategories.parentCategory %}
             <div class="panel panel-default category-filter">
                 <div class="panel-heading">
                     <h4 class="panel-title">
@@ -108,6 +108,13 @@
                 <div  data-links='keep-view' id="collapseCategory" class="panel-collapse in" style="height: auto;">
                     <div class="panel-body">
                         <ul>
+                            {% if subcategories.parentCategory %}
+                                <li>
+                                    <a href="{{ url(route, { (routeArgument) : subcategories.parentCategory.url|trim('/')}) }}">
+                                    {{ subcategories.parentCategory.name }} <i class="fa fa-level-up"></i>
+                                    </a>
+                                </li>
+                            {% endif %}
                             {% for category in subcategories if not category.isFilter %}
                                 <li><a href="{{ url(route, { (routeArgument) : category.urlIn|trim('/')}) }}">
                                     <span class="badge pull-right">{{ category.total }}</span> {{ category.name|raw }}</a>

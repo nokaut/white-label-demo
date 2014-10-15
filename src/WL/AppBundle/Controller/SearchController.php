@@ -39,7 +39,7 @@ class SearchController extends CategoryController
         $priceFilters = $this->getPriceFilters($products);
         $producersFilters = $this->getProducersFilters($products);
         $propertiesFilters = $this->getPropertiesFilters($products);
-        $categoriesFilters = $this->getCategoriesFilters($products);
+        $categoriesFilters = $this->getCategoriesFiltersForSearch($products);
 
         $selectedFilters = $this->getSelectedFilters($products);
         $selectedCategoriesFilters = $this->getCategoriesSelectedFilters($products);
@@ -127,6 +127,20 @@ class SearchController extends CategoryController
         $converterFilter = new Data\Converter\Filters\Selected\CategoriesConverter();
         $categoriesFilter = $converterFilter->convert($products, array(
             new ReduceAllSelected(),
+        ));
+        return $categoriesFilter;
+    }
+
+    /**
+     * @param Products $products
+     * @return Data\Collection\Filters\Categories
+     */
+    protected function getCategoriesFiltersForSearch($products)
+    {
+        $converterFilter = new Data\Converter\Filters\CategoriesConverter();
+        $categoriesFilter = $converterFilter->convert($products,array(
+            new Data\Converter\Filters\Callback\Categories\SetIsExcluded(),
+            new Data\Converter\Filters\Callback\Categories\SortByName(),
         ));
         return $categoriesFilter;
     }
