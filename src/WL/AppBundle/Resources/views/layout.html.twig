@@ -65,10 +65,10 @@
     <ul class="nav navbar-nav">
     {% for menuLink in menu_main %}
         {% if menuLink.subLinks|length>1 %}
-            <li class="dropdown yamm-fw">
+            <li class="dropdown yamm-fw {% if breadcrumbs and menuLink.name == breadcrumbs[0].title %} active{% endif %}">
                 <a href="#" data-toggle="dropdown" class="dropdown-toggle">{{ menuLink.name }} <b class="caret"></b></a>
                 <ul class="dropdown-menu">
-                    <li>
+                    <li cl>
                         <div class="row">
 
                             <div class="col-sm-3">
@@ -113,7 +113,7 @@
                 </ul>
             </li>
         {% else %}
-            <li>
+            <li {% if breadcrumbs and menuLink.name == breadcrumbs[0].title %}class="active"{% endif %}>
                 <a href="{{  url('category', { 'categoryUrlWithFilters': menuLink.subLinks[0].url|trim('/')}) }}">{{ menuLink.name }}</b></a>
             </li>
         {% endif %}
