@@ -112,7 +112,7 @@
                                 </li>
                             {% endif %}
                             {% for category in subcategories if not category.isFilter %}
-                                <li><a href="{{ url(route, { (routeArgument) : category.urlIn|trim('/')}) }}">
+                                <li{% if loop.first %} class="lower-half"{% endif %}><a href="{{ url(route, { (routeArgument) : category.urlIn|trim('/')}) }}">
                                     <span class="badge pull-right">{{ category.total }}</span> {{ category.name|raw }}</a>
                                 </li>
                             {% endfor %}
