@@ -27,7 +27,7 @@ class SearchController extends CategoryController
 
         /** @var ProductsAsyncRepository $productsRepo */
         $productsRepo = $this->get('repo.products.async');
-        $productsFetch = $productsRepo->fetchProductsByUrl($phraseUrlForApi, $this->getProductFields(), 24);
+        $productsFetch = $productsRepo->fetchProductsByUrlWithQuality($phraseUrlForApi, $this->getProductFields(), 24, 60);
         $productsRepo->fetchAllAsync();
         /** @var Products $products */
         $products = $productsFetch->getResult();

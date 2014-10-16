@@ -37,7 +37,7 @@ class ProductController extends Controller
         try {
             $product = $productsRepo->fetchProductByUrl($productUrl, $this->getFieldsForProduct());
         } catch (NotFoundException $e) {
-            throw $this->createNotFoundException("not found product: " . $productUrl);
+            return $this->redirect($this->generateUrl('search', array('phrase' => ltrim($productUrl, '/'))), 301);
         }
         $this->filter($product);
 

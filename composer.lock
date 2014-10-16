@@ -902,16 +902,16 @@
         },
         {
             "name": "kriswallsmith/assetic",
-            "version": "v1.2.0-alpha1",
+            "version": "v1.2.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/kriswallsmith/assetic.git",
-                "reference": "5bea57990f7ddbeb3d57e7ef96eae9ddd56c4297"
+                "reference": "df991c124a2212371443b586a1be767500036dee"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/kriswallsmith/assetic/zipball/5bea57990f7ddbeb3d57e7ef96eae9ddd56c4297",
-                "reference": "5bea57990f7ddbeb3d57e7ef96eae9ddd56c4297",
+                "url": "https://api.github.com/repos/kriswallsmith/assetic/zipball/df991c124a2212371443b586a1be767500036dee",
+                "reference": "df991c124a2212371443b586a1be767500036dee",
                 "shasum": ""
             },
             "require": {
@@ -926,8 +926,8 @@
                 "leafo/scssphp": "*",
                 "leafo/scssphp-compass": "*",
                 "mrclay/minify": "*",
-                "patchwork/jsqueeze": "*",
-                "phpunit/phpunit": "~3.7",
+                "patchwork/jsqueeze": "~1.0",
+                "phpunit/phpunit": "~4",
                 "psr/log": "~1.0",
                 "ptachoire/cssembed": "*",
                 "twig/twig": "~1.6"
@@ -972,7 +972,7 @@
                 "compression",
                 "minification"
             ],
-            "time": "2014-07-08 11:30:40"
+            "time": "2014-10-14 14:45:32"
         },
         {
             "name": "monolog/monolog",
@@ -1052,12 +1052,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/nokaut/api-kit.git",
-                "reference": "207ca06d8f019a26fbac9f86ba014fe8a5d35563"
+                "reference": "13cbfaf9ec43a45677f47acd07ca1160aa6eb16a"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/nokaut/api-kit/zipball/207ca06d8f019a26fbac9f86ba014fe8a5d35563",
-                "reference": "207ca06d8f019a26fbac9f86ba014fe8a5d35563",
+                "url": "https://api.github.com/repos/nokaut/api-kit/zipball/13cbfaf9ec43a45677f47acd07ca1160aa6eb16a",
+                "reference": "13cbfaf9ec43a45677f47acd07ca1160aa6eb16a",
                 "shasum": ""
             },
             "require": {
@@ -1096,7 +1096,7 @@
                 "source": "https://github.com/nokaut/api-kit/tree/dwilkiewicz-ext",
                 "issues": "https://github.com/nokaut/api-kit/issues"
             },
-            "time": "2014-10-14 12:23:03"
+            "time": "2014-10-16 10:30:23"
         },
         {
             "name": "psr/log",
@@ -1343,39 +1343,41 @@
         },
         {
             "name": "symfony/assetic-bundle",
-            "version": "v2.4.0",
+            "version": "v2.5.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/AsseticBundle.git",
-                "reference": "c07c0e500fe255ac0211eea9d0446c139f12da9c"
+                "reference": "90ea7fb66d6d5245fd4afc16e4c8070214254fec"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/AsseticBundle/zipball/c07c0e500fe255ac0211eea9d0446c139f12da9c",
-                "reference": "c07c0e500fe255ac0211eea9d0446c139f12da9c",
+                "url": "https://api.github.com/repos/symfony/AsseticBundle/zipball/90ea7fb66d6d5245fd4afc16e4c8070214254fec",
+                "reference": "90ea7fb66d6d5245fd4afc16e4c8070214254fec",
                 "shasum": ""
             },
             "require": {
                 "kriswallsmith/assetic": "~1.2",
                 "php": ">=5.3.0",
-                "symfony/framework-bundle": "~2.1"
-            },
-            "require-dev": {
-                "symfony/class-loader": "~2.1",
                 "symfony/console": "~2.1",
-                "symfony/css-selector": "~2.1",
-                "symfony/dom-crawler": "~2.1",
-                "symfony/twig-bundle": "~2.1",
+                "symfony/framework-bundle": "~2.1",
                 "symfony/yaml": "~2.1"
             },
-            "suggest": {
-                "kriswallsmith/spork": "v0.2",
+            "require-dev": {
+                "kriswallsmith/spork": "~0.2",
+                "patchwork/jsqueeze": "~1.0",
+                "symfony/class-loader": "~2.1",
+                "symfony/css-selector": "~2.1",
+                "symfony/dom-crawler": "~2.1",
                 "symfony/twig-bundle": "~2.1"
+            },
+            "suggest": {
+                "kriswallsmith/spork": "to be able to dump assets in parallel",
+                "symfony/twig-bundle": "to use the Twig integration"
             },
             "type": "symfony-bundle",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "2.4-dev"
+                    "dev-master": "2.5-dev"
                 }
             },
             "autoload": {
@@ -1401,7 +1403,7 @@
                 "compression",
                 "minification"
             ],
-            "time": "2014-09-03 23:37:07"
+            "time": "2014-10-15 12:03:38"
         },
         {
             "name": "symfony/icu",
