@@ -161,7 +161,7 @@
     <div class="row category-details">
         <div class="col-xs-11">
             <h1>
-                <span class="name"><strong>{{ h1|raw }}</strong><small>{{ products.metadata.total|varietyProducts }}</small></span>
+                <span class="name">{% if h1 %}<strong>{{ h1|raw }}</strong>{% endif %}<small>{{ products.metadata.total|varietyProducts }}</small></span>
                 {% if products.phrase is not null and route == 'search' and products.phrase.value %}
                     <span>
                         <span class="badge-name">szukasz:</span>
