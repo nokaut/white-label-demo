@@ -146,9 +146,9 @@
                     .done(function (data) {
                         if (data != -1) {
                             selectStars(Math.round(data));
-                            $(".product-star").unbind().css('cursor','default');
-                            alert('Dziękujemy za dodanie oceny')
                         }
+                        $(".product-star").unbind().css('cursor','default');
+                        $.growl.notice({ title: "", message: "Dziękujemy za Twój głos. Niebawem zostanie uwzględniony w całkowitej ocenie produktu." });
                     });
         }
 

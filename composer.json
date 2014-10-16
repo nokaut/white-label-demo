@@ -32,7 +32,7 @@
         "sensio/distribution-bundle": "~3.0",
         "sensio/framework-extra-bundle": "~3.0",
         "incenteev/composer-parameter-handler": "~2.0",
-        "nokaut/api-kit": "dev-dwilkiewicz-ext",
+        "nokaut/api-kit": "dev-master",
         "guzzle/guzzle": "3.8.*",
         "desarrolla2/cache":  "dev-master"
     },

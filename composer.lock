@@ -4,7 +4,7 @@
         "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "77e19cf765343d2094e35a261aa02ec8",
+    "hash": "c3cc50411aa7f5ac2e976757b6166bed",
     "packages": [
         {
             "name": "commerceguys/guzzle-oauth2-plugin",
@@ -1048,16 +1048,16 @@
         },
         {
             "name": "nokaut/api-kit",
-            "version": "dev-dwilkiewicz-ext",
+            "version": "dev-master",
             "source": {
                 "type": "git",
                 "url": "https://github.com/nokaut/api-kit.git",
-                "reference": "13cbfaf9ec43a45677f47acd07ca1160aa6eb16a"
+                "reference": "93384c4e96cec3e7544321388da2a2fc05791811"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/nokaut/api-kit/zipball/13cbfaf9ec43a45677f47acd07ca1160aa6eb16a",
-                "reference": "13cbfaf9ec43a45677f47acd07ca1160aa6eb16a",
+                "url": "https://api.github.com/repos/nokaut/api-kit/zipball/93384c4e96cec3e7544321388da2a2fc05791811",
+                "reference": "93384c4e96cec3e7544321388da2a2fc05791811",
                 "shasum": ""
             },
             "require": {
@@ -1093,10 +1093,10 @@
                 "nokaut api"
             ],
             "support": {
-                "source": "https://github.com/nokaut/api-kit/tree/dwilkiewicz-ext",
+                "source": "https://github.com/nokaut/api-kit/tree/master",
                 "issues": "https://github.com/nokaut/api-kit/issues"
             },
-            "time": "2014-10-16 10:30:23"
+            "time": "2014-10-16 10:49:37"
         },
         {
             "name": "psr/log",
