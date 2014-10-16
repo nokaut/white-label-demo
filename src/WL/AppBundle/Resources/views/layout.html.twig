@@ -76,7 +76,7 @@
                                 <ul class="dropdown-menu dropdown-menu-inner">
                                     <li class="dropdown-header">Kategorie</li>
                                     {% for subLink in menuLink.subLinks %}
-                                        <li><a href="{{  url('category', { 'categoryUrlWithFilters': subLink.url|trim('/')}) }}" title="{{ subLink.name|raw }}">{{ subLink.name }}</a></li>
+                                        <li{% if category is defined and category.title == subLink.name %} class="active"{% endif %}><a href="{{  url('category', { 'categoryUrlWithFilters': subLink.url|trim('/')}) }}" title="{{ subLink.name|raw }}">{{ subLink.name }}</a></li>
                                     {% endfor %}
                                 </ul>
 
