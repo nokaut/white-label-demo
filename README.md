@@ -38,7 +38,7 @@ Podczas instalacji program poprosi nas o podanie parametrów. Zostawiamy domyśl
  - cache_enabled: - jeśli mamy zainstalowany memcache i chcemy używać cache wprowadzamy `true` w innym przyadku wprowadzamy `false`
  - memcache_url: - jeśli w poprzedni parametrze wprowadziliśmy `false` naciskamy enter jeśli `true` musimy podać adres serwera memcache, jeśli memcache jest na tym samym serwerze co serwis, postawiamy domyślą wartość `localhost`
  - memcache_port: - jeśli w parametrze `cache_enabled` wprowadziliśmy `false` naciskamy enter jeśli `true` musmy podać port serwera memcache, domyślnie memcache jest na porcie 11211
- - categories: - parametr odpowiadający za tematykę strony, wybieramy w nim ID-ki kategorii które mają się znaleźć w serwisie, schemat:
+ - categories: - parametr odpowiadający za tematykę strony, wybieramy w nim ID-ki kategorii które mają się znaleźć w serwisie, domyślnie są wszystkie kategorie przykładowo podzielone na 3 zakładki; schemat:
 
          'Kategorie I': #ta nazwa pojawi się w menu głównym
              - id kategorii 1
@@ -52,7 +52,7 @@ Podczas instalacji program poprosi nas o podanie parametrów. Zostawiamy domyśl
 
 Pramatry można w każdej chwili zmienić w pliku  **app/config/parameters.yml**
 
-Po uzupełnieniu parametrów wykonujemy dwa ostatnie polecenia **(to polecenie należy wykoanć zawsze po aktualizacji powyższego pliku z parametrami)**.
+Po uzupełnieniu parametrów wykonujemy dwa ostatnie polecenia **(to polecenie należy zawsze wykonać po aktualizacji powyższego pliku z parametrami)**.
 
      php app/console cache:clear --env=prod
      php app/console asset:install --env=prod
