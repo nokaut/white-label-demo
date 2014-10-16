@@ -106,7 +106,12 @@
                         <ul>
                             {% if subcategories.parentCategory %}
                                 <li class="active">
-                                    <a href="{{ url(route, { (routeArgument) : subcategories.parentCategory.url|trim('/')}) }}">
+                                    {% if subcategories.parentCategory.url == '/' %}
+                                        {% set parenCategoryUrl = url('wl_homepage') %}
+                                    {% else %}
+                                        {% set parenCategoryUrl = url(route, { (routeArgument) : subcategories.parentCategory.url|trim('/')}) %}
+                                    {% endif %}
+                                    <a href="{{ parenCategoryUrl }}">
                                         <span class="badge pull-right">{{ products.metadata.total }}</span> {{ category.title|raw }} <i class="fa fa-level-up"></i>
                                     </a>
                                 </li>

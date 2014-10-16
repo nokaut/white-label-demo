@@ -14,6 +14,7 @@ use Nokaut\ApiKit\Collection\Products;
 use Nokaut\ApiKit\Entity\Category;
 use Nokaut\ApiKit\Entity\Category\Path;
 use Nokaut\ApiKit\Ext\Data\Collection\Filters\Categories;
+use Nokaut\ApiKit\Ext\Data\Entity\Filter\ParentCategory;
 use WL\AppBundle\Lib\CategoriesAllowed;
 
 class SetParentCategory extends \Nokaut\ApiKit\Ext\Data\Converter\Filters\Callback\Categories\SetParentCategory
@@ -46,6 +47,12 @@ class SetParentCategory extends \Nokaut\ApiKit\Ext\Data\Converter\Filters\Callba
                     return;
                 }
             }
+        }
+        if (!$categories->getParentCategory()) {
+            $parentCategory = new ParentCategory();
+            $parentCategory->setUrl('/');
+            $parentCategory->setName('Strona główna');
+            $categories->setParentCategory($parentCategory);
         }
     }
 
