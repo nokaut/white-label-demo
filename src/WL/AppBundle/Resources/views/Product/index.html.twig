@@ -1,12 +1,15 @@
 {% extends "WLAppBundle::layout.html.twig" %}
 
 {% block title %}
-{{ product.title|raw }}  - White Label Nokaut.pl
+{{ product.title|raw }}  - {{ parent() }}
 {% endblock %}
 
-{% block desc %}
-{{ product.description|raw|truncate(150) }}
-{% endblock %}
+{% block desc %}{% spaceless %}{{ category.title|raw }}; Producent: {{ product.producerName }};
+    {% for property in product.properties %}
+        {{ property.name|raw }}: {% include '@WLApp/Product/property.html.twig' %};
+    {% endfor %}
+    {{ product.descriptionHtml|striptags|truncate(200) }}
+{% endspaceless %}{% endblock %}
 
 {% block head %}
     {{ parent() }}
@@ -17,80 +20,102 @@
 
 
 {% block content %}
-    <div class="page-header">
-        <h1>{{ product.title|raw }}</h1>
+
+    {% if offers.metadata.total == 0 %}
+        {% include '@WLApp/Product/nonOffers.html.twig' %}
+    {% elseif offers.metadata.total == 1 %}
+        {% include '@WLApp/Product/oneOffer.html.twig' %}
+    {% else %}
+        {% include '@WLApp/Product/multiOffers.html.twig' %}
+    {% endif %}
+
+
+
+    {% if productsSimilar|length > 0 %}
+        <div class="row lower-double products">
+            <div class="col-xs-8">
+                <h4>Produkty podobne</h4>
+            </div>
+            <div class="col-xs-4 text-right">
+                <a id="products-similar-prev" class="btn btn-sm btn-primary btn-primary-outlined"><i class="fa fa-angle-left"></i></a>
+                <a id="products-similar-next" class="btn btn-sm btn-primary btn-primary-outlined"><i class="fa fa-angle-right"></i></a>
+            </div>
+        </div>
+        <div class="row">
+        <div id="products-similar" class=" owl-carousel">
+            {% for product in productsSimilar %}
+                {% include '@WLApp/Product/productBox.html.twig' with {'product': product} %}
+            {% endfor %}
+        </div>
+        </div>
+    {% endif %}
+
+
+
+
+    <div class="row lower-double products">
+        <div class="col-xs-8">
+            <h4>Produkty najpopularniejsze w kategorii <a href="{{ url('category', {'categoryUrlWithFilters': category.url|trim('/')}) }}">{{ category.title|raw }}</a></h4>
+        </div>
+        <div class="col-xs-4 text-right">
+            <a id="products-top-prev" class="btn btn-sm btn-primary btn-primary-outlined"><i class="fa fa-angle-left"></i></a>
+            <a id="products-top-next" class="btn btn-sm btn-primary btn-primary-outlined"><i class="fa fa-angle-right"></i></a>
+        </div>
     </div>
     <div class="row">
-        <div class="col-xs-2 col-sm-2">
-                {% for photoId in product.photoIds if photoId %}
-                    <a id="productImage{{ loop.index }}" target="_blank" href="{{ nokaut_img_domain ~ nokaut_photo_url.prepare(photoId, '500x500', product.title) }}"><img src="{{ nokaut_img_domain ~ nokaut_photo_url.prepare(photoId, '90x90', product.title) }}" alt="{{ product.title }}"></a>
-                {% endfor %}
-        </div>
-        <div class="col-xs-9 col-sm-9">
-            <div>
-                {% for property in product.properties %}
-                    <strong>{{ property.name|raw }}:</strong>
-                    {% include '@WLApp/Product/property.html.twig' %}
-                    {% if loop.last == false %}
-                        |
-                    {% endif %}
-                {% endfor %}
-            </div>
-            <div>
-                <strong id="productRating" data-product="{{ product.id }}" >Ocena:</strong>
-                {% for i in 1..5 %}
-                    <span class="glyphicon glyphicon-star product-star" data-star-current="{{ product.rating ? product.rating.rating|round : 0 }}" data-star-nr="{{ i }}" style="color: {% if product.rating and product.rating.rating|round >= i%}orangered;{% else %}silver{% endif %}"></span>
-                {% endfor %}
-            </div>
-
-            <h2>Oferty</h2>
-            <table class="table">
-                {% for offer in offers %}
-                <tr>
-                    <td style="text-align: center;">
-                        <a target="_blank" rel="nofollow" href="{{ offer|click }}" title="{{ offer.title|raw }}" class="pull-left">
-                            {% if offer.shop.urlLogo %}
-                                <img src="{{ nokaut_img_domain ~ offer.shop.urlLogo }}" alt="{{ offer.shop.name }}">
-                            {% endif %}
-                            <br>
-                            {% for i in 1..5 %}
-                                <span class="glyphicon glyphicon-star" style="color: {% if offer.shop.opineoRating and (offer.shop.opineoRating.rating/2)|round > i%}orangered;{% else %}silver{% endif %}"></span>
-                            {% endfor %}
-                            <span class="small">{{ offer.shop.name|raw }}</span>
-                        </a>
-                    </td>
-                    <td>
-                        <a target="_blank" rel="nofollow" href="{{ offer|click }}" title="{{ offer.title|raw }}" class="pull-left">
-                            {% if offer.photoId %}
-                                <img width="80" height="80" src="{{ nokaut_img_domain ~ nokaut_photo_url.prepare(offer.photoId, '90x90', offer.title) }}" alt="{{ offer.title }}">
-                            {% endif %}
-                        </a>
-                    </td>
-                    <td>
-                        <a target="_blank" rel="nofollow" href="{{ offer|click }}" title="{{ offer.title|raw }}" class="pull-left">
-                            <span>{{ offer.title|raw }}</span>
-                            <span>{{ offer.price|number_format(2, ',', '') }} zł</span>
-                        </a>
-                    </td>
-                    <td>
-                        <a target="_blank" rel="nofollow" href="{{ offer|click }}" title="{{ offer.title|raw }}" class="btn btn-primary pull-left">Idź do sklepu</a>
-                    </td>
-                </tr>
-                {% endfor %}
-            </table>
-
-            <p>
-                <h4 class="title">Opis produktu</h4>
-                {{ product.descriptionHtml|raw }}
-            </p>
-
-        </div>
+    <div id="products-top" class=" owl-carousel">
+    {% for product in productsTop10 %}
+        {% include '@WLApp/Product/productBox.html.twig' with {'product': product} %}
+    {% endfor %}
+    </div>
     </div>
 
 {% endblock %}
 
 {% block javascripts %}
     {{ parent() }}
+
+    <script src="{{ asset('bundles/wlapp/js/isotope.pkgd.min.js') }}"></script>
+
+    <script type="text/javascript">
+        $('#offersContainer').isotope({
+            itemSelector : '.offer',
+            layoutMode : 'vertical',
+            getSortData : {
+                price : function ( $elem ) {
+                    return parseFloat($($elem).attr('data-price'));
+                }
+            }
+        });
+
+        $('#sortOffersSelect a').click(function(){
+            // get href attribute, minus the '#'
+            var sortName = $(this).attr('href').slice(1);
+            switch (sortName) {
+                case 'domyslne':
+                    $('#offersContainer').isotope({ sortBy : 'original-order' });
+                    break;
+                case 'najtansze':
+                    $('#offersContainer').isotope({
+                        sortBy : 'price',
+                        sortAscending : true
+                    });
+                    break;
+                case 'najdrozsze':
+                    $('#offersContainer').isotope({
+                        sortBy : 'price',
+                        sortAscending : false
+                    });
+                    break;
+            }
+            $('#sortOffersSelect li').removeClass('active');
+            $(this).parent().addClass('active');
+            $('#sortOffersSelect').dropdown('toggle');
+            return false;
+        });
+
+
+    </script>
 
     {% if canAddRating %}
     <script type="text/javascript">
@@ -121,18 +146,18 @@
                     .done(function (data) {
                         if (data != -1) {
                             selectStars(Math.round(data));
-                            $("#productRating").unbind("click").css('cursor','default');
-                            alert('Dziękujemy za dodanie oceny')
-                        } else {
-                            alert('Nie można dodać oceny. Proszę spróbować później');
                         }
+                        $(".product-star").unbind().css('cursor','default');
+                        $.growl.notice({ title: "", message: "Dziękujemy za Twój głos. Niebawem zostanie uwzględniony w całkowitej ocenie produktu." });
                     });
         }
 
         function selectStars(countSelectedStars) {
-            $('.product-star').css('color','silver');
+            $('.product-star').removeClass('fa-star','silver');
+            $('.product-star').addClass('fa-star-o','silver');
             for(var i=1; i<=countSelectedStars; ++i) {
-                $('.product-star[data-star-nr='+i+']').css('color','orangered');
+                $('.product-star[data-star-nr='+i+']').removeClass('fa-star-o','silver');
+                $('.product-star[data-star-nr='+i+']').addClass('fa-star','silver');
             }
         }
     </script>

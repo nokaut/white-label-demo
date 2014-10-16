@@ -1,0 +1,56 @@
+{% if product.offerCount == 1 and product.clickUrl is not empty %}
+    {% set productUrl = product|click %}
+{% else %}
+    {% set productUrl = path('product', {'productUrl': product.url|trim('/')}) %}
+{% endif %}
+<div>
+    <div class="col-xs-12 product-wrapper-grid">
+        <div class="product normal">
+            <a {% if product.clickUrl is not empty %}target="_blank"{% endif %} href="{{ productUrl }}">
+                <div class="image">
+                    <img class="img-responsive" title="{{ product.title|raw }}"
+                         src="{{ nokaut_img_domain ~ nokaut_photo_url.prepare(product.photoId, '500x500', product.title) }}"/>
+                </div>
+            </a>
+            <a {% if product.clickUrl is not empty %}target="_blank"{% endif %} href="{{ productUrl }}">
+                <h5 class="title">{{ product.title|raw }}</h5>
+            </a>
+
+            <div class="product-details-popup text-center">
+                {% if product.descriptionShort %}
+                <a {% if product.clickUrl is not empty %}target="_blank"{% endif %} href="{{ productUrl }}" data-container="body" data-placement="left" data-toggle="tooltip">
+                    <i class="fa fa-align-justify"></i>
+                    <div class="tooltip_title_wrapper hidden">
+                        <p>{{ product.descriptionShort|raw }}</p>
+
+                    </div>
+                </a>
+                {% endif %}
+
+                {% set savePercent = helper_price.getSavePercent(product.prices) %}
+                {% if savePercent > 0 %}
+                    <a {% if product.clickUrl is not empty %}target="_blank"{% endif %} href="{{ productUrl }}" data-container="body" data-placement="left" data-toggle="tooltip">
+                        <i class="fa fa-tag"></i>
+
+                        <div class="tooltip_title_wrapper hidden">
+                            Na tym produkcie możesz zaoszczędzić aż  {{ savePercent }}%
+                        </div>
+                    </a>
+                {% endif %}
+                {% if product.clickUrl is not empty %}
+                    <a href="{{ url('product', {'productUrl': product.url|trim('/') }) }}"><i class="fa fa-link"></i></a>
+                {% endif %}
+            </div>
+            <a {% if product.clickUrl is not empty %}target="_blank"{% endif %} href="{{ productUrl }}">
+                <div class="row">
+                    <div class="col-xs-12 text-center">
+                        <span class="price lead">{% if product.offerCount > 1 %}od {% endif %}{{ product.prices.min|number_format(2,',',' ') }} PLN</span>
+                            <span class="btn btn-success btn-success-outlined btn-icon-right">Porównaj oferty
+                                <i class="fa fa-angle-right"></i>
+                            </span>
+                    </div>
+                </div>
+            </a>
+        </div>
+    </div>
+</div>

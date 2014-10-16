@@ -2,22 +2,21 @@
 
 namespace WL\AppBundle\Controller;
 
-use Nokaut\ApiKit\ClientApi\Rest\Fetch\ProductsFetch;
 use Nokaut\ApiKit\ClientApi\Rest\Exception\NotFoundException;
 use Nokaut\ApiKit\Collection\Products;
 use Nokaut\ApiKit\Entity\Category;
-use Nokaut\ApiKit\Entity\Metadata\Facet\PriceFacet;
+use Nokaut\ApiKit\Ext\Data;
 use Nokaut\ApiKit\Repository\CategoriesRepository;
-use Nokaut\ApiKit\Repository\ProductsRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Response;
 use WL\AppBundle\Lib\BreadcrumbsBuilder;
 use WL\AppBundle\Lib\Filter\PropertiesFilter;
+use WL\AppBundle\Lib\Filter\SortFilter;
 use WL\AppBundle\Lib\Pagination\Pagination;
-use WL\AppBundle\Lib\Type\Filter;
 use WL\AppBundle\Lib\Repository\ProductsAsyncRepository;
-use WL\AppBundle\Lib\View\Data\Collection\Filters\PropertyAbstract;
-use WL\AppBundle\Lib\View\Data\Converter\Filters\Facets\PropertiesConverter as FacetsPropertiesConverter;
+use WL\AppBundle\Lib\Repository\ProductsRepository;
+use WL\AppBundle\Lib\Type\Breadcrumb;
+use WL\AppBundle\Lib\View\Data\Converter\Filters\Callback;
 
 class CategoryController extends Controller
 {
@@ -28,7 +27,6 @@ class CategoryController extends Controller
         /** @var ProductsAsyncRepository $productsAsyncRepo */
         $productsAsyncRepo = $this->get('repo.products.async');
         $productsFetch = $productsAsyncRepo->fetchProductsByUrl($categoryUrlWithFilters, $this->getProductFields(), 24);
-        $productsTopFetch = $productsAsyncRepo->fetchTopProducts(10, array($category->getId()));
         $productsAsyncRepo->fetchAllAsync();
 
         /** @var Products $products */
@@ -38,29 +36,39 @@ class CategoryController extends Controller
 
         $pagination = $this->preparePagination($products);
 
-        $filterPropertiesFacets = $this->getFilterPropertiesFacet($products);
+        $priceFilters = $this->getPriceFilters($products);
+        $producersFilters = $this->getProducersFilters($products);
+        $propertiesFilters = $this->getPropertiesFilters($products);
+        $categoriesFilters = $this->getCategoriesFilters($category, $products);
 
-        $filters = $this->getFilters($products);
+        $selectedFilters = $this->getSelectedFilters($products);
 
-        $breadcrumbs = $this->prepareBreadcrumbs($category, $filters);
+        $breadcrumbs = $this->prepareBreadcrumbs($category, $selectedFilters);
 
         $responseStatus = null;
         if ($products->getMetadata()->getTotal() == 0) {
-            $responseStatus = new Response('', 404);
+            return $this->render('WLAppBundle:Category:nonResult.html.twig', array(
+                'breadcrumbs' => $breadcrumbs,
+                'selectedFilters' => $selectedFilters,
+                'canonical' => $products ? $products->getMetadata()->getCanonical() : '',
+            ), new Response('', 404));
         }
 
         return $this->render('WLAppBundle:Category:index.html.twig', array(
             'category' => $category,
             'products' => $products,
-            'productsTop10' => $productsTopFetch->getResult(),
             'breadcrumbs' => $breadcrumbs,
             'pagination' => $pagination,
-            'subcategories' => $products ? $products->getCategories() : array(),
-            'filters' => $filters,
-            'filterPropertiesFacets' => $filterPropertiesFacets,
+            'subcategories' => $categoriesFilters,
+            'priceFilters' => $priceFilters,
+            'producersFilters' => $producersFilters,
+            'propertiesFilters' => $propertiesFilters,
+            'selectedFilters' => $selectedFilters,
             'sorts' => $products ? $products->getMetadata()->getSorts() : array(),
-            'canonical' => $products ? $products->getMetadata()->getCanonical() : ''
-        ), $responseStatus);
+            'canonical' => $products ? $products->getMetadata()->getCanonical() : '',
+            'h1' => $category->getTitle(),
+            'metadataTitle' => $this->prepareMetadataTitle($breadcrumbs, $selectedFilters, $pagination)
+        ));
     }
 
     /**
@@ -74,60 +82,9 @@ class CategoryController extends Controller
         }
         $filterProperties = new PropertiesFilter();
         $filterProperties->filterProducts($products);
-    }
 
-    /**
-     * @param Products $products
-     * @return PropertyAbstract[]
-     */
-    protected function getFilterPropertiesFacet($products)
-    {
-        $facetsPropertiesConverter = new FacetsPropertiesConverter();
-        $filterPropertiesFacets = $facetsPropertiesConverter->convert($products);
-        return $filterPropertiesFacets;
-    }
-
-    /**
-     * @param Products $products
-     * @return Filter[]
-     */
-    protected function getFilters($products)
-    {
-        if (is_null($products)) {
-            return array();
-        }
-
-        $filters = array();
-        foreach ($products->getProducers() as $producer) {
-            if ($producer->getIsFilter()) {
-                $filter = new Filter();
-                $filter->setName("Producent");
-                $filter->setValue($producer->getName());
-                $filter->setOutUrl($producer->getUrl());
-                $filters[] = $filter;
-            }
-        }
-        foreach ($products->getPrices() as $price) {
-            if ($price->getIsFilter()) {
-                $filter = new Filter();
-                $filter->setName("Ceny");
-                $filter->setValue($this->prepareFilterPriceValue($price));
-                $filter->setOutUrl($price->getUrl());
-                $filters[] = $filter;
-            }
-        }
-        foreach ($products->getProperties() as $property) {
-            foreach ($property->getValues() as $value) {
-                if ($value->getIsFilter()) {
-                    $filter = new Filter();
-                    $filter->setName($property->getName());
-                    $filter->setValue($value->getName());
-                    $filter->setOutUrl($value->getUrl());
-                    $filters[] = $filter;
-                }
-            }
-        }
-        return $filters;
+        $filterSort = new SortFilter();
+        $filterSort->filter($products);
     }
 
     /**
@@ -170,7 +127,7 @@ class CategoryController extends Controller
 
     /**
      * @param $category
-     * @param Filter[] $filters
+     * @param Data\Collection\Filters\FiltersAbstract[] $filters
      * @return array
      */
     protected function prepareBreadcrumbs($category, array $filters)
@@ -189,23 +146,31 @@ class CategoryController extends Controller
     }
 
     /**
-     * @param PriceFacet $price
-     * @return string
+     * @param Products $products
+     * @return Data\Collection\Filters\FiltersAbstract[]
      */
-    protected function prepareFilterPriceValue(PriceFacet $price)
+    protected function getSelectedFilters($products)
     {
-        if ($price->getMin() && $price->getMax()) {
-            return $price->getMin() . "-" . $price->getMax() . "zł";
+        if (is_null($products)) {
+            return array();
         }
 
-        if ($price->getMin()) {
-            return "od " . $price->getMin() . "zł";
+        $selectedFilters = array();
+
+        $priceSelectedFilters = $this->getPriceSelectedFilters($products);
+        if ($priceSelectedFilters->count()) {
+            $selectedFilters[] = $priceSelectedFilters;
         }
 
-        if ($price->getMax()) {
-            return "do " . $price->getMax() . "zł";
+        $producersSelectedFilters = $this->getProducersSelectedFilters($products);
+        if ($producersSelectedFilters->count()) {
+            $selectedFilters[] = $producersSelectedFilters;
         }
-        return '-';
+
+        $propertiesSelectedFilters = $this->getPropertiesSelectedFilter($products);
+        $selectedFilters = array_merge($selectedFilters, $propertiesSelectedFilters);
+
+        return $selectedFilters;
     }
 
     /**
@@ -216,5 +181,129 @@ class CategoryController extends Controller
         $fieldsForList = ProductsRepository::$fieldsForList;
         $fieldsForList[] = '_categories.url_in';
         return $fieldsForList;
+    }
+
+    /**
+     * @param Products $products
+     * @return Data\Collection\Filters\PriceRanges
+     */
+    protected function getPriceSelectedFilters($products)
+    {
+        $converterSelectedFilter = new Data\Converter\Filters\Selected\PriceRangesConverter();
+        $priceRangesSelectedFilter = $converterSelectedFilter->convert($products, array(
+            new Data\Converter\Filters\Callback\PriceRanges\SetIsNofollow(),
+            new Callback\PriceRanges\SetName()
+        ));
+        return $priceRangesSelectedFilter;
+    }
+
+    /**
+     * @param Products $products
+     * @return Data\Collection\Filters\PriceRanges
+     */
+    protected function getPriceFilters($products)
+    {
+        $converterFilter = new Data\Converter\Filters\PriceRangesConverter();
+        $priceRangesSelectedFilter = $converterFilter->convert($products, array(
+            new Data\Converter\Filters\Callback\PriceRanges\SetIsNofollow(),
+        ));
+        return $priceRangesSelectedFilter;
+    }
+
+    /**
+     * @param $products
+     * @return Data\Collection\Filters\Producers
+     */
+    protected function getProducersSelectedFilters($products)
+    {
+        $converterSelectedFilter = new Data\Converter\Filters\Selected\ProducersConverter();
+        $producersSelectedFilter = $converterSelectedFilter->convert($products, array(
+            new Data\Converter\Filters\Callback\Producers\SetIsNofollow(),
+        ));
+        return $producersSelectedFilter;
+    }
+
+    /**
+     * @param $products
+     * @return Data\Collection\Filters\Producers
+     */
+    protected function getProducersFilters($products)
+    {
+        $converterFilter = new Data\Converter\Filters\ProducersConverter();
+        $producersSelectedFilter = $converterFilter->convert($products, array(
+            new Data\Converter\Filters\Callback\Producers\SetIsNofollow(),
+            new Data\Converter\Filters\Callback\Producers\SetIsPopular(),
+            new Data\Converter\Filters\Callback\Producers\SetIsActive(),
+            new Data\Converter\Filters\Callback\Producers\SortByName(),
+        ));
+        return $producersSelectedFilter;
+    }
+
+    /**
+     * @param Products $products
+     * @return Data\Collection\Filters\PropertyAbstract[]
+     */
+    protected function getPropertiesSelectedFilter($products)
+    {
+        $converterSelectedFilter = new Data\Converter\Filters\Selected\PropertiesConverter();
+        $propertiesFilter = $converterSelectedFilter->convert($products,array(
+            new Data\Converter\Filters\Callback\Property\SetIsNofollow(),
+        ));
+        return $propertiesFilter;
+    }
+
+    /**
+     * @param Products $products
+     * @return Data\Collection\Filters\PropertyAbstract[]
+     */
+    protected function getPropertiesFilters($products)
+    {
+        $converterFilter = new Data\Converter\Filters\PropertiesConverter();
+        $propertiesFilter = $converterFilter->convert($products,array(
+            new Data\Converter\Filters\Callback\Property\SetIsActive(),
+            new Data\Converter\Filters\Callback\Property\SetIsExcluded(),
+            new Data\Converter\Filters\Callback\Property\SetIsNofollow(),
+            new Data\Converter\Filters\Callback\Property\SortDefault(),
+        ));
+        return $propertiesFilter;
+    }
+
+    /**
+     * @param Category $category
+     * @param Products $products
+     * @return Data\Collection\Filters\Categories
+     */
+    protected function getCategoriesFilters($category, $products)
+    {
+        $converterFilter = new Data\Converter\Filters\CategoriesConverter();
+        $categoriesFilter = $converterFilter->convert($products,array(
+            new Callback\Categories\ReduceIncorrectCategories(),
+            new Data\Converter\Filters\Callback\Categories\SetIsExcluded(),
+            new Data\Converter\Filters\Callback\Categories\SortByName(),
+            new Callback\Categories\SetParentCategory($category, $this->get('categories.allowed'))
+        ));
+        return $categoriesFilter;
+    }
+
+    /**
+     * @param Breadcrumb[] $breadcrumbs
+     * @param array $selectedFilters
+     * @param Pagination $pagination
+     * @return string
+     */
+    protected function prepareMetadataTitle($breadcrumbs, $selectedFilters, $pagination)
+    {
+        $title = "";
+        if (count($breadcrumbs)) {
+            if ($selectedFilters && count($breadcrumbs) > 1) {
+                $title .= $breadcrumbs[count($breadcrumbs) -2]->getTitle();
+            }
+            $title .= " " . $breadcrumbs[count($breadcrumbs) -1]->getTitle();
+        }
+
+        if ($pagination->getCurrentPage() > 1) {
+            $title .= " (str. " . $pagination->getCurrentPage() . ")";
+        }
+        return $title;
     }
 }

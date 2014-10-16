@@ -1,23 +1,12 @@
 {% extends "WLAppBundle::layout.html.twig" %}
 
 {% block title %}
-    {% for crumbs in breadcrumbs %}
-        {{ crumbs.title }}
-        {% if loop.last == false %}
-            /
-        {% endif %}
-    {% endfor %}
-    (str. {{ pagination.currentPage }}) - White Label Nokaut.pl
+    {% spaceless %}
+        {{ metadataTitle }} - {{ parent() }}
+    {% endspaceless %}
 {% endblock %}
 
-{% block desc %}
-    {% for crumbs in breadcrumbs %}
-        {{ crumbs.title }}
-        {% if loop.last == false %}
-            /
-        {% endif %}
-    {% endfor %}
-{% endblock %}
+{% block desc %}{{ category.description|striptags }}{% endblock %}
 
 {% block head %}
     {{ parent() }}
@@ -25,50 +14,311 @@
     <link rel="canonical" href="{{ url(route, { (routeArgument): canonical|trim('/')}) }}"/>
 {% endblock %}
 
+{% block javascriptsTop %}
+    {{ parent() }}
+    <script type="text/javascript">
+        function filterRanges(template, inputFromId, inputToId) {
+            var valueFrom = $('#' + inputFromId).val();
+            var valueTo = $('#' + inputToId).val();
+            if (!valueFrom && !valueTo) {
+                alert('Proszę podać wartości w polach koło przycisku "zastosuj"');
+                return;
+            }
+            var url = template.replace('%25s~%25s', parseRangeValue(valueFrom) + '~' + parseRangeValue(valueTo));
+            document.location.href = url;
+        }
 
-{% block content %}
-    {% block headPage %}
-    <h1>
-        {{ category.title }}
-        {% if filters is not empty %}
-            <small>- {{ breadcrumbs[breadcrumbs|length-1].title|raw }}</small>
-        {% endif %}
-    </h1>
-    {% endblock %}
-
-    {% if filters is not empty %}
-        <div style="margin: 0 0 10px 0;">
-            {% for filter in filters %}
-                <span class="label label-default">{{ filter.name }}: {{ filter.value }} <a href="{{ url(route, { (routeArgument) : filter.outUrl}) }}" style="color: red;" title="Zamknij" class="glyphicon glyphicon-remove"></a></span>
-            {% endfor %}
-        </div>
-    {% endif %}
-
-
-    <ul class="nav nav-tabs small" role="tablist">
-    {% for sort in sorts %}
-        {% if sort.isFilter %}
-            <li class="active"><a href="{{ url(route, { (routeArgument) : sort.url|trim('/')}) }}">{{ sort.name }}</a></li>
-        {% else %}
-            <li><a href="{{ url(route, { (routeArgument) : sort.url|trim('/')}) }}">{{ sort.name }}</a></li>
-        {% endif %}
-    {% endfor %}
-    </ul>
-    <div style="margin-top: 10px;">
-        <div class="row">
-        {% for product in products %}
-            {% include 'WLAppBundle:Common:productItem.html.twig' with {'product': product } %}
-        {% else %}
-            <div class="alert alert-warning" role="alert">Brak produktów z wybranymi filrami</div>
-        {% endfor %}
-        {% include '@WLApp/paginator.html.twig' %}
-        </div>
-    </div>
-
+        function parseRangeValue(inputValue) {
+            var value = parseFloat(inputValue);
+            return value ? value : '';
+        }
+    </script>
 
 {% endblock %}
 
+{% macro filterView(filter, includeRange, boxId, route, routeArgument, isActive = false) %}
+    <div class="panel panel-default category-filter">
+        <div class="panel-heading">
+            <h4 class="panel-title">
+                <a data-toggle="collapse" href="#collapse{{ boxId }}" class="category-filter-title collapsed">
+                    {{ filter.name }}
+                    <i class="filter-open fa fa-angle-down"></i>
+                    <i class="filter-close fa fa-angle-up"></i>
+                </a>
+            </h4>
+        </div>
+        <div  data-links='keep-view' id="collapse{{ boxId }}" class="panel-collapse {% if filter.isActive or isActive %}in{% else %}collapse{% endif %}" style="{% if filter.isActive or isActive %}height: auto;{% else %}height: 0;{% endif %};">
+            <div class="panel-body">
+                <ul>
+                    {% set selectedValue = false %}
+                    {% for value in filter %}
+                        {% if value.isFilter %}
+                            {% set selectedValue = value %}
+                        {% endif %}
+                        <li class="{% if value.isFilter %}active{% elseif value.total==0 %}disabled{% endif %}"><a href="{{ url(route, { (routeArgument) : value.url|trim('/')}) }}">
+                                <span class="badge pull-right">{{ value.total }}</span> {{ value.name|raw }} {{ filter.unit }}</a>
+                        </li>
+                    {% endfor %}
 
-    {% block rightColumn %}
-        {% include 'WLAppBundle:Common:fiters.html.twig' %}
-    {% endblock %}
+                    {% if includeRange %}
+                        <li class="lower">
+                            <form class="form" role="form">
+                                <div class="input-group">
+                                    <input id="{{ boxId }}-range-from" value="{{ selectedValue ? selectedValue.min : '' }}" type="text" class="form-control input-sm" placeholder="od">
+                                    <div class="input-group-addon">-</div>
+                                    <input id="{{ boxId }}-range-to" value="{{ selectedValue ? selectedValue.max : '' }}" type="text" class="form-control input-sm" placeholder="do">
+                                    <div class="input-group-addon">PLN</div>
+                                    <span class="input-group-btn pull-right filter-submit">
+                                      <button onclick="filterRanges('{{ url(route, { (routeArgument): filter.urlInTemplate|trim('/')|raw}) }}', '{{ boxId }}-range-from', '{{ boxId }}-range-to')" class="btn btn-sm btn-link" type="button">zastosuj</button>
+                                    </span>
+                                </div>
+                            </form>
+                        </li>
+                    {% endif %}
+                </ul>
+            </div>
+        </div>
+    </div>
+{% endmacro %}
+
+
+
+{% block content %}
+    <div class="row category">
+
+    <!-- filters -->
+    <div class="col-md-3 col-sm-12 category-filters">
+        <div class="panel-group" id="accordion">
+
+            {% if not subcategories.isExcluded or subcategories.parentCategory %}
+            <div class="panel panel-default category-filter">
+                <div class="panel-heading">
+                    <h4 class="panel-title">
+                        <a data-toggle="collapse" href="#collapseCategory" class="category-filter-title collapsed">
+                            Kategorie
+                            <i class="filter-open fa fa-angle-down"></i>
+                            <i class="filter-close fa fa-angle-up"></i>
+                        </a>
+                    </h4>
+                </div>
+                <div id="collapseCategory" class="panel-collapse in" style="height: auto;">
+                    <div class="panel-body">
+                        <ul>
+                            {% if subcategories.parentCategory %}
+                                <li class="active">
+                                    {% if subcategories.parentCategory.url == '/' %}
+                                        {% set parenCategoryUrl = url('wl_homepage') %}
+                                    {% else %}
+                                        {% set parenCategoryUrl = url(route, { (routeArgument) : subcategories.parentCategory.url|trim('/')}) %}
+                                    {% endif %}
+                                    <a href="{{ parenCategoryUrl }}">
+                                        <span class="badge pull-right">{{ products.metadata.total }}</span> {{ category.title|raw }} <i class="fa fa-level-up"></i>
+                                    </a>
+                                </li>
+                            {% endif %}
+                            {% for category in subcategories if not category.isFilter %}
+                                <li{% if loop.first %} class="lower-half"{% endif %}><a href="{{ url(route, { (routeArgument) : category.urlIn|trim('/')}) }}">
+                                    <span class="badge pull-right">{{ category.total }}</span> {{ category.name|raw }}</a>
+                                </li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+
+            {{ _self.filterView(priceFilters, true, '-prices', route, routeArgument, true ) }}
+            {{ _self.filterView(producersFilters, false, '-producers', route, routeArgument) }}
+            {% for filter in propertiesFilters if not filter.isExcluded %}
+                {{ _self.filterView(filter, false, '-properites-' ~ loop.index, route, routeArgument) }}
+            {% endfor %}
+
+            {% if category is defined and category.description %}
+            <div class="panel panel-default category-filter">
+                <div class="panel-heading">
+                    <h4 class="panel-title">
+                        <a data-toggle="collapse" data-parent="#accordion" href="#collapseThree" class="category-filter-title">
+                            Opis
+                            <i class="filter-open fa fa-angle-down"></i>
+                            <i class="filter-close fa fa-angle-up"></i>
+                        </a>
+                    </h4>
+                </div>
+                <div id="collapseThree" class="panel-collapse collapse in">
+                    <div class="panel-body">
+                        {{ category.description|raw }}
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+        </div>
+
+    </div>
+
+
+    <div class="col-md-9 col-sm-12">
+
+    <div class="row category-details">
+        <div class="col-xs-11">
+            <h1>
+                <span class="name">{% if h1 %}<strong>{{ h1|raw }}</strong>{% endif %}<small>{{ products.metadata.total|varietyProducts }}</small></span>
+                {% if products.phrase is not null and route == 'search' and products.phrase.value %}
+                    <span>
+                        <span class="badge-name">szukasz:</span>
+                        <span class="badge">
+                            <button type="button" onclick="document.location.href='{{ products.phrase.urlOut == '/' ? '/' : url('category', { 'categoryUrlWithFilters': products.phrase.urlOut|trim('/') }) }}'" class="close">×</button>
+                            <span>{{ products.phrase.value|raw }}</span>
+                        </span>
+                    </span>
+                {% endif %}
+                {% for filter in selectedFilters if filter is not empty %}
+                <span>
+                    <span class="badge-name">{{ filter.name }}:</span>
+                    {% for value in filter %}
+                    <span class="badge">
+                        <button type="button" onclick="document.location.href='{{ url(route, { (routeArgument): value.url|trim('/') }) }}'" class="close">×</button>
+                        <span>{{ value.name|raw }} {{ filter.unit }}</span>
+                    </span>
+                    {% endfor %}
+                </span>
+                {% endfor %}
+            </h1>
+        </div>
+        <div class="col-xs-1 text-right options">
+
+            <div class="btn-group">
+                <a href="#" class="btn btn-link dropdown-toggle" data-toggle="dropdown">
+                    <i class="fa fa-bars"></i>
+                </a>
+                <ul class="dropdown-menu dropdown-menu-right">
+                    <li class="dropdown-header">Widok</li>
+                    <li id="category-view-list"><a href="#list"><i class="fa fa-th-list"></i> lista</a></li>
+                    <li id="category-view-grid" class="active"><a href="#box"><i class="fa fa-th"></i> kafle</a></li>
+                    <li class="divider"></li>
+                    <li class="dropdown-header">Sortowanie</li>
+
+                    {% macro additionalSortIcon(sortName) %}
+                        {% if sortName == 'domyślne' %}
+                            {{ 'fa-long-arrow-down' }}
+                        {% elseif sortName == 'od popularnych' %}
+                            {{ 'fa-sort-amount-desc' }}
+                        {% elseif sortName == 'od mało popularnych' %}
+                            {{ 'fa-sort-amount-asc' }}
+                        {% elseif sortName == 'od a do z' %}
+                            {{ 'fa-sort-alpha-asc' }}
+                        {% elseif sortName == 'od z do a' %}
+                            {{ 'fa-sort-alpha-desc' }}
+                        {% elseif sortName == 'od najtańszych' %}
+                            {{ 'fa-sort-numeric-asc' }}
+                        {% elseif sortName == 'od najdroższych' %}
+                            {{ 'fa-sort-numeric-desc' }}
+                        {% endif %}
+                    {% endmacro %}
+
+                    {% for sort in sorts %}
+                        {% if sort.isFilter %}
+                            <li class="active"><a href="{{ url(route, { (routeArgument) : sort.url|trim('/')}) }}"><i class="fa {{ _self.additionalSortIcon(sort.name) }}"></i> {{ sort.name }}</a></li>
+                        {% else %}
+                            <li><a href="{{ url(route, { (routeArgument) : sort.url|trim('/')}) }}"><i class="fa {{ _self.additionalSortIcon(sort.name) }}"></i> {{ sort.name }}</a></li>
+                        {% endif %}
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <div class="row category-products">
+
+    {% for product in products %}
+        {% if product.offerCount == 1 and product.clickUrl is not empty %}
+            {% set productUrl = product|click %}
+        {% else %}
+            {% set productUrl = path('product', {'productUrl': product.url|trim('/')}) %}
+        {% endif %}
+        <!---- product starts here ---->
+        <div class="col-lg-3 col-md-4 col-sm-6 col-xs-12 product-wrapper-grid">
+            <div class="product normal">
+                <a {% if product.clickUrl is not empty %}target="_blank"{% endif %} href="{{ productUrl }}">
+                    <div class="image">
+                        <img class="img-responsive" src="{{ nokaut_img_domain ~ nokaut_photo_url.prepare(product.photoId, '500x500', product.title) }}" title="{{ product.title|raw }}" />
+                    </div>
+                </a>
+                <div class="product-details">
+                    <div class="row">
+                        <div class="col-lg-9 col-sm-8 col-xs-12 title-features">
+                            <a {% if product.clickUrl is not empty %}target="_blank"{% endif %} href="{{ productUrl }}">
+                                <h5 class="title">{{ product.title|raw }}</h5>
+                            </a>
+                            <div class="product-details-popup text-center">
+                                {% if product.descriptionShort %}
+                                <a {% if product.clickUrl is not empty %}target="_blank"{% endif %} href="{{ productUrl }}" data-container="body" data-placement="left" data-toggle="tooltip" >
+                                    <i class="fa fa-align-justify"></i>
+                                    <div class="tooltip_title_wrapper hidden">
+                                        <p>{{ product.descriptionShort|raw }}</p>
+                                    </div>
+                                </a>
+                                {% endif %}
+                                {% set savePercent = helper_price.getSavePercent(product.prices) %}
+                                {% if savePercent > 0 %}
+                                    <a {% if product.clickUrl is not empty %}target="_blank"{% endif %} href="{{ productUrl }}" data-container="body" data-placement="left" data-toggle="tooltip">
+                                        <i class="fa fa-tag"></i>
+
+                                        <div class="tooltip_title_wrapper hidden">
+                                            Na tym produkcie możesz zaoszczędzić aż  {{ savePercent }}%
+                                        </div>
+                                    </a>
+                                {% endif %}
+                                {% if product.clickUrl is not empty %}
+                                    <a href="{{ url('product', {'productUrl': product.url|trim('/') }) }}"><i class="fa fa-link"></i></a>
+                                {% endif %}
+                            </div>
+                            <ul class="features">
+                                {% for property in product.properties %}
+                                    <li>{{ property.name|raw }}:
+                                        <em>{% include '@WLApp/Product/property.html.twig' %}</em>
+                                    </li>
+                                {% endfor %}
+                            </ul>
+                        </div>
+                        <div class="col-lg-3 col-sm-4 col-xs-12 price">
+                            <a {% if product.clickUrl is not empty %}target="_blank"{% endif %} href="{{ productUrl }}"><span class="price lead">{{ product.prices.min|number_format(2,',',' ') }} PLN</span></a>
+                            <a {% if product.clickUrl is not empty %}target="_blank"{% endif %} href="{{ productUrl }}" class="btn btn-success btn-success-outlined btn-icon-right">{% if product.clickUrl is not empty %}Przejdź do sklepu{% else %}Porównaj oferty{% endif %} <i class="fa fa-angle-right"></i></a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!---- product ends here ---->
+    {% endfor %}
+
+
+    </div>
+    <div class="row">
+        <div class="col-xs-12 text-center" data-links='keep-view'>
+            {% include '@WLApp/paginator.html.twig' %}
+        </div>
+    </div>
+
+    </div>
+
+
+    </div>
+
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+
+    {% if category is defined %}
+    <script type="text/javascript">
+        $(function() {
+            if('{{ category.viewType }}' == "list") {
+                $( "#category-view-list" ).trigger( "click" );
+            } else {
+                $( "#category-view-grid" ).trigger( "click" );
+            }
+        });
+    </script>
+    {% endif %}
+{% endblock %}
+

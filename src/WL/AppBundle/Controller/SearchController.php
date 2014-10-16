@@ -4,23 +4,20 @@ namespace WL\AppBundle\Controller;
 
 use Nokaut\ApiKit\Collection\Products;
 use Nokaut\ApiKit\Entity\Category;
-use Nokaut\ApiKit\Entity\Metadata\Facet\PriceFacet;
 use Nokaut\ApiKit\Entity\Product;
-use Nokaut\ApiKit\Repository\ProductsRepository;
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Response;
 use WL\AppBundle\Lib\BreadcrumbsBuilder;
 use WL\AppBundle\Lib\Filter\PropertiesFilter;
+use WL\AppBundle\Lib\Filter\UrlFilter;
 use WL\AppBundle\Lib\Helper\UrlSearch;
 use WL\AppBundle\Lib\Pagination\Pagination;
 use WL\AppBundle\Lib\Type\Breadcrumb;
-use WL\AppBundle\Lib\Type\Filter;
 use WL\AppBundle\Lib\Repository\ProductsAsyncRepository;
-use WL\AppBundle\Lib\View\Data\Collection\Filters\PropertyAbstract;
-use WL\AppBundle\Lib\View\Data\Converter\Filters\Facets\PropertiesConverter as FacetsPropertiesConverter;
-use WL\AppBundle\Lib\Filter\UrlFilter;
+use WL\AppBundle\Lib\View\Data\Converter\Filters\Callback;
+use Nokaut\ApiKit\Ext\Data;
+use WL\AppBundle\Lib\View\Data\Converter\Filters\Callback\Categories\ReduceAllSelected;
 
-class SearchController extends Controller
+class SearchController extends CategoryController
 {
     public function indexAction($phrase)
     {
@@ -30,8 +27,7 @@ class SearchController extends Controller
 
         /** @var ProductsAsyncRepository $productsRepo */
         $productsRepo = $this->get('repo.products.async');
-        $productsFetch = $productsRepo->fetchProductsByUrl($phraseUrlForApi, $this->getProductFields(), 24);
-        $productsTopFetch = $productsRepo->fetchTopProducts();
+        $productsFetch = $productsRepo->fetchProductsByUrlWithQuality($phraseUrlForApi, $this->getProductFields(), 24, 60);
         $productsRepo->fetchAllAsync();
         /** @var Products $products */
         $products = $productsFetch->getResult();
@@ -40,28 +36,42 @@ class SearchController extends Controller
 
         $pagination = $this->preparePagination($products);
 
-        $filterPropertiesFacets = $this->getFilterPropertiesFacet($products);
+        $priceFilters = $this->getPriceFilters($products);
+        $producersFilters = $this->getProducersFilters($products);
+        $propertiesFilters = $this->getPropertiesFilters($products);
+        $categoriesFilters = $this->getCategoriesFiltersForSearch($products);
 
-        $filters = $this->getFilters($products, $urlSearchPreparer);
+        $selectedFilters = $this->getSelectedFilters($products);
+        $selectedCategoriesFilters = $this->getCategoriesSelectedFilters($products);
 
-        $breadcrumbs = $this->prepareBreadcrumbs($products, $filters);
+        $breadcrumbs = $this->prepareBreadcrumbs($products, $selectedFilters);
+
+        $phrase = $products ? $products->getMetadata()->getQuery()->getPhrase() : '';
 
         $responseStatus = null;
         if ($products->getMetadata()->getTotal() == 0) {
-            $responseStatus = new Response('', 404);
+            return $this->render('WLAppBundle:Category:nonResult.html.twig', array(
+                'phrase' => $phrase,
+                'breadcrumbs' => $breadcrumbs,
+                'selectedFilters' => $selectedFilters,
+                'canonical' => $products ? $products->getMetadata()->getCanonical() : '',
+            ), new Response('', 404));
         }
 
         return $this->render('WLAppBundle:Search:index.html.twig', array(
             'products' => $products,
-            'phrase' => $products ? $products->getMetadata()->getQuery()->getPhrase() : '',
+            'phrase' => $phrase,
             'breadcrumbs' => $breadcrumbs,
-            'subcategories' => $products ? $products->getCategories() : array(),
-            'filters' => $filters,
-            'filterPropertiesFacets' => $filterPropertiesFacets,
-            'sorts' => $products->getMetadata()->getSorts(),
             'pagination' => $pagination,
+            'subcategories' => $categoriesFilters,
+            'priceFilters' => $priceFilters,
+            'producersFilters' => $producersFilters,
+            'propertiesFilters' => $propertiesFilters,
+            'selectedFilters' => $selectedFilters,
+            'sorts' => $products ? $products->getMetadata()->getSorts() : array(),
             'canonical' => $products ? $products->getMetadata()->getCanonical() : '',
-            'productsTop10' => $productsTopFetch->getResult()
+            'h1' => $this->prepareH1($selectedCategoriesFilters),
+            'metadataTitle' => $this->prepareSearchMetadataTitle($phrase, $pagination)
         ), $responseStatus);
     }
 
@@ -77,63 +87,7 @@ class SearchController extends Controller
         $filterUrl = new UrlFilter($this->get('helper.url_search'));
         $filterUrl->filter($products);
 
-        $filterProperties = new PropertiesFilter();
-        $filterProperties->filterProducts($products);
-    }
-
-    /**
-     * @param $products
-     * @return PropertyAbstract[]
-     */
-    protected function getFilterPropertiesFacet($products)
-    {
-        $facetsPropertiesConverter = new FacetsPropertiesConverter();
-        $filterPropertiesFacets = $facetsPropertiesConverter->convert($products);
-        return $filterPropertiesFacets;
-    }
-
-    /**
-     * @param Products $products
-     * @param UrlSearch $urlSearchPreparer
-     * @return Filter[]
-     */
-    protected function getFilters($products, UrlSearch $urlSearchPreparer)
-    {
-        if (is_null($products)) {
-            return array();
-        }
-
-        $filters = array();
-        foreach ($products->getProducers() as $producer) {
-            if ($producer->getIsFilter()) {
-                $filter = new Filter();
-                $filter->setName("Producent");
-                $filter->setValue($producer->getName());
-                $filter->setOutUrl($urlSearchPreparer->getReduceUrl($producer->getUrl()));
-                $filters[] = $filter;
-            }
-        }
-        foreach ($products->getPrices() as $price) {
-            if ($price->getIsFilter()) {
-                $filter = new Filter();
-                $filter->setName("Ceny");
-                $filter->setValue($this->prepareFilterPriceValue($price));
-                $filter->setOutUrl($urlSearchPreparer->getReduceUrl($price->getUrl()));
-                $filters[] = $filter;
-            }
-        }
-        foreach ($products->getProperties() as $property) {
-            foreach ($property->getValues() as $value) {
-                if ($value->getIsFilter()) {
-                    $filter = new Filter();
-                    $filter->setName($property->getName());
-                    $filter->setValue($value->getName());
-                    $filter->setOutUrl($urlSearchPreparer->getReduceUrl($value->getUrl()));
-                    $filters[] = $filter;
-                }
-            }
-        }
-        return $filters;
+        parent::filter($products);
     }
 
     /**
@@ -156,48 +110,69 @@ class SearchController extends Controller
 
     /**
      * @param Products $products
-     * @param $filters
+     * @param Data\Collection\Filters\FiltersAbstract[] $filters
      * @return Breadcrumb[]
      */
-    protected function prepareBreadcrumbs($products, $filters)
+    protected function prepareBreadcrumbs($products, array $filters)
     {
         $breadcrumbs = array();
-        $breadcrumbs[] = new Breadcrumb("Szukaj: " . $products->getMetadata()->getQuery()->getPhrase());
+        $breadcrumbs[] = new Breadcrumb("Szukasz: " . $products->getMetadata()->getQuery()->getPhrase());
         /** @var BreadcrumbsBuilder $breadcrumbsBuilder */
         $breadcrumbsBuilder = $this->get('breadcrumb.builder');
         $breadcrumbsBuilder->appendFilter($breadcrumbs, $filters);
         return $breadcrumbs;
     }
 
-
-    /**
-     * @param PriceFacet $price
-     * @return string
-     */
-    protected function prepareFilterPriceValue(PriceFacet $price)
+    protected function getCategoriesSelectedFilters($products)
     {
-        if ($price->getMin() && $price->getMax()) {
-            return "od " . $price->getMin() . " do " . $price->getMax() . "zł";
-        }
-
-        if ($price->getMin()) {
-            return "od " . $price->getMin() . "zł";
-        }
-
-        if ($price->getMax()) {
-            return "do " . $price->getMax() . "zł";
-        }
-        return '-';
+        $converterFilter = new Data\Converter\Filters\Selected\CategoriesConverter();
+        $categoriesFilter = $converterFilter->convert($products, array(
+            new ReduceAllSelected(),
+        ));
+        return $categoriesFilter;
     }
 
     /**
-     * @return array
+     * @param Products $products
+     * @return Data\Collection\Filters\Categories
      */
-    protected function getProductFields()
+    protected function getCategoriesFiltersForSearch($products)
     {
-        $fieldsForList = ProductsRepository::$fieldsForList;
-        $fieldsForList[] = '_categories.url_in';
-        return $fieldsForList;
+        $converterFilter = new Data\Converter\Filters\CategoriesConverter();
+        $categoriesFilter = $converterFilter->convert($products,array(
+            new Callback\Categories\ReduceIncorrectCategories(),
+            new Data\Converter\Filters\Callback\Categories\SetIsExcluded(),
+            new Data\Converter\Filters\Callback\Categories\SortByName(),
+        ));
+        return $categoriesFilter;
+    }
+
+    /**
+     * @param Data\Collection\Filters\Categories $selectedCategoriesFilters
+     * @return string
+     */
+    protected function prepareH1($selectedCategoriesFilters)
+    {
+        $result = '';
+        foreach ($selectedCategoriesFilters as $entity) {
+            $result .= $entity->getName() . ', ';
+        }
+        return trim($result, ', ');
+    }
+
+    /**
+     * @param $phrase
+     * @param Pagination $pagination
+     * @return string
+     */
+    protected function prepareSearchMetadataTitle($phrase, $pagination)
+    {
+        $title = $phrase;
+
+        if ($pagination->getCurrentPage() > 1) {
+            $title .= " (str. " . $pagination->getCurrentPage() . ")";
+        }
+        return $title;
     }
 
 }

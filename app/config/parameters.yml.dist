@@ -35,7 +35,7 @@ parameters:
     click_domain: http://www.nokaut.pl
 
     categories:
-            'Kategorie':
+            'Kategorie I':
                     - 1
                     - 47
                     - 86
@@ -44,6 +44,7 @@ parameters:
                     - 445
                     - 487
                     - 633
+            'Kategorie II':
                     - 685
                     - 686
                     - 5799
@@ -51,6 +52,7 @@ parameters:
                     - 5872
                     - 5888
                     - 6118
+            'Kategorie III':
                     - 6222
                     - 8472
                     - 8519

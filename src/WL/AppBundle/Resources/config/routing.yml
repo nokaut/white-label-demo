@@ -18,7 +18,7 @@ search:
     path: /produkty-{phrase}
     defaults: { _controller: WLAppBundle:Search:index }
     requirements:
-        phrase: ".+"
+        phrase: ".*"
 
 map_categories:
     path: /mapa-kategorii

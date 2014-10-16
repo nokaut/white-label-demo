@@ -12,18 +12,19 @@ namespace WL\AppBundle\Controller;
 use Nokaut\ApiKit\ClientApi\Rest\Exception\NotFoundException;
 use Nokaut\ApiKit\ClientApi\Rest\Fetch\OffersFetch;
 use Nokaut\ApiKit\ClientApi\Rest\Fetch\ProductsFetch;
+use Nokaut\ApiKit\ClientApi\Rest\Query\ProductsQuery;
 use Nokaut\ApiKit\Entity\Category;
 use Nokaut\ApiKit\Entity\Product;
 use Nokaut\ApiKit\Repository\CategoriesAsyncRepository;
 use Nokaut\ApiKit\Repository\OffersAsyncRepository;
 use Nokaut\ApiKit\Repository\OffersRepository;
-use Nokaut\ApiKit\Repository\ProductsRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use WL\AppBundle\Lib\BreadcrumbsBuilder;
 use WL\AppBundle\Lib\Filter\PropertiesFilter;
 use WL\AppBundle\Lib\Rating\RatingAdd;
+use WL\AppBundle\Lib\Repository\ProductsRepository;
 use WL\AppBundle\Lib\Type\Breadcrumb;
 use WL\AppBundle\Lib\Repository\ProductsAsyncRepository;
 
@@ -36,7 +37,7 @@ class ProductController extends Controller
         try {
             $product = $productsRepo->fetchProductByUrl($productUrl, $this->getFieldsForProduct());
         } catch (NotFoundException $e) {
-            throw $this->createNotFoundException("not found product: " . $productUrl);
+            return $this->redirect($this->generateUrl('search', array('phrase' => ltrim($productUrl, '/'))), 301);
         }
         $this->filter($product);
 
@@ -50,6 +51,7 @@ class ProductController extends Controller
         $offersFetch = $offersRepo->fetchOffersByProductId($product->getId(), OffersRepository::$fieldsForProductPage);
 
         $productsFromCategoryFetch = $this->fetchProductsFromCategory($product->getCategoryId());
+        $productsSimilarFetch = $this->fetchSimilarProducts($product);
 
         $categoriesRepo->fetchAllAsync();
         /** @var Category $category */
@@ -61,6 +63,7 @@ class ProductController extends Controller
             'product' => $product,
             'offers' => $offersFetch->getResult(),
             'productsTop10' => $productsFromCategoryFetch->getResult(),
+            'productsSimilar' => $productsSimilarFetch->getResult(),
             'breadcrumbs' => $breadcrumbs,
             'category' => $category,
             'canAddRating' => RatingAdd::canAddRate($product->getId())
@@ -129,5 +132,24 @@ class ProductController extends Controller
         );
         $breadcrumbs[] = new Breadcrumb($product->getTitle());
         return $breadcrumbs;
+    }
+
+    /**
+     * @param Product $product
+     * @return ProductsFetch
+     */
+    protected function fetchSimilarProducts($product)
+    {
+        $query = new ProductsQuery($this->container->getParameter('api_url'));
+        $query->setFields(ProductsRepository::$fieldsForProductBox);
+        $query->setLimit(10);
+        $query->setCategoryIds(array($product->getCategoryId()));
+        $query->setProducerName($product->getProducerName());
+//        $query->setPhrase($product->getTitle());
+//        $query->setQuality(60);
+        /** @var ProductsAsyncRepository $productsRepo */
+        $productsRepo = $this->get('repo.products.async');
+        $productsFetch = $productsRepo->fetchProductsByQuery($query);
+        return $productsFetch;
     }
 }

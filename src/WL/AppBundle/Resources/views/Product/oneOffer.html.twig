@@ -1,0 +1,49 @@
+{% set offer = offers.item(0) %}
+{% set singleOffert = true %}
+
+<div class="row product product-details">
+    <div class="col-md-4 col-sm-12 gallery">
+        {% if product.photoIds|length > 0 %}
+            {% set photoId = product.photoIds[0] %}
+        {% else %}
+            {% set photoId = offer.photoId %}
+        {% endif %}
+        <a rel="nofollow" target="_blank" href="{{ offer|click }}">
+            <img class="img-responsive" src="{{ nokaut_img_domain ~ nokaut_photo_url.prepare(photoId, '500x500', product.title) }}" alt="{{ product.title }}">
+        </a>
+    </div>
+
+
+    <div class="col-md-8 col-sm-12">
+        <div class="row">
+            <div class="col-md-8 col-sm-12">
+                <a rel="nofollow" target="_blank" href="{{ offer|click }}">
+                    <h1 class="price">{{ product.title|raw }}y</h1>
+                </a>
+            </div>
+            <div class="col-md-4 col-sm-12 text-right">
+                <a rel="nofollow" target="_blank" href="{{ offer|click }}">
+                    <p class="lead price big">{{ offers.metadata.priceMin|number_format(2, ',', '') }} PLN</p>
+                </a>
+                <p><a rel="nofollow" target="_blank" href="{{ offer|click }}" class="btn btn-lg btn-primary btn-primary-outlined btn-icon-right">Zobacz w sklepie <i class="fa fa-angle-right"></i></a></p>
+                <p>
+                    <a rel="nofollow" target="_blank" href="{{ offer|click }}">
+                        <img class="pull-right" src="{{ nokaut_img_domain ~ offer.shop.urlLogo }}" />
+                    </a>
+                </p>
+            </div>
+        </div>
+        <div class="lower row">
+            <div class="col-md-12 col-sm-12">
+                {% include '@WLApp/Product/properties.html.twig' %}
+            </div>
+        </div>
+
+        <div class="lower row">
+            <div class="col-md-12 col-sm-12 description">
+                {{ product.descriptionHtml|raw }}
+            </div>
+        </div>
+
+    </div>
+</div>

@@ -1,7 +1,7 @@
 {% extends "WLAppBundle::layout.html.twig" %}
 
 {% block title %}
-    Mapa kategorii - White Label Nokaut.pl
+    Mapa kategorii - {{ parent() }}
 {% endblock %}
 
 
@@ -11,22 +11,41 @@
     <link rel="canonical" href="{{ url('map_categories') }}"/>
 {% endblock %}
 
-{% block pageH1Block %}
-    <h1>Mapa kategorii</h1>
-{% endblock %}
+
 
 {% block content %}
-    <h1>Mapa kategorii</h1>
+    <div class="row category">
+        <div class="col-md-12 col-sm-12">
 
-    {% for menuLink in menu_main %}
-        <div>
-            <h3>{{ menuLink.name }}</h3>
-            <ul>
-                {% for subLink in menuLink.subLinks %}
-                    <li><a href="{{ url('category', {'categoryUrlWithFilters': subLink.url|trim('/')}) }}"
-                           title="{{ subLink.name }}">{{ subLink.name }}</a></li>
-                {% endfor %}
-            </ul>
+            <div class="row category-details">
+                <div class="col-xs-11">
+                    <h1>Mapa kategorii</h1>
+                </div>
+                <div class="col-xs-1 text-right">
+
+                </div>
+            </div>
+
+            <div class="row category-products">
+
+                <div class="col-xs-12">
+
+                    {% for menuLink in menu_main %}
+                        <div>
+                            <h3>{{ menuLink.name }}</h3>
+                            <ul>
+                                {% for subLink in menuLink.subLinks %}
+                                    <li><a href="{{ url('category', {'categoryUrlWithFilters': subLink.url|trim('/')}) }}"
+                                           title="{{ subLink.name }}">{{ subLink.name }}</a></li>
+                                {% endfor %}
+                            </ul>
+                        </div>
+                    {% endfor %}
+
+                </div>
+
+            </div>
+
         </div>
-    {% endfor %}
+    </div>
 {% endblock %}
