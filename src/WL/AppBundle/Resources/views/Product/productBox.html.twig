@@ -44,7 +44,7 @@
             <a {% if product.clickUrl is not empty %}target="_blank"{% endif %} href="{{ productUrl }}">
                 <div class="row">
                     <div class="col-xs-12 text-center">
-                        <span class="price lead">{% if product.offerCount > 1 %}od {% endif %}{{ product.prices.min|number_format(2,',',' ') }} PLN</span>
+                        <span class="price lead">{% if product.clickUrl is empty %}od {% endif %}{{ product.prices.min|number_format(2,',',' ') }} PLN</span>
                             <span class="btn btn-success btn-success-outlined btn-icon-right">{% if product.clickUrl is not empty %}Zobacz w sklepie{% else %}Porównaj oferty{% endif %}
                                 <i class="fa fa-angle-right"></i>
                             </span>

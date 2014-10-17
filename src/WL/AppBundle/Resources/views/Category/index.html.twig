@@ -283,7 +283,7 @@
                             </ul>
                         </div>
                         <div class="col-lg-3 col-sm-4 col-xs-12 price">
-                            <a {% if product.clickUrl is not empty %}target="_blank"{% endif %} href="{{ productUrl }}"><span class="price lead">{{ product.prices.min|number_format(2,',',' ') }} PLN</span></a>
+                            <a {% if product.clickUrl is not empty %}target="_blank"{% endif %} href="{{ productUrl }}"><span class="price lead">{% if product.clickUrl is empty %}od {% endif %}{{ product.prices.min|number_format(2,',',' ') }} PLN</span></a>
                             <a {% if product.clickUrl is not empty %}target="_blank"{% endif %} href="{{ productUrl }}" class="btn btn-success btn-success-outlined btn-icon-right">{% if product.clickUrl is not empty %}Przejdź do sklepu{% else %}Porównaj oferty{% endif %} <i class="fa fa-angle-right"></i></a>
                         </div>
                     </div>
