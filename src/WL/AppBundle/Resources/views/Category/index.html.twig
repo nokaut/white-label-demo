@@ -219,9 +219,9 @@
 
                     {% for sort in sorts %}
                         {% if sort.isFilter %}
-                            <li class="active"><a href="{{ url(route, { (routeArgument) : sort.url|trim('/')}) }}"><i class="fa {{ _self.additionalSortIcon(sort.name) }}"></i> {{ sort.name }}</a></li>
+                            <li class="active"><a rel="nofollow" href="{{ url(route, { (routeArgument) : sort.url|trim('/')}) }}"><i class="fa {{ _self.additionalSortIcon(sort.name) }}"></i> {{ sort.name }}</a></li>
                         {% else %}
-                            <li><a href="{{ url(route, { (routeArgument) : sort.url|trim('/')}) }}"><i class="fa {{ _self.additionalSortIcon(sort.name) }}"></i> {{ sort.name }}</a></li>
+                            <li><a rel="nofollow" href="{{ url(route, { (routeArgument) : sort.url|trim('/')}) }}"><i class="fa {{ _self.additionalSortIcon(sort.name) }}"></i> {{ sort.name }}</a></li>
                         {% endif %}
                     {% endfor %}
                 </ul>
