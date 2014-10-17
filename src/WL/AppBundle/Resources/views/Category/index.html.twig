@@ -55,8 +55,10 @@
                         {% if value.isFilter %}
                             {% set selectedValue = value %}
                         {% endif %}
-                        <li class="{% if value.isFilter %}active{% elseif value.total==0 %}disabled{% endif %}"><a href="{{ url(route, { (routeArgument) : value.url|trim('/')}) }}">
-                                <span class="badge pull-right">{{ value.total }}</span> {{ value.name|raw }} {{ filter.unit }}</a>
+                        <li class="{% if value.isFilter %}active{% elseif value.total==0 %}disabled{% endif %}">
+                            <a {% if value.isNoFollow %}rel="nofollow" {% endif %}href="{{ url(route, { (routeArgument) : value.url|trim('/')}) }}">
+                                <span class="badge pull-right">{{ value.total }}</span> {{ value.name|raw }} {{ filter.unit }}
+                            </a>
                         </li>
                     {% endfor %}
 
