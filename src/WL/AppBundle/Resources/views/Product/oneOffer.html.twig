@@ -26,9 +26,24 @@
                     <p class="lead price big">{{ offers.metadata.priceMin|number_format(2, ',', '') }} PLN</p>
                 </a>
                 <p><a rel="nofollow" target="_blank" href="{{ offer|click }}" class="btn btn-lg btn-primary btn-primary-outlined btn-icon-right">Zobacz w sklepie <i class="fa fa-angle-right"></i></a></p>
-                <p>
+                <p class="pull-right">
                     <a rel="nofollow" target="_blank" href="{{ offer|click }}">
                         <img class="pull-right" src="{{ nokaut_img_domain ~ offer.shop.urlLogo }}" />
+                        <br>
+                        {% if offer.shop.opineoRating and offer.shop.opineoRating.ratingCount > 0 %}
+                            <small class="stars">
+                                Ocena&nbsp;sklepu:
+                                {% for i in 1..5 %}
+                                    {% if offer.shop.opineoRating and (offer.shop.opineoRating.rating/2) >= i %}
+                                        <i class="fa fa-star"></i>
+                                    {% elseif offer.shop.opineoRating and (offer.shop.opineoRating.rating/2)|round >= i %}
+                                        <i class="fa fa-star-half-o"></i>
+                                    {% else %}
+                                        <i class="fa fa-star-o"></i>
+                                    {% endif %}
+                                {% endfor %}
+                            </small>
+                        {% endif %}
                     </a>
                 </p>
             </div>
