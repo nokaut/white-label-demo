@@ -1,4 +1,4 @@
-{% if product.offerCount == 1 and product.clickUrl is not empty %}
+{% if product.clickUrl is not empty %}
     {% set productUrl = product|click %}
 {% else %}
     {% set productUrl = path('product', {'productUrl': product.url|trim('/')}) %}
@@ -45,7 +45,7 @@
                 <div class="row">
                     <div class="col-xs-12 text-center">
                         <span class="price lead">{% if product.offerCount > 1 %}od {% endif %}{{ product.prices.min|number_format(2,',',' ') }} PLN</span>
-                            <span class="btn btn-success btn-success-outlined btn-icon-right">Porównaj oferty
+                            <span class="btn btn-success btn-success-outlined btn-icon-right">{% if product.clickUrl is not empty %}Zobacz w sklepie{% else %}Porównaj oferty{% endif %}
                                 <i class="fa fa-angle-right"></i>
                             </span>
                     </div>
