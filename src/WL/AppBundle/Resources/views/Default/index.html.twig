@@ -21,11 +21,8 @@
 {% endblock %}
 
 {% macro productGridView(product) %}
-    {% if product.offerCount == 1 %}
-        {% set productUrl = product|click %}
-    {% else %}
-        {% set productUrl = path('product', {'productUrl': product.url|trim('/')}) %}
-    {% endif %}
+    {% set productUrl = path('product', {'productUrl': product.url|trim('/')}) %}
+
     <div class="image">
         <a href="{{ productUrl }}"><img class="img-responsive" src="{{ nokaut_img_domain ~ nokaut_photo_url.prepare(product.photoId, '500x500', product.title) }}"/></a>
         <a href="{{ productUrl }}">
