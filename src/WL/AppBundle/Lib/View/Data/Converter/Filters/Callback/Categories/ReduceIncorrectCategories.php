@@ -26,7 +26,11 @@ class ReduceIncorrectCategories implements CallbackInterface
 
         $categoriesArray = array_filter($categoriesArray, function($entity) use ($products) {
             /** @var Category $entity */
-            return $entity->getIsFilter() || $entity->getTotal() < $products->getMetadata()->getTotal();
+            return $entity->getTotal() != 0 &&
+                (
+                    ($entity->getIsFilter() && $entity->getTotal() < $products->getMetadata()->getTotal())
+                    || $entity->getTotal() < $products->getMetadata()->getTotal()
+                );
         });
 
         $categories->setEntities($categoriesArray);
