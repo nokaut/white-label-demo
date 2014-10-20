@@ -38,7 +38,7 @@
                     {% for product in products if product.offerWithBestPrice %}
                         <div>
                             <div class="product col-sm-12 normal inner">
-                                <a href="{{ product.offerWithBestPrice.clickUrl|click }}">
+                                <a href="{{ click_domain ~ product.offerWithBestPrice.clickUrl }}">
                                     <div class="image">
                                         <img src="{{ nokaut_img_domain ~ nokaut_photo_url.prepare(product.photoId, '130x130', product.title) }}" />
                                         <div class="content">
