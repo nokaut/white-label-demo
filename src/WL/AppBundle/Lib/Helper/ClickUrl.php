@@ -11,6 +11,7 @@ namespace WL\AppBundle\Lib\Helper;
 
 use Nokaut\ApiKit\Entity\Offer;
 use Nokaut\ApiKit\Entity\Product;
+use Nokaut\ApiKit\Entity\Product\OfferWithBestPrice;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
@@ -37,7 +38,7 @@ class ClickUrl
 
 
     /**
-     * @param Offer $offer
+     * @param Offer|OfferWithBestPrice $offer
      * @return string
      */
     public function prepareOfferClickUrl($offer)
