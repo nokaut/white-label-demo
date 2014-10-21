@@ -67,7 +67,7 @@ class BreadcrumbsBuilder
             $breadcrumbsFilers .= $filter->getName() . ": ";
             foreach($filter as $value) {
                 /** @var FilterAbstract $value */
-                $breadcrumbsFilers .= $value->getName();
+                $breadcrumbsFilers .= $value->getName() . ($filter->getUnit() ? ' '.$filter->getUnit() : '');
                 $breadcrumbsFilers .= ', ';
             }
         }
