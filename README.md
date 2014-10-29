@@ -1,6 +1,8 @@
 Nokaut.pl Demo White Label (PHP)
 ==============================
 
+[![Build Status](https://travis-ci.org/nokaut/white-label-demo.svg?branch=master)
+
 Demo serwisu porównywarki cen wykonana na frameworku [Symfony2](http://symfony.com/)
 
 Status
