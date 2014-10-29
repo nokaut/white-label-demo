@@ -22,6 +22,8 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use WL\AppBundle\Lib\BreadcrumbsBuilder;
+use WL\AppBundle\Lib\CategoriesAllowed;
+use WL\AppBundle\Lib\Exception\CategoryNotAllowedException;
 use WL\AppBundle\Lib\Filter\PropertiesFilter;
 use WL\AppBundle\Lib\Rating\RatingAdd;
 use WL\AppBundle\Lib\Repository\ProductsRepository;
@@ -56,6 +58,11 @@ class ProductController extends Controller
         $categoriesRepo->fetchAllAsync();
         /** @var Category $category */
         $category = $categoryFetch->getResult();
+        try {
+            $this->checkAllowedCategory($category);
+        } catch (CategoryNotAllowedException $e) {
+            return $this->redirect($this->generateUrl('wl_homepage'), 301);
+        }
 
         $breadcrumbs = $this->prepareBreadcrumbs($category, $product);
 
@@ -151,5 +158,16 @@ class ProductController extends Controller
         $productsRepo = $this->get('repo.products.async');
         $productsFetch = $productsRepo->fetchProductsByQuery($query);
         return $productsFetch;
+    }
+
+    /**
+     * @param $category
+     * @throws CategoryNotAllowedException
+     */
+    protected function checkAllowedCategory($category)
+    {
+        /** @var CategoriesAllowed $categoryAllowed */
+        $categoriesAllowed = $this->get('categories.allowed');
+        $categoriesAllowed->checkAllowedCategory($category);
     }
 }

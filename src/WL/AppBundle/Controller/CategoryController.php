@@ -10,6 +10,8 @@ use Nokaut\ApiKit\Repository\CategoriesRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Response;
 use WL\AppBundle\Lib\BreadcrumbsBuilder;
+use WL\AppBundle\Lib\CategoriesAllowed;
+use WL\AppBundle\Lib\Exception\CategoryNotAllowedException;
 use WL\AppBundle\Lib\Filter\PropertiesFilter;
 use WL\AppBundle\Lib\Filter\SortFilter;
 use WL\AppBundle\Lib\Pagination\Pagination;
@@ -22,7 +24,11 @@ class CategoryController extends Controller
 {
     public function indexAction($categoryUrlWithFilters)
     {
-        $category = $this->fetchCategory($categoryUrlWithFilters);
+        try {
+            $category = $this->fetchCategory($categoryUrlWithFilters);
+        } catch(CategoryNotAllowedException $e) {
+            return $this->redirect($this->generateUrl('wl_homepage'), 301);
+        }
 
         /** @var ProductsAsyncRepository $productsAsyncRepo */
         $productsAsyncRepo = $this->get('repo.products.async');
@@ -110,6 +116,7 @@ class CategoryController extends Controller
      * @param $categoryUrlWithFilters
      * @return Category
      * @throws \Symfony\Component\HttpKernel\Exception\NotFoundHttpException
+     * @throws CategoryNotAllowedException
      */
     protected function fetchCategory($categoryUrlWithFilters)
     {
@@ -119,6 +126,11 @@ class CategoryController extends Controller
         $categoriesRepo = $this->get('repo.categories');
         try {
             $category = $categoriesRepo->fetchByUrl($categoryUrl);
+
+            /** @var CategoriesAllowed $categoryAllowed */
+            $categoriesAllowed = $this->get('categories.allowed');
+            $categoriesAllowed->checkAllowedCategory($category);
+
             return $category;
         } catch (NotFoundException $e) {
             throw $this->createNotFoundException("not found category " . $categoryUrl);

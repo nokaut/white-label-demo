@@ -9,6 +9,9 @@
 namespace WL\AppBundle\Lib;
 
 
+use Nokaut\ApiKit\Entity\Category;
+use WL\AppBundle\Lib\Exception\CategoryNotAllowedException;
+
 class CategoriesAllowed
 {
     private $parametersCategories;
@@ -36,5 +39,18 @@ class CategoriesAllowed
         return $this->parametersCategories;
     }
 
-
+    /**
+     * @param Category $category
+     * @throws Exception\CategoryNotAllowedException
+     */
+    public function checkAllowedCategory(Category $category)
+    {
+        $allowedCategoriesIds = $this->getAllowedCategories();
+        foreach ($category->getPath() as $path) {
+            if (in_array($path->getId(), $allowedCategoriesIds)) {
+                return;
+            }
+        }
+        throw new CategoryNotAllowedException("not allowed category " . $category->getTitle() . " ID " . $category->getId());
+    }
 } 
