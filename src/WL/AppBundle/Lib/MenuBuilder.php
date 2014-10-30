@@ -88,7 +88,7 @@ class MenuBuilder
     {
         $result = array();
         foreach ($this->categoriesAllowed->getParametersCategories() as $name => $groupedCategoriesIds) {
-            $result[$name] = $this->productsRepository->fetchProductsWithCategory(6, $groupedCategoriesIds);
+            $result[$name] = $this->productsRepository->fetchTopProducts(6, $groupedCategoriesIds);
         }
         return $result;
     }
