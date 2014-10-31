@@ -5,19 +5,22 @@ namespace WL\AppBundle\Controller;
 use Nokaut\ApiKit\Collection\Products;
 use Nokaut\ApiKit\Entity\Category;
 use Nokaut\ApiKit\Entity\Product;
+use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Response;
 use WL\AppBundle\Lib\BreadcrumbsBuilder;
 use WL\AppBundle\Lib\Filter\PropertiesFilter;
+use WL\AppBundle\Lib\Filter\SortFilter;
 use WL\AppBundle\Lib\Filter\UrlFilter;
 use WL\AppBundle\Lib\Helper\UrlSearch;
 use WL\AppBundle\Lib\Pagination\Pagination;
+use WL\AppBundle\Lib\Repository\ProductsRepository;
 use WL\AppBundle\Lib\Type\Breadcrumb;
 use WL\AppBundle\Lib\Repository\ProductsAsyncRepository;
 use WL\AppBundle\Lib\View\Data\Converter\Filters\Callback;
 use Nokaut\ApiKit\Ext\Data;
 use WL\AppBundle\Lib\View\Data\Converter\Filters\Callback\Categories\ReduceAllSelected;
 
-class SearchController extends CategoryController
+class SearchController extends Controller
 {
     public function indexAction($phrase)
     {
@@ -39,12 +42,12 @@ class SearchController extends CategoryController
         $priceFilters = $this->getPriceFilters($products);
         $producersFilters = $this->getProducersFilters($products);
         $propertiesFilters = $this->getPropertiesFilters($products);
-        $categoriesFilters = $this->getCategoriesFiltersForSearch($products);
+        $categoriesFilters = $this->getCategoriesFilters($products);
 
         $selectedFilters = $this->getSelectedFilters($products);
         $selectedCategoriesFilters = $this->getCategoriesSelectedFilters($products);
 
-        $breadcrumbs = $this->prepareBreadcrumbs($products, $selectedFilters);
+        $breadcrumbs = $this->prepareBreadcrumbs($products, $selectedFilters, $selectedCategoriesFilters);
 
         $phrase = $products ? $products->getMetadata()->getQuery()->getPhrase() : '';
 
@@ -87,7 +90,11 @@ class SearchController extends CategoryController
         $filterUrl = new UrlFilter($this->get('helper.url_search'));
         $filterUrl->filter($products);
 
-        parent::filter($products);
+        $filterProperties = new PropertiesFilter();
+        $filterProperties->filterProducts($products);
+
+        $filterSort = new SortFilter();
+        $filterSort->filter($products);
     }
 
     /**
@@ -111,16 +118,73 @@ class SearchController extends CategoryController
     /**
      * @param Products $products
      * @param Data\Collection\Filters\FiltersAbstract[] $filters
+     * @param Data\Collection\Filters\Categories $selectedCategories
      * @return Breadcrumb[]
      */
-    protected function prepareBreadcrumbs($products, array $filters)
+    protected function prepareBreadcrumbs($products, array $filters, $selectedCategories)
     {
         $breadcrumbs = array();
-        $breadcrumbs[] = new Breadcrumb("Szukasz: " . $products->getMetadata()->getQuery()->getPhrase());
+        if (count($selectedCategories)) {
+            foreach ($selectedCategories as $selectedCategory) {
+                /** @var Data\Entity\Filter\Category $selectedCategory */
+                $breadcrumbs[] = new Breadcrumb(
+                    $selectedCategory->getName(),
+                    $this->generateUrl('category', array('categoryUrlWithFilters' => ltrim($selectedCategory->getUrlBase(),'/')))
+                );
+            }
+        }
+        if ($products->getMetadata()->getQuery()->getPhrase()) {
+            $breadcrumbs[] = new Breadcrumb("Szukasz: " . $products->getMetadata()->getQuery()->getPhrase());
+        }
         /** @var BreadcrumbsBuilder $breadcrumbsBuilder */
         $breadcrumbsBuilder = $this->get('breadcrumb.builder');
         $breadcrumbsBuilder->appendFilter($breadcrumbs, $filters);
         return $breadcrumbs;
+    }
+
+    /**
+     * @param Products $products
+     * @return Data\Collection\Filters\PriceRanges
+     */
+    protected function getPriceFilters($products)
+    {
+        $converterFilter = new Data\Converter\Filters\PriceRangesConverter();
+        $priceRangesSelectedFilter = $converterFilter->convert($products, array(
+            new Data\Converter\Filters\Callback\PriceRanges\SetIsNofollow(),
+        ));
+        return $priceRangesSelectedFilter;
+    }
+
+    /**
+     * @param $products
+     * @return Data\Collection\Filters\Producers
+     */
+    protected function getProducersFilters($products)
+    {
+        $converterFilter = new Data\Converter\Filters\ProducersConverter();
+        $producersSelectedFilter = $converterFilter->convert($products, array(
+            new Data\Converter\Filters\Callback\Producers\SetIsNofollow(),
+            new Data\Converter\Filters\Callback\Producers\SetIsPopular(),
+            new Data\Converter\Filters\Callback\Producers\SetIsActive(),
+            new Data\Converter\Filters\Callback\Producers\SortByName(),
+        ));
+        return $producersSelectedFilter;
+    }
+
+    /**
+     * @param Products $products
+     * @return Data\Collection\Filters\PropertyAbstract[]
+     */
+    protected function getPropertiesFilters($products)
+    {
+        $converterFilter = new Data\Converter\Filters\PropertiesConverter();
+        $propertiesFilter = $converterFilter->convert($products,array(
+            new Data\Converter\Filters\Callback\Property\SetIsActive(),
+            new Data\Converter\Filters\Callback\Property\SetIsExcluded(),
+            new Data\Converter\Filters\Callback\Property\SetIsNofollow(),
+            new Data\Converter\Filters\Callback\Property\SortDefault(),
+        ));
+        return $propertiesFilter;
     }
 
     protected function getCategoriesSelectedFilters($products)
@@ -136,7 +200,7 @@ class SearchController extends CategoryController
      * @param Products $products
      * @return Data\Collection\Filters\Categories
      */
-    protected function getCategoriesFiltersForSearch($products)
+    protected function getCategoriesFilters($products)
     {
         $converterFilter = new Data\Converter\Filters\CategoriesConverter();
         $categoriesFilter = $converterFilter->convert($products,array(
@@ -145,6 +209,74 @@ class SearchController extends CategoryController
             new Data\Converter\Filters\Callback\Categories\SortByName(),
         ));
         return $categoriesFilter;
+    }
+
+    /**
+     * @param Products $products
+     * @return Data\Collection\Filters\FiltersAbstract[]
+     */
+    protected function getSelectedFilters($products)
+    {
+        if (is_null($products)) {
+            return array();
+        }
+
+        $selectedFilters = array();
+
+        $priceSelectedFilters = $this->getPriceSelectedFilters($products);
+        if ($priceSelectedFilters->count()) {
+            $selectedFilters[] = $priceSelectedFilters;
+        }
+
+        $producersSelectedFilters = $this->getProducersSelectedFilters($products);
+        if ($producersSelectedFilters->count()) {
+            $selectedFilters[] = $producersSelectedFilters;
+        }
+
+        $propertiesSelectedFilters = $this->getPropertiesSelectedFilter($products);
+        $selectedFilters = array_merge($selectedFilters, $propertiesSelectedFilters);
+
+        return $selectedFilters;
+    }
+
+    /**
+     * @param Products $products
+     * @return Data\Collection\Filters\PriceRanges
+     */
+    protected function getPriceSelectedFilters($products)
+    {
+        $converterSelectedFilter = new Data\Converter\Filters\Selected\PriceRangesConverter();
+        $priceRangesSelectedFilter = $converterSelectedFilter->convert($products, array(
+            new Data\Converter\Filters\Callback\PriceRanges\SetIsNofollow(),
+            new Callback\PriceRanges\SetName()
+        ));
+        return $priceRangesSelectedFilter;
+    }
+
+    /**
+     * @param $products
+     * @return Data\Collection\Filters\Producers
+     */
+    protected function getProducersSelectedFilters($products)
+    {
+        $converterSelectedFilter = new Data\Converter\Filters\Selected\ProducersConverter();
+        $producersSelectedFilter = $converterSelectedFilter->convert($products, array(
+            new Data\Converter\Filters\Callback\Producers\SetIsNofollow(),
+        ));
+        return $producersSelectedFilter;
+    }
+
+    /**
+     * @param Products $products
+     * @return Data\Collection\Filters\PropertyAbstract[]
+     */
+    protected function getPropertiesSelectedFilter($products)
+    {
+        $converterSelectedFilter = new Data\Converter\Filters\Selected\PropertiesConverter();
+        $propertiesFilter = $converterSelectedFilter->convert($products,array(
+            new Data\Converter\Filters\Callback\Property\SetIsNofollow(),
+        ));
+        return $propertiesFilter;
     }
 
     /**
@@ -173,6 +305,17 @@ class SearchController extends CategoryController
             $title .= " (str. " . $pagination->getCurrentPage() . ")";
         }
         return $title;
+    }
+
+    /**
+     * @return array
+     */
+    protected function getProductFields()
+    {
+        $fieldsForList = ProductsRepository::$fieldsForList;
+        $fieldsForList[] = '_categories.url_in';
+        $fieldsForList[] = '_categories.url_base';
+        return $fieldsForList;
     }
 
 }
