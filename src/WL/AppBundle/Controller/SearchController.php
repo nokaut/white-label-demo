@@ -74,7 +74,7 @@ class SearchController extends Controller
             'sorts' => $products ? $products->getMetadata()->getSorts() : array(),
             'canonical' => $products ? $products->getMetadata()->getCanonical() : '',
             'h1' => $this->prepareH1($selectedCategoriesFilters),
-            'metadataTitle' => $this->prepareSearchMetadataTitle($phrase, $pagination)
+            'metadataTitle' => $this->prepareSearchMetadataTitle($phrase, $pagination, $selectedCategoriesFilters)
         ), $responseStatus);
     }
 
@@ -295,11 +295,16 @@ class SearchController extends Controller
     /**
      * @param $phrase
      * @param Pagination $pagination
+     * @param Data\Collection\Filters\Categories $selectedCategoriesFilters
      * @return string
      */
-    protected function prepareSearchMetadataTitle($phrase, $pagination)
+    protected function prepareSearchMetadataTitle($phrase, $pagination, $selectedCategoriesFilters)
     {
-        $title = $phrase;
+        if ($phrase) {
+            $title = $phrase;
+        } else {
+            $title = $this->prepareH1($selectedCategoriesFilters);
+        }
 
         if ($pagination->getCurrentPage() > 1) {
             $title .= " (str. " . $pagination->getCurrentPage() . ")";
