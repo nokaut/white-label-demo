@@ -57,7 +57,7 @@ class SearchController extends Controller
                 'phrase' => $phrase,
                 'breadcrumbs' => $breadcrumbs,
                 'selectedFilters' => $selectedFilters,
-                'canonical' => $products ? $products->getMetadata()->getCanonical() : '',
+                'canonical' => $this->getCanonical($products),
             ), new Response('', 404));
         }
 
@@ -72,7 +72,7 @@ class SearchController extends Controller
             'propertiesFilters' => $propertiesFilters,
             'selectedFilters' => $selectedFilters,
             'sorts' => $products ? $products->getMetadata()->getSorts() : array(),
-            'canonical' => $products ? $products->getMetadata()->getCanonical() : '',
+            'canonical' => $this->getCanonical($products),
             'h1' => $this->prepareH1($selectedCategoriesFilters),
             'metadataTitle' => $this->prepareSearchMetadataTitle($phrase, $pagination, $selectedCategoriesFilters)
         ), $responseStatus);
@@ -321,6 +321,15 @@ class SearchController extends Controller
         $fieldsForList[] = '_categories.url_in';
         $fieldsForList[] = '_categories.url_base';
         return $fieldsForList;
+    }
+
+    /**
+     * @param Products $products
+     * @return string
+     */
+    protected function getCanonical($products)
+    {
+        return $products ? $products->getMetadata()->getCanonical() : '';
     }
 
 }

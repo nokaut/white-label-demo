@@ -56,7 +56,7 @@ class CategoryController extends Controller
             return $this->render('WLAppBundle:Category:nonResult.html.twig', array(
                 'breadcrumbs' => $breadcrumbs,
                 'selectedFilters' => $selectedFilters,
-                'canonical' => $products ? $products->getMetadata()->getCanonical() : '',
+                'canonical' => $this->getCanonical($products),
             ), new Response('', 404));
         }
 
@@ -71,7 +71,7 @@ class CategoryController extends Controller
             'propertiesFilters' => $propertiesFilters,
             'selectedFilters' => $selectedFilters,
             'sorts' => $products ? $products->getMetadata()->getSorts() : array(),
-            'canonical' => $products ? $products->getMetadata()->getCanonical() : '',
+            'canonical' => $this->getCanonical($products),
             'h1' => $category->getTitle(),
             'metadataTitle' => $this->prepareMetadataTitle($breadcrumbs, $selectedFilters, $pagination)
         ));
@@ -317,5 +317,14 @@ class CategoryController extends Controller
             $title .= " (str. " . $pagination->getCurrentPage() . ")";
         }
         return $title;
+    }
+
+    /**
+     * @param Products $products
+     * @return string
+     */
+    protected function getCanonical($products)
+    {
+        return $products ? $products->getMetadata()->getCanonical() : '';
     }
 }
