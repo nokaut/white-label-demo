@@ -21,18 +21,18 @@ class UrlSearch
      * @var Categories
      */
     protected $categoriesAllowed;
+    protected $joinedCategoriesUrls;
 
     function __construct(CategoriesRepository $categoriesRepository , CategoriesAllowed $categoriesAllowed)
     {
         $this->categoriesAllowed = $categoriesRepository->fetchCategoriesByIds($categoriesAllowed->getAllowedCategories());
+        $this->joinedCategoriesUrls = $this->joinCategoriesUrls();
     }
 
 
     public function getReduceUrl($url)
     {
-        $categoriesUrlPart = $this->joinCategoriesUrls();
-
-        $cutUrl = str_replace($categoriesUrlPart, '', $url);
+        $cutUrl = str_replace($this->joinedCategoriesUrls, '', $url);
         return '/'.ltrim($cutUrl, '/');
     }
 
@@ -49,8 +49,7 @@ class UrlSearch
             return $phrase;
         }
 
-        $categoriesUrlPart = $this->joinCategoriesUrls();
-        return $categoriesUrlPart . '/' . $phrase;
+        return $this->joinedCategoriesUrls . '/' . $phrase;
     }
 
     /**
