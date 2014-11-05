@@ -40,7 +40,7 @@ class UrlSearchTest extends KernelTestCase
 
         $urlReduced = $this->cut->getReduceUrl($url);
 
-        $this->assertEquals('/produkt:casio.html', $urlReduced);
+        $this->assertEquals('produkt:casio.html', $urlReduced);
     }
 
     public function testPreparePhraseWithAllowCategories()
