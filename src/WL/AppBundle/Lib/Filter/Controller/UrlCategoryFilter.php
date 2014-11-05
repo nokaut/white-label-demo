@@ -1,32 +1,19 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: jjuszkiewicz
- * Date: 02.10.2014
- * Time: 10:30
- */
 
-namespace WL\AppBundle\Lib\Filter;
+namespace WL\AppBundle\Lib\Filter\Controller;
 
 
 use Nokaut\ApiKit\Collection\Products;
-use WL\AppBundle\Lib\Helper\UrlSearch;
+use Nokaut\ApiKit\Entity\Metadata\Facet\CategoryFacet;
+use Nokaut\ApiKit\Entity\Product;
+use WL\AppBundle\Lib\Helper\Uri;
 
-class UrlFilter
+class UrlCategoryFilter
 {
-    /**
-     * @var UrlSearch
-     */
-    protected $urlSearch;
-
-    function __construct(UrlSearch $urlSearch)
-    {
-        $this->urlSearch = $urlSearch;
-    }
-
-
     public function filter(Products $products)
     {
+        $this->filterProduct($products);
+        $this->filterCategories($products);
         $this->filterSorts($products);
         $this->filterPrices($products);
         $this->filterProducers($products);
@@ -41,6 +28,36 @@ class UrlFilter
     /**
      * @param Products $products
      */
+    protected function filterProduct(Products $products)
+    {
+        /** @var Product $product */
+        foreach ($products as $product) {
+            $url = Uri::prepareApiUrl($product->getUrl());
+            $product->setUrl($url);
+        }
+    }
+
+    /**
+     * @param Products $products
+     */
+    protected function filterCategories(Products $products)
+    {
+        /** @var CategoryFacet $category */
+        foreach ($products->getCategories() as $category) {
+            $reducedUrl = Uri::prepareApiUrl($category->getUrl());
+            $category->setUrl($reducedUrl);
+            $reducedUrl = Uri::prepareApiUrl($category->getUrlIn());
+            $category->setUrlIn($reducedUrl);
+            $reducedUrl = Uri::prepareApiUrl($category->getUrlOut());
+            $category->setUrlOut($reducedUrl);
+            $reducedUrl = Uri::prepareApiUrl($category->getUrlBase());
+            $category->setUrlBase($reducedUrl);
+        }
+    }
+
+    /**
+     * @param Products $products
+     */
     protected function filterSorts(Products $products)
     {
         if (!$products->getMetadata()->getSorts()) {
@@ -50,7 +67,7 @@ class UrlFilter
 
 
         foreach ($products->getMetadata()->getSorts() as $sort) {
-            $reducedUrl = $this->urlSearch->getReduceUrl($sort->getUrl());
+            $reducedUrl = Uri::prepareApiUrl($sort->getUrl());
             $sort->setUrl($reducedUrl);
         }
     }
@@ -64,7 +81,7 @@ class UrlFilter
 
 
         foreach ($products->getPrices() as $price) {
-            $reducedUrl = $this->urlSearch->getReduceUrl($price->getUrl());
+            $reducedUrl = Uri::prepareApiUrl($price->getUrl());
             $price->setUrl($reducedUrl);
         }
     }
@@ -77,7 +94,7 @@ class UrlFilter
         }
 
         foreach ($products->getProducers() as $producer) {
-            $reducedUrl = $this->urlSearch->getReduceUrl($producer->getUrl());
+            $reducedUrl = Uri::prepareApiUrl($producer->getUrl());
             $producer->setUrl($reducedUrl);
         }
     }
@@ -90,7 +107,7 @@ class UrlFilter
         }
 
         foreach ($products->getShops() as $shop) {
-            $reducedUrl = $this->urlSearch->getReduceUrl($shop->getUrl());
+            $reducedUrl = Uri::prepareApiUrl($shop->getUrl());
             $shop->setUrl($reducedUrl);
         }
     }
@@ -104,7 +121,7 @@ class UrlFilter
 
         foreach ($products->getProperties() as $property) {
             foreach ($property->getValues() as $value) {
-                $reducedUrl = $this->urlSearch->getReduceUrl($value->getUrl());
+                $reducedUrl = Uri::prepareApiUrl($value->getUrl());
                 $value->setUrl($reducedUrl);
             }
         }
@@ -119,13 +136,13 @@ class UrlFilter
             return;
         }
 
-        $reducedUrl = $this->urlSearch->getReduceUrl($products->getPhrase()->getUrlCategoryTemplate());
+        $reducedUrl = Uri::prepareApiUrl($products->getPhrase()->getUrlCategoryTemplate());
         $products->getPhrase()->setUrlCategoryTemplate($reducedUrl);
 
-        $reducedUrl = $this->urlSearch->getReduceUrl($products->getPhrase()->getUrlInTemplate());
+        $reducedUrl = Uri::prepareApiUrl($products->getPhrase()->getUrlInTemplate());
         $products->getPhrase()->setUrlInTemplate($reducedUrl);
 
-        $reducedUrl = $this->urlSearch->getReduceUrl($products->getPhrase()->getUrlOut());
+        $reducedUrl = Uri::prepareApiUrl($products->getPhrase()->getUrlOut());
         $products->getPhrase()->setUrlOut($reducedUrl);
     }
 
@@ -138,7 +155,7 @@ class UrlFilter
             return;
         }
 
-        $reducedUrl = $this->urlSearch->getReduceUrl($products->getMetadata()->getPaging()->getUrlTemplate());
+        $reducedUrl = Uri::prepareApiUrl($products->getMetadata()->getPaging()->getUrlTemplate());
         $products->getMetadata()->getPaging()->setUrlTemplate($reducedUrl);
     }
 
@@ -150,7 +167,7 @@ class UrlFilter
         if (!$products->getMetadata()) {
             return;
         }
-        $reducedUrl = $this->urlSearch->getReduceUrl($products->getMetadata()->getUrl());
+        $reducedUrl = Uri::prepareApiUrl($products->getMetadata()->getUrl());
         $products->getMetadata()->setUrl($reducedUrl);
     }
 
@@ -162,7 +179,7 @@ class UrlFilter
         if (!$products->getMetadata()) {
             return;
         }
-        $reducedUrl = $this->urlSearch->getReduceUrl($products->getMetadata()->getCanonical());
+        $reducedUrl = Uri::prepareApiUrl($products->getMetadata()->getCanonical());
         $products->getMetadata()->setCanonical($reducedUrl);
     }
 

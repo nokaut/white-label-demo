@@ -35,7 +35,7 @@
                             <h3>{{ menuLink.name }}</h3>
                             <ul>
                                 {% for subLink in menuLink.subLinks %}
-                                    <li><a href="{{ url('category', {'categoryUrlWithFilters': subLink.url|trim('/')}) }}"
+                                    <li><a href="{{ url('category', {'categoryUrlWithFilters': subLink.url}) }}"
                                            title="{{ subLink.name }}">{{ subLink.name }}</a></li>
                                 {% endfor %}
                             </ul>

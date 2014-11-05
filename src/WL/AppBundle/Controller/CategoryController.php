@@ -12,8 +12,8 @@ use Symfony\Component\HttpFoundation\Response;
 use WL\AppBundle\Lib\BreadcrumbsBuilder;
 use WL\AppBundle\Lib\CategoriesAllowed;
 use WL\AppBundle\Lib\Exception\CategoryNotAllowedException;
-use WL\AppBundle\Lib\Filter\PropertiesFilter;
-use WL\AppBundle\Lib\Filter\SortFilter;
+use WL\AppBundle\Lib\Filter;
+use WL\AppBundle\Lib\Helper\Uri;
 use WL\AppBundle\Lib\Pagination\Pagination;
 use WL\AppBundle\Lib\Repository\ProductsAsyncRepository;
 use WL\AppBundle\Lib\Repository\ProductsRepository;
@@ -26,7 +26,7 @@ class CategoryController extends Controller
     {
         try {
             $category = $this->fetchCategory($categoryUrlWithFilters);
-        } catch(CategoryNotAllowedException $e) {
+        } catch (CategoryNotAllowedException $e) {
             return $this->redirect($this->generateUrl('wl_homepage'), 301);
         }
 
@@ -39,6 +39,7 @@ class CategoryController extends Controller
         $products = $productsFetch->getResult();
 
         $this->filter($products);
+        $this->filterCategory($category);
 
         $pagination = $this->preparePagination($products);
 
@@ -86,11 +87,24 @@ class CategoryController extends Controller
         if ($products === null) {
             return;
         }
-        $filterProperties = new PropertiesFilter();
+
+        $filterUrl = new Filter\Controller\UrlCategoryFilter();
+        $filterUrl->filter($products);
+
+        $filterProperties = new Filter\PropertiesFilter();
         $filterProperties->filterProducts($products);
 
-        $filterSort = new SortFilter();
+        $filterSort = new Filter\SortFilter();
         $filterSort->filter($products);
+    }
+
+    /**
+     * @param Category $category
+     */
+    protected function filterCategory(Category $category)
+    {
+        $filterCategory = new Filter\UrlCategoryFilter();
+        $filterCategory->filter($category);
     }
 
     /**
@@ -107,7 +121,7 @@ class CategoryController extends Controller
         $pagination->setCurrentPage($products->getMetadata()->getPaging()->getCurrent());
         $pagination->setUrlTemplate($products->getMetadata()->getPaging()->getUrlTemplate());
         $pagination->setUrlTemplate(
-            $this->get('router')->generate('category', array('categoryUrlWithFilters' => ltrim($products->getMetadata()->getPaging()->getUrlTemplate(), '/')))
+            $this->get('router')->generate('category', array('categoryUrlWithFilters' => $products->getMetadata()->getPaging()->getUrlTemplate()))
         );
         return $pagination;
     }
@@ -149,7 +163,7 @@ class CategoryController extends Controller
         $breadcrumbs = $breadcrumbsBuilder->prepareBreadcrumbs(
             $category,
             function ($url) {
-                return $this->get('router')->generate('category', array('categoryUrlWithFilters' => ltrim($url, '/')));
+                return $this->get('router')->generate('category', array('categoryUrlWithFilters' => Uri::prepareApiUrl($url)));
             }
         );
 
@@ -258,7 +272,7 @@ class CategoryController extends Controller
     protected function getPropertiesSelectedFilter($products)
     {
         $converterSelectedFilter = new Data\Converter\Filters\Selected\PropertiesConverter();
-        $propertiesFilter = $converterSelectedFilter->convert($products,array(
+        $propertiesFilter = $converterSelectedFilter->convert($products, array(
             new Data\Converter\Filters\Callback\Property\SetIsNofollow(),
         ));
         return $propertiesFilter;
@@ -271,7 +285,7 @@ class CategoryController extends Controller
     protected function getPropertiesFilters($products)
     {
         $converterFilter = new Data\Converter\Filters\PropertiesConverter();
-        $propertiesFilter = $converterFilter->convert($products,array(
+        $propertiesFilter = $converterFilter->convert($products, array(
             new Data\Converter\Filters\Callback\Property\SetIsActive(),
             new Data\Converter\Filters\Callback\Property\SetIsExcluded(),
             new Data\Converter\Filters\Callback\Property\SetIsNofollow(),
@@ -288,7 +302,7 @@ class CategoryController extends Controller
     protected function getCategoriesFilters($category, $products)
     {
         $converterFilter = new Data\Converter\Filters\CategoriesConverter();
-        $categoriesFilter = $converterFilter->convert($products,array(
+        $categoriesFilter = $converterFilter->convert($products, array(
             new Callback\Categories\ReduceIncorrectCategories(),
             new Data\Converter\Filters\Callback\Categories\SetIsExcluded(),
             new Data\Converter\Filters\Callback\Categories\SortByName(),
@@ -308,9 +322,9 @@ class CategoryController extends Controller
         $title = "";
         if (count($breadcrumbs)) {
             if ($selectedFilters && count($breadcrumbs) > 1) {
-                $title .= $breadcrumbs[count($breadcrumbs) -2]->getTitle();
+                $title .= $breadcrumbs[count($breadcrumbs) - 2]->getTitle();
             }
-            $title .= " " . $breadcrumbs[count($breadcrumbs) -1]->getTitle();
+            $title .= " " . $breadcrumbs[count($breadcrumbs) - 1]->getTitle();
         }
 
         if ($pagination->getCurrentPage() > 1) {

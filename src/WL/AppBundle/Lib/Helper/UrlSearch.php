@@ -33,7 +33,7 @@ class UrlSearch
     public function getReduceUrl($url)
     {
         $cutUrl = str_replace($this->joinedCategoriesUrls, '', $url);
-        return '/'.ltrim($cutUrl, '/');
+        return ltrim($cutUrl, '/');
     }
 
     /**

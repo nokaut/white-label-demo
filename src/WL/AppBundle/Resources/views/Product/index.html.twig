@@ -14,7 +14,7 @@
 {% block head %}
     {{ parent() }}
 
-    <link rel="canonical" href="{{ url('product', {'productUrl': product.url|trim('/')}) }}" />
+    <link rel="canonical" href="{{ url('product', {'productUrl': product.url}) }}" />
 {% endblock %}
 
 
@@ -55,7 +55,7 @@
 
     <div class="row lower-double products">
         <div class="col-xs-8">
-            <h4>Produkty najpopularniejsze w kategorii <a href="{{ url('category', {'categoryUrlWithFilters': category.url|trim('/')}) }}">{{ category.title|raw }}</a></h4>
+            <h4>Produkty najpopularniejsze w kategorii <a href="{{ url('category', {'categoryUrlWithFilters': category.url}) }}">{{ category.title|raw }}</a></h4>
         </div>
         <div class="col-xs-4 text-right">
             <a id="products-top-prev" class="btn btn-sm btn-primary btn-primary-outlined"><i class="fa fa-angle-left"></i></a>

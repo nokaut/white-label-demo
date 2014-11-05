@@ -11,7 +11,7 @@
 {% block head %}
     {{ parent() }}
 
-    <link rel="canonical" href="{{ url(route, { (routeArgument): canonical|trim('/')}) }}"/>
+    <link rel="canonical" href="{{ url(route, { (routeArgument): canonical}) }}"/>
 {% endblock %}
 
 {% block javascriptsTop %}
@@ -56,7 +56,7 @@
                             {% set selectedValue = value %}
                         {% endif %}
                         <li class="{% if value.isFilter %}active{% elseif value.total==0 %}disabled{% endif %}">
-                            <a {% if value.isNoFollow %}rel="nofollow" {% endif %}href="{% if value.total>0 %}{{ url(route, { (routeArgument) : value.url|trim('/')}) }}{%  else %}#{%  endif %}">
+                            <a {% if value.isNoFollow %}rel="nofollow" {% endif %}href="{% if value.total>0 %}{{ url(route, { (routeArgument) : value.url}) }}{%  else %}#{%  endif %}">
                                 <span class="badge pull-right">{{ value.total }}</span> {{ value.name|raw }} {{ filter.unit }}
                             </a>
                         </li>
@@ -71,7 +71,7 @@
                                     <input id="{{ boxId }}-range-to" value="{{ selectedValue ? selectedValue.max : '' }}" type="text" class="form-control input-sm" placeholder="do">
                                     <div class="input-group-addon">PLN</div>
                                     <span class="input-group-btn pull-right filter-submit">
-                                      <button onclick="filterRanges('{{ url(route, { (routeArgument): filter.urlInTemplate|trim('/')|raw}) }}', '{{ boxId }}-range-from', '{{ boxId }}-range-to')" class="btn btn-sm btn-link" type="button">zastosuj</button>
+                                      <button onclick="filterRanges('{{ url(route, { (routeArgument): filter.urlInTemplate|raw}) }}', '{{ boxId }}-range-from', '{{ boxId }}-range-to')" class="btn btn-sm btn-link" type="button">zastosuj</button>
                                     </span>
                                 </div>
                             </form>
@@ -109,17 +109,17 @@
                             {% if subcategories.parentCategory %}
                                 <li class="active">
                                     {% if subcategories.parentCategory.url == '/' %}
-                                        {% set parenCategoryUrl = url('wl_homepage') %}
+                                        {% set parentCategoryUrl = url('wl_homepage') %}
                                     {% else %}
-                                        {% set parenCategoryUrl = url(route, { (routeArgument) : subcategories.parentCategory.url|trim('/')}) %}
+                                        {% set parentCategoryUrl = url(route, { (routeArgument) : subcategories.parentCategory.url}) %}
                                     {% endif %}
-                                    <a href="{{ parenCategoryUrl }}">
+                                    <a href="{{ parentCategoryUrl }}">
                                         <span class="badge pull-right">{{ products.metadata.total }}</span> {{ category.title|raw }} <i class="fa fa-level-up"></i>
                                     </a>
                                 </li>
                             {% endif %}
                             {% for category in subcategories if not category.isFilter %}
-                                <li{% if loop.first %} class="lower-half"{% endif %}><a href="{{ url(route, { (routeArgument) : category.urlIn|trim('/')}) }}">
+                                <li{% if loop.first %} class="lower-half"{% endif %}><a href="{{ url(route, { (routeArgument) : category.urlIn}) }}">
                                     <span class="badge pull-right">{{ category.total }}</span> {{ category.name|raw }}</a>
                                 </li>
                             {% endfor %}
@@ -168,7 +168,7 @@
                     <span>
                         <span class="badge-name">szukasz:</span>
                         <span class="badge">
-                            <button type="button" onclick="document.location.href='{{ products.phrase.urlOut == '/' ? '/' : url('category', { 'categoryUrlWithFilters': products.phrase.urlOut|trim('/') }) }}'" class="close">×</button>
+                            <button type="button" onclick="document.location.href='{{ products.phrase.urlOut == '' or products.phrase.urlOut == '/' ? '/' : url('category', { 'categoryUrlWithFilters': products.phrase.urlOut }) }}'" class="close">×</button>
                             <span>{{ products.phrase.value|raw }}</span>
                         </span>
                     </span>
@@ -178,7 +178,7 @@
                     <span class="badge-name">{{ filter.name }}:</span>
                     {% for value in filter %}
                     <span class="badge">
-                        <button type="button" onclick="document.location.href='{{ url(route, { (routeArgument): value.url|trim('/') }) }}'" class="close">×</button>
+                        <button type="button" onclick="document.location.href='{{ url(route, { (routeArgument): value.url }) }}'" class="close">×</button>
                         <span>{{ value.name|raw }} {{ filter.unit }}</span>
                     </span>
                     {% endfor %}
@@ -219,9 +219,9 @@
 
                     {% for sort in sorts %}
                         {% if sort.isFilter %}
-                            <li class="active"><a rel="nofollow" href="{{ url(route, { (routeArgument) : sort.url|trim('/')}) }}"><i class="fa {{ _self.additionalSortIcon(sort.name) }}"></i> {{ sort.name }}</a></li>
+                            <li class="active"><a rel="nofollow" href="{{ url(route, { (routeArgument) : sort.url}) }}"><i class="fa {{ _self.additionalSortIcon(sort.name) }}"></i> {{ sort.name }}</a></li>
                         {% else %}
-                            <li><a rel="nofollow" href="{{ url(route, { (routeArgument) : sort.url|trim('/')}) }}"><i class="fa {{ _self.additionalSortIcon(sort.name) }}"></i> {{ sort.name }}</a></li>
+                            <li><a rel="nofollow" href="{{ url(route, { (routeArgument) : sort.url}) }}"><i class="fa {{ _self.additionalSortIcon(sort.name) }}"></i> {{ sort.name }}</a></li>
                         {% endif %}
                     {% endfor %}
                 </ul>
@@ -235,7 +235,7 @@
         {% if product.offerCount == 1 and product.clickUrl is not empty %}
             {% set productUrl = product|click %}
         {% else %}
-            {% set productUrl = path('product', {'productUrl': product.url|trim('/')}) %}
+            {% set productUrl = path('product', {'productUrl': product.url}) %}
         {% endif %}
         <!---- product starts here ---->
         <div class="col-lg-3 col-md-4 col-sm-6 col-xs-12 product-wrapper-grid">
@@ -271,7 +271,7 @@
                                     </a>
                                 {% endif %}
                                 {% if product.clickUrl is not empty %}
-                                    <a href="{{ url('product', {'productUrl': product.url|trim('/') }) }}"><i class="fa fa-link"></i></a>
+                                    <a href="{{ url('product', {'productUrl': product.url }) }}"><i class="fa fa-link"></i></a>
                                 {% endif %}
                             </div>
                             <ul class="features">

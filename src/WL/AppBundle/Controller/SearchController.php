@@ -8,9 +8,7 @@ use Nokaut\ApiKit\Entity\Product;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Response;
 use WL\AppBundle\Lib\BreadcrumbsBuilder;
-use WL\AppBundle\Lib\Filter\PropertiesFilter;
-use WL\AppBundle\Lib\Filter\SortFilter;
-use WL\AppBundle\Lib\Filter\UrlFilter;
+use WL\AppBundle\Lib\Filter;
 use WL\AppBundle\Lib\Helper\UrlSearch;
 use WL\AppBundle\Lib\Pagination\Pagination;
 use WL\AppBundle\Lib\Repository\ProductsRepository;
@@ -87,13 +85,13 @@ class SearchController extends Controller
         if ($products === null) {
             return;
         }
-        $filterUrl = new UrlFilter($this->get('helper.url_search'));
+        $filterUrl = new Filter\Controller\UrlSearchFilter($this->get('helper.url_search'));
         $filterUrl->filter($products);
 
-        $filterProperties = new PropertiesFilter();
+        $filterProperties = new Filter\PropertiesFilter();
         $filterProperties->filterProducts($products);
 
-        $filterSort = new SortFilter();
+        $filterSort = new Filter\SortFilter();
         $filterSort->filter($products);
     }
 
@@ -110,7 +108,7 @@ class SearchController extends Controller
         $pagination->setTotal($products->getMetadata()->getPaging()->getTotal());
         $pagination->setCurrentPage($products->getMetadata()->getPaging()->getCurrent());
         $pagination->setUrlTemplate(
-            $this->get('router')->generate('search', array('phrase' => ltrim($products->getMetadata()->getPaging()->getUrlTemplate(), '/')))
+            $this->get('router')->generate('search', array('phrase' => $products->getMetadata()->getPaging()->getUrlTemplate()))
         );
         return $pagination;
     }
@@ -129,7 +127,7 @@ class SearchController extends Controller
                 /** @var Data\Entity\Filter\Category $selectedCategory */
                 $breadcrumbs[] = new Breadcrumb(
                     $selectedCategory->getName(),
-                    $this->generateUrl('category', array('categoryUrlWithFilters' => ltrim($selectedCategory->getUrlBase(),'/')))
+                    $this->generateUrl('category', array('categoryUrlWithFilters' => $selectedCategory->getUrlBase()))
                 );
             }
         }

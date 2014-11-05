@@ -13,6 +13,7 @@ use Nokaut\ApiKit\ClientApi\Rest\Fetch\CategoriesFetch;
 use Nokaut\ApiKit\ClientApi\Rest\Fetch\ProductsFetch;
 use Nokaut\ApiKit\Collection\Categories;
 use Nokaut\ApiKit\Entity\Category;
+use WL\AppBundle\Lib\Helper\Uri;
 use WL\AppBundle\Lib\Type\Menu\Link;
 use WL\AppBundle\Lib\Type\MenuLink;
 
@@ -73,7 +74,7 @@ class MenuBuilder
             foreach ($categories as $category) {
                 /** @var Category $category */
                 if ($category->getId() == $categoryId) {
-                    $link = new Link($category->getUrl(), $category->getTitle());
+                    $link = new Link(Uri::prepareApiUrl($category->getUrl()), $category->getTitle());
                     $menuLink->addSubLinks($link);
                     break;
                 }

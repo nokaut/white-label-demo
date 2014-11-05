@@ -13,6 +13,7 @@ use Nokaut\ApiKit\ClientApi\Rest\Exception\NotFoundException;
 use Nokaut\ApiKit\ClientApi\Rest\Fetch\OffersFetch;
 use Nokaut\ApiKit\ClientApi\Rest\Fetch\ProductsFetch;
 use Nokaut\ApiKit\ClientApi\Rest\Query\ProductsQuery;
+use Nokaut\ApiKit\Collection\Products;
 use Nokaut\ApiKit\Entity\Category;
 use Nokaut\ApiKit\Entity\Product;
 use Nokaut\ApiKit\Repository\CategoriesAsyncRepository;
@@ -25,6 +26,8 @@ use WL\AppBundle\Lib\BreadcrumbsBuilder;
 use WL\AppBundle\Lib\CategoriesAllowed;
 use WL\AppBundle\Lib\Exception\CategoryNotAllowedException;
 use WL\AppBundle\Lib\Filter\PropertiesFilter;
+use WL\AppBundle\Lib\Helper\Uri;
+use WL\AppBundle\Lib\Filter;
 use WL\AppBundle\Lib\Rating\RatingAdd;
 use WL\AppBundle\Lib\Repository\ProductsRepository;
 use WL\AppBundle\Lib\Type\Breadcrumb;
@@ -39,7 +42,7 @@ class ProductController extends Controller
         try {
             $product = $productsRepo->fetchProductByUrl($productUrl, $this->getFieldsForProduct());
         } catch (NotFoundException $e) {
-            return $this->redirect($this->generateUrl('search', array('phrase' => ltrim($productUrl, '/'))), 301);
+            return $this->redirect($this->generateUrl('search', array('phrase' => Uri::prepareApiUrl($productUrl))), 301);
         }
         $this->filter($product);
 
@@ -64,13 +67,19 @@ class ProductController extends Controller
             return $this->redirect($this->generateUrl('wl_homepage'), 301);
         }
 
+        $this->filterCategory($category);
+        $productsFromCategory = $productsFromCategoryFetch->getResult();
+        $this->filterProducts($productsFromCategory);
+        $productsSimilar = $productsSimilarFetch->getResult();
+        $this->filterProducts($productsSimilar);
+
         $breadcrumbs = $this->prepareBreadcrumbs($category, $product);
 
         return $this->render('WLAppBundle:Product:index.html.twig', array(
             'product' => $product,
             'offers' => $offersFetch->getResult(),
-            'productsTop10' => $productsFromCategoryFetch->getResult(),
-            'productsSimilar' => $productsSimilarFetch->getResult(),
+            'productsTop10' => $productsFromCategory,
+            'productsSimilar' => $productsSimilar,
             'breadcrumbs' => $breadcrumbs,
             'category' => $category,
             'canAddRating' => RatingAdd::canAddRate($product->getId())
@@ -113,6 +122,24 @@ class ProductController extends Controller
     }
 
     /**
+     * @param Category $category
+     */
+    protected function filterCategory(Category $category)
+    {
+        $filterCategory = new Filter\UrlCategoryFilter();
+        $filterCategory->filter($category);
+    }
+
+    /**
+     * @param Products $products
+     */
+    protected function filterProducts(Products $products)
+    {
+        $filterUrl = new Filter\Controller\UrlCategoryFilter();
+        $filterUrl->filter($products);
+    }
+
+    /**
      * @return array
      */
     protected function getFieldsForProduct()
@@ -134,7 +161,7 @@ class ProductController extends Controller
         $breadcrumbs = $breadcrumbsBuilder->prepareBreadcrumbs(
             $category,
             function ($url) {
-                return $this->get('router')->generate('category', array('categoryUrlWithFilters' => ltrim($url, '/')));
+                return $this->get('router')->generate('category', array('categoryUrlWithFilters' => $url));
             }
         );
         $breadcrumbs[] = new Breadcrumb($product->getTitle());

@@ -7,7 +7,7 @@ use Nokaut\ApiKit\ClientApi\Rest\Query\ProductsQuery;
 use Nokaut\ApiKit\Collection\Products;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use WL\AppBundle\Lib\CategoriesAllowed;
-use WL\AppBundle\Lib\Filter\PropertiesFilter;
+use WL\AppBundle\Lib\Filter;
 use WL\AppBundle\Lib\Repository\ProductsRepository;
 use WL\AppBundle\Lib\RepositoryFactory;
 use WL\AppBundle\Lib\Type\Breadcrumb;
@@ -74,8 +74,11 @@ class DefaultController extends Controller
     protected function filter($products)
     {
         if ($products) {
-            $filterProperties = new PropertiesFilter();
+            $filterProperties = new Filter\PropertiesFilter();
             $filterProperties->filterProducts($products);
+
+            $filterUrl = new Filter\Controller\UrlCategoryFilter();
+            $filterUrl->filter($products);
         }
     }
 }

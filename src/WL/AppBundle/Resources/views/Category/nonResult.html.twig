@@ -8,7 +8,7 @@
 {% block head %}
     {{ parent() }}
 
-    <link rel="canonical" href="{{ url(route, { (routeArgument): canonical|trim('/')}) }}"/>
+    <link rel="canonical" href="{{ url(route, { (routeArgument): canonical}) }}"/>
 {% endblock %}
 
 
@@ -20,7 +20,7 @@
                 <div class="col-xs-11">
                     <h1>
                         <span class="name"><small>0 produktów</small></span>
-                        {% if phrase is not null and route == 'search'  %}
+                        {% if phrase is defined and phrase is not null and route == 'search'  %}
                             <span>
                                 <span class="badge-name">szukasz:</span>
                                 <span class="badge">
@@ -34,7 +34,7 @@
                                 <span class="badge-name">{{ filter.name }}:</span>
                                 {% for value in filter %}
                                 <span class="badge">
-                                    <button type="button" onclick="document.location.href='{{ url(route, { (routeArgument): value.url|trim('/') }) }}'" class="close">×</button>
+                                    <button type="button" onclick="document.location.href='{{ url(route, { (routeArgument): value.url }) }}'" class="close">×</button>
                                     <span>{{ value.name }}</span>
                                 </span>
                                 {% endfor %}

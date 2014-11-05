@@ -1,7 +1,7 @@
 {% if product.clickUrl is not empty %}
     {% set productUrl = product|click %}
 {% else %}
-    {% set productUrl = path('product', {'productUrl': product.url|trim('/')}) %}
+    {% set productUrl = path('product', {'productUrl': product.url}) %}
 {% endif %}
 <div>
     <div class="col-xs-12 product-wrapper-grid">
@@ -38,7 +38,7 @@
                     </a>
                 {% endif %}
                 {% if product.clickUrl is not empty %}
-                    <a href="{{ url('product', {'productUrl': product.url|trim('/') }) }}"><i class="fa fa-link"></i></a>
+                    <a href="{{ url('product', {'productUrl': product.url }) }}"><i class="fa fa-link"></i></a>
                 {% endif %}
             </div>
             <a {% if product.clickUrl is not empty %}target="_blank"{% endif %} href="{{ productUrl }}">
