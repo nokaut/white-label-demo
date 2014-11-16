@@ -64,7 +64,7 @@ class BreadcrumbsBuilder
     {
         $breadcrumbsFilers = '';
         foreach ($filters as $filter) {
-            $breadcrumbsFilers .= $filter->getName() . ": ";
+            $breadcrumbsFilers .= $filter->getName() ?  $filter->getName() . ": " : "";
             foreach($filter as $value) {
                 /** @var FilterAbstract $value */
                 $breadcrumbsFilers .= $value->getName() . ($filter->getUnit() ? ' '.$filter->getUnit() : '');
