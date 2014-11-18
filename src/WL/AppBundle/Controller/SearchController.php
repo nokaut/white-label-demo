@@ -69,6 +69,7 @@ class SearchController extends Controller
             'producersFilters' => $producersFilters,
             'propertiesFilters' => $propertiesFilters,
             'selectedFilters' => $selectedFilters,
+            'selectedCategoriesFilters' => $selectedCategoriesFilters,
             'sorts' => $products ? $products->getMetadata()->getSorts() : array(),
             'canonical' => $this->getCanonical($products),
             'h1' => $this->prepareH1($selectedCategoriesFilters),
