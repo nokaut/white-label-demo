@@ -18,10 +18,6 @@ class Pagination
     /**
      * @var int
      */
-    private $limit = 24;
-    /**
-     * @var int
-     */
     private $total;
     /**
      * @var int
@@ -32,22 +28,6 @@ class Pagination
      * @var string
      */
     private $urlTemplate;
-
-    /**
-     * @param int $limit
-     */
-    public function setLimit($limit)
-    {
-        $this->limit = $limit;
-    }
-
-    /**
-     * @return int
-     */
-    public function getLimit()
-    {
-        return $this->limit;
-    }
 
     /**
      * @param int $pageNumber
