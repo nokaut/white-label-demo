@@ -124,6 +124,13 @@ class UrlCategoryFilter
                 $reducedUrl = Uri::prepareApiUrl($value->getUrl());
                 $value->setUrl($reducedUrl);
             }
+
+            if ($property->getRanges()) {
+                foreach ($property->getRanges() as $value) {
+                    $reducedUrl = Uri::prepareApiUrl($value->getUrl());
+                    $value->setUrl($reducedUrl);
+                }
+            }
         }
     }
 
