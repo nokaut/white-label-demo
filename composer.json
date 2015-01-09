@@ -34,7 +34,8 @@
         "incenteev/composer-parameter-handler": "~2.0",
         "nokaut/api-kit": "dev-master",
         "guzzle/guzzle": "3.8.*",
-        "desarrolla2/cache":  "dev-master"
+        "desarrolla2/cache":  "dev-master",
+        "mobiledetect/mobiledetectlib": "2.8.*"
     },
     "require-dev": {
         "sensio/generator-bundle": "~2.3",

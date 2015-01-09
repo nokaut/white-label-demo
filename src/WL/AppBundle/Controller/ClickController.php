@@ -3,6 +3,7 @@
 namespace WL\AppBundle\Controller;
 
 use Guzzle\Http\Client;
+use Mobile_Detect;
 use Nokaut\ApiKit\ClientApi\Rest\Fetch\OffersFetch;
 use Nokaut\ApiKit\ClientApi\Rest\Fetch\ProductsFetch;
 use Nokaut\ApiKit\ClientApi\Rest\Query\Filter\Single;
@@ -116,7 +117,7 @@ class ClickController extends Controller
      */
     protected function doIFrame($offer)
     {
-        if ($this->iframeDisallowed($offer)) {
+        if ($this->isBrowserDisallowedIFrame() || $this->iframeDisallowed($offer)) {
             return $this->redirect($this->container->getParameter('click_domain') . $offer->getClickUrl());
         }
 
@@ -200,6 +201,23 @@ class ClickController extends Controller
     protected function getCacheKey($shopId)
     {
         return 'iframe-check-' . md5($shopId);
+    }
+
+    /**
+     * @return bool
+     */
+    protected function isBrowserDisallowedIFrame()
+    {
+        $detect = new Mobile_Detect();
+
+        // Safari is not allowed (cookies problem, security), we have to check that browser is not chrome
+        if ($detect->version('Chrome', Mobile_Detect::VERSION_TYPE_FLOAT) === false
+            and $detect->version('Safari', Mobile_Detect::VERSION_TYPE_FLOAT) > 0
+        ) {
+            return true;
+        }
+
+        return false;
     }
 
 }
