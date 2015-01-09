@@ -12,6 +12,7 @@ use Nokaut\ApiKit\Entity\Offer;
 use Nokaut\ApiKit\Repository\OffersAsyncRepository;
 use Nokaut\ApiKit\Repository\OffersRepository;
 use Nokaut\ApiKit\Repository\ProductsRepository;
+use WL\AppBundle\Lib\Guzzle\Subscriber\UrlEncodeSubscriber;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Session\Session;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
@@ -152,6 +153,7 @@ class ClickController extends Controller
             return $checkFromCache;
         }
         $client = new Client();
+        $client->addSubscriber(new UrlEncodeSubscriber());
         $request = $client->createRequest('GET', $offer->getUrl());
         $result = false;
         try {
