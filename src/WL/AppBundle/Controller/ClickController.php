@@ -23,6 +23,7 @@ use WL\AppBundle\Lib\Repository\ProductsAsyncRepository;
 class ClickController extends Controller
 {
     protected static $limitOffers = 30;
+    protected static $miniOffersInIFrame = 3;
 
     public function clickProductAction($productId)
     {
@@ -117,10 +118,6 @@ class ClickController extends Controller
      */
     protected function doIFrame($offer)
     {
-        if ($this->isBrowserDisallowedIFrame() || $this->iframeDisallowed($offer)) {
-            return $this->redirect($this->container->getParameter('click_domain') . $offer->getClickUrl());
-        }
-
         $clickMode = $this->container->getParameter('click_mode');
         $offers = $products = null;
         if ($clickMode == ClickUrl::FRAME_OFFERS_SHOP) {
@@ -133,6 +130,10 @@ class ClickController extends Controller
         $productsRepository = $this->get('repo.products.async');
         $productsRepository->fetchAllAsync();
 
+        $collection = $clickMode == ClickUrl::FRAME_OFFERS_SHOP ? $offers : $products;
+        if ($this->iframeDisallowed($offer, $collection)) {
+            return $this->redirect($this->container->getParameter('click_domain') . $offer->getClickUrl());
+        }
 
         $iframeUrl = 'http://www.nokaut.pl' . $offer->getClickUrl();
         return $this->render('WLAppBundle:Click:click.html.twig', array(
@@ -145,30 +146,21 @@ class ClickController extends Controller
 
     /**
      * @param Offer $offer
+     * @param OffersFetch $collection
      * @return mixed|string
      */
-    protected function iframeDisallowed($offer)
+    protected function iframeDisallowed($offer, $collection)
     {
-        $checkFromCache = $this->getCheckFromCache($offer->getShop()->getId());
-        if (null !== $checkFromCache) {
-            return $checkFromCache;
-        }
-        $client = new Client();
-        $client->addSubscriber(new UrlEncodeSubscriber());
-        $request = $client->createRequest('GET', $offer->getUrl());
-        $result = false;
-        try {
-            $response = $client->send($request);
+        $offersCount = $collection ? count($collection->getResult()) : 0;
 
-            $headerXFrameOptions = $response->getHeader('X-Frame-Options');
-            if ($headerXFrameOptions && in_array(strtoupper($headerXFrameOptions), array('SAMEORIGIN', 'DENY'))) {
-                $result = true;
-            }
-        } catch (\Exception $e) {
-            $result = true;
-        }
-        $this->saveCheckToCache($offer->getShop()->getId(), $result);
-        return $result;
+        $detect = new Mobile_Detect();
+        return (!$detect->isTablet() && $detect->isMobile())
+        || $offersCount <= self::$miniOffersInIFrame
+        || $this->isSslProtocol()
+        || $this->isBrowserDisallowedIFrame()
+        || $this->isShopDisallowedIFrame($offer);
+
+
     }
 
     /**
@@ -218,6 +210,45 @@ class ClickController extends Controller
         }
 
         return false;
+    }
+
+    protected function isSslProtocol()
+    {
+        $isSecure = false;
+        if (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] == 'on') {
+            $isSecure = true;
+        } elseif (!empty($_SERVER['HTTP_X_FORWARDED_PROTO']) && $_SERVER['HTTP_X_FORWARDED_PROTO'] == 'https' || !empty($_SERVER['HTTP_X_FORWARDED_SSL']) && $_SERVER['HTTP_X_FORWARDED_SSL'] == 'on') {
+            $isSecure = true;
+        }
+        return $isSecure;
+    }
+
+    /**
+     * @param Offer $offer
+     * @return bool|mixed
+     */
+    protected function isShopDisallowedIFrame($offer)
+    {
+        $checkFromCache = $this->getCheckFromCache($offer->getShop()->getId());
+        if (null !== $checkFromCache) {
+            return $checkFromCache;
+        }
+        $client = new Client('', array('request.options'=>array('timeout'=>5,'connect_timeout'=>2)));
+        $client->addSubscriber(new UrlEncodeSubscriber());
+        $request = $client->createRequest('GET', $offer->getUrl());
+        $result = false;
+        try {
+            $response = $client->send($request);
+
+            $headerXFrameOptions = $response->getHeader('X-Frame-Options');
+            if ($headerXFrameOptions && in_array(strtoupper($headerXFrameOptions), array('SAMEORIGIN', 'DENY'))) {
+                $result = true;
+            }
+        } catch (\Exception $e) {
+            $result = true;
+        }
+        $this->saveCheckToCache($offer->getShop()->getId(), $result);
+        return $result;
     }
 
 }
