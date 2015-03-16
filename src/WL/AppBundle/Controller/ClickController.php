@@ -119,6 +119,7 @@ class ClickController extends Controller
     protected function doIFrame($offer)
     {
         $clickMode = $this->container->getParameter('click_mode');
+        $clickDomain = $this->container->getParameter('click_domain');
         $offers = $products = null;
         if ($clickMode == ClickUrl::FRAME_OFFERS_SHOP) {
             $offers = $this->fetchOfferFromShop($offer);
@@ -135,7 +136,7 @@ class ClickController extends Controller
             return $this->redirect($this->container->getParameter('click_domain') . $offer->getClickUrl());
         }
 
-        $iframeUrl = 'http://www.nokaut.pl' . $offer->getClickUrl();
+        $iframeUrl = $clickDomain . $offer->getClickUrl();
         return $this->render('WLAppBundle:Click:click.html.twig', array(
             'iframeUrl' => $iframeUrl,
             'products' => $products ? $products->getResult() : null,

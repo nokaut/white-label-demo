@@ -32,7 +32,7 @@ parameters:
     nokaut_img_domain: http://img.nokaut.pl
 
     click_mode: redirect #redirect, frame_offers_shop, frame_offers_category
-    click_domain: http://www.nokaut.pl
+    click_domain: http://nokaut.click
 
     categories:
             'Kategorie I':
