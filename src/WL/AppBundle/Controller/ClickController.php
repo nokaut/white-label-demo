@@ -173,7 +173,7 @@ class ClickController extends Controller
         $session = new Session();
         $cacheKey = $this->getCacheKey($shopId);
         $cacheValue = $session->get($cacheKey);
-        return $cacheValue !== null  ? (bool)$cacheValue : null;
+        return $cacheValue !== null ? (bool)$cacheValue : null;
     }
 
     /**
@@ -234,9 +234,10 @@ class ClickController extends Controller
         if (null !== $checkFromCache) {
             return $checkFromCache;
         }
-        $client = new Client('', array('request.options'=>array('timeout'=>5,'connect_timeout'=>2)));
+        $client = new Client('', array('request.options' => array('timeout' => 5, 'connect_timeout' => 2)));
         $client->addSubscriber(new UrlEncodeSubscriber());
         $request = $client->createRequest('GET', $offer->getUrl());
+        $request->addHeader("Referer", $this->get('request')->getSchemeAndHttpHost());
         $result = false;
         try {
             $response = $client->send($request);
