@@ -56,7 +56,7 @@ class SearchController extends Controller
                 'breadcrumbs' => $breadcrumbs,
                 'selectedFilters' => $selectedFilters,
                 'canonical' => $this->getCanonical($products),
-            ), new Response('', 404));
+            ), new Response('', 410));
         }
 
         return $this->render('WLAppBundle:Search:index.html.twig', array(
