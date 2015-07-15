@@ -159,6 +159,7 @@ class ClickController extends Controller
         || $offersCount <= self::$miniOffersInIFrame
         || $this->isSslProtocol()
         || $this->isBrowserDisallowedIFrame()
+        || $this->isDisallowedAffiliation($offer)
         || $this->isShopDisallowedIFrame($offer);
 
 
@@ -251,6 +252,24 @@ class ClickController extends Controller
         }
         $this->saveCheckToCache($offer->getShop()->getId(), $result);
         return $result;
+    }
+
+    /**
+     * @param Offer $offer
+     * @return bool
+     */
+    private function isDisallowedAffiliation($offer)
+    {
+        if (strpos($offer->getUrl(), "tradedoubler") !== false) {
+            return true;
+        }
+        if (strpos($offer->getUrl(), "webep") !== false) {
+            return true;
+        }
+        if (strpos($offer->getUrl(), "salesmedia") !== false) {
+            return true;
+        }
+        return false;
     }
 
 }
