@@ -13,7 +13,7 @@ Demo serwisu porównywarki cen. Zwiera podstawowe funkcjonalności do uruchomien
 Wymagania
 ---------
 
-* PHP 5.4+
+* PHP 5.5+
 * dostęp do Search API (klucz OAuth) + odblokowanie IP serwera - kontakt z Nokaut.pl
 * Opcjonalnie Memcache (wymagana wtyczka php-memcache)
 
