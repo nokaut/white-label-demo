@@ -29,7 +29,7 @@ parameters:
     memcache_url: localhost
     memcache_port: 11211
 
-    nokaut_img_domain: http://img.nokaut.pl
+    nokaut_img_domain: http://offers.gallery
 
     click_mode: redirect #redirect, frame_offers_shop, frame_offers_category
     click_domain: http://nokaut.click
