@@ -31,7 +31,7 @@ class ClickUrlExtension extends \Twig_Extension
     public function getFilters()
     {
         return array(
-            'click' => new \Twig_Filter_Method($this, 'clickUrl'),
+            new \Twig_SimpleFilter('click', [$this, 'clickUrl']),
         );
     }
 

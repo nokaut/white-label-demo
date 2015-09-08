@@ -17,7 +17,7 @@ class ChunkExtension extends \Twig_Extension
     public function getFilters()
     {
         return array(
-            'chunk' => new \Twig_Filter_Method($this, 'chunk'),
+            new \Twig_SimpleFilter('chunk', [$this, 'chunk']),
         );
     }
 

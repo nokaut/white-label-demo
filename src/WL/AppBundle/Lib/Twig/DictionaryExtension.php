@@ -14,7 +14,7 @@ class DictionaryExtension extends \Twig_Extension
     public function getFilters()
     {
         return array(
-            'varietyProducts' => new \Twig_Filter_Method($this, 'varietyProducts'),
+            new \Twig_SimpleFilter('varietyProducts', [$this, 'varietyProducts']),
         );
     }
 
