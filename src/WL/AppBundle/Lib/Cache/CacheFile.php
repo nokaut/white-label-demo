@@ -49,4 +49,10 @@ class CacheFile extends \Desarrolla2\Cache\Cache implements \Nokaut\ApiKit\Cache
         parent::delete($keyName);
     }
 
+    public function getPrefixKeyName()
+    {
+        return 'api-raw-response-';
+    }
+
+
 } 

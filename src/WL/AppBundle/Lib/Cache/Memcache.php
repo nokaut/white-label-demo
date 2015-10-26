@@ -10,9 +10,10 @@ namespace WL\AppBundle\Lib\Cache;
 
 
 use Lsw\MemcacheBundle\Cache\AntiDogPileMemcache;
+use Nokaut\ApiKit\Cache\AbstractCache;
 use Nokaut\ApiKit\Cache\CacheInterface;
 
-class Memcache implements CacheInterface
+class Memcache extends AbstractCache
 {
     /**
      * @var \Memcache
