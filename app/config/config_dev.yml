@@ -12,6 +12,7 @@ web_profiler:
     intercept_redirects: %debug_redirects%
 
 monolog:
+    channels: ["cli"]
     handlers:
         main:
             type:   stream

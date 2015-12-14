@@ -34,6 +34,8 @@ parameters:
     click_mode: redirect #redirect, frame_offers_shop, frame_offers_category
     click_domain: http://nokaut.click
 
+    domain: ~
+
     categories:
             'Kategorie I':
                     - 1

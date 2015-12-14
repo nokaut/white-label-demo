@@ -8,7 +8,7 @@ services:
 
     repo.products:
         factory_service: repo.factory
-        class: Nokaut\ApiKit\Repository\ProductsRepository
+        class: WL\AppBundle\Lib\Repository\ProductsRepository
         factory_method: getProductsRepository
     repo.products.async:
         factory_service: repo.factory
@@ -97,6 +97,10 @@ services:
           - [setApiUrl, [%api_url%]]
           - [setCache, [@cache.file]]
           - [setLogger, [@logger]]
+
+    sitemap.urls:
+        class: WL\AppBundle\Lib\SiteMap\SiteMapUrls
+        arguments: [@router, @repo.products, @repo.categories, @categories.allowed, @monolog.logger.cli]
 
     breadcrumb.builder:
         class: WL\AppBundle\Lib\BreadcrumbsBuilder
