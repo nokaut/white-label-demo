@@ -100,7 +100,7 @@ services:
 
     sitemap.urls:
         class: WL\AppBundle\Lib\SiteMap\SiteMapUrls
-        arguments: [@router, @repo.products, @repo.categories, @categories.allowed, @monolog.logger.cli]
+        arguments: [%domain%, @router, @repo.products, @repo.categories, @categories.allowed, @monolog.logger.cli]
 
     breadcrumb.builder:
         class: WL\AppBundle\Lib\BreadcrumbsBuilder

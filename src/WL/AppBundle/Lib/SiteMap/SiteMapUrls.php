@@ -9,12 +9,18 @@ use Nokaut\ApiKit\Collection\Products;
 use Nokaut\ApiKit\Entity\Category;
 use Nokaut\ApiKit\Entity\Product;
 use Nokaut\ApiKit\Repository\CategoriesRepository;
+use SitemapPHP\Sitemap;
 use Symfony\Bundle\FrameworkBundle\Routing\Router;
 use WL\AppBundle\Lib\CategoriesAllowed;
 use WL\AppBundle\Lib\Repository\ProductsRepository;
 
 class SiteMapUrls
 {
+    /**
+     * @var string
+     */
+    private $domain;
+
     /**
      * @var Router
      */
@@ -57,14 +63,17 @@ class SiteMapUrls
 
     /**
      * SitemapUrls constructor.
+     * @param string $domain
      * @param Router $router
      * @param ProductsRepository $productsRepository
      * @param CategoriesRepository $categoriesRepository
      * @param CategoriesAllowed $categoriesAllowed
      * @param Logger $logger
      */
-    public function __construct(Router $router, ProductsRepository $productsRepository, CategoriesRepository $categoriesRepository, CategoriesAllowed $categoriesAllowed, Logger $logger)
+    public function __construct($domain, Router $router, ProductsRepository $productsRepository, CategoriesRepository $categoriesRepository, CategoriesAllowed $categoriesAllowed, Logger $logger)
     {
+        $this->domain = $domain;
+        $this->siteMap = new Sitemap($domain);
         $this->router = $router;
         $this->categoriesAllowed = $categoriesAllowed;
         $this->productsRepository = $productsRepository;
@@ -73,50 +82,65 @@ class SiteMapUrls
         $this->categoriesTree = $this->fetchAllowedCategoriesTree();
     }
 
-    /**
-     * @return array
-     */
-    public function getProductsUrls()
+    public function createSiteMap($siteMapTarget)
     {
-        $urls = [];
+        $this->logger->info('START: xml sitemap create');
+
+
+        $this->createTargetDir($siteMapTarget);
+        $this->siteMap->setPath($siteMapTarget);
+
+        $this->logger->info('dump categories...');
+        $this->setCategoriesUrls();
+        $this->logger->info('dump products...');
+        $this->setProductsUrls();
+
+
+        $this->siteMap->createSitemapIndex($this->domain, 'Today');
+
+        $this->logger->info('STOP: xml sitemap create');
+    }
+
+    protected function setProductsUrls()
+    {
+        $total = 0;
         while ($products = $this->getNextProductsPackage(200)) {
             if ($products) {
                 /** @var Product $product */
                 foreach ($products as $product) {
                     if ($product->getOfferCount() > 0) {
-                        $urls[] = $this->router->generate('product', ['productUrl' => $product->getUrl()]);
+                        $url = $this->router->generate('product', ['productUrl' => ltrim($product->getUrl(), '/')]);
+                        $this->siteMap->addItem(ltrim($url, '/'));
                     }
                 }
             }
+            $total += count($products);
             $memoryUsage = round(memory_get_usage(true) / 1024 / 1014, 2);
-            $this->logger->info('products fetched: ' . count($products) . ', total ' . count($urls) .
+            $this->logger->info('products fetched: ' . count($products) . ', total ' . $total .
                 ', memory usage: ' . $memoryUsage . '/' . ini_get('memory_limit'));
         }
-
-        return $urls;
     }
 
     /**
      * @param Categories $categories
      * @return array
      */
-    public function getCategoriesUrls(Categories $categories = null)
+    public function setCategoriesUrls(Categories $categories = null)
     {
         if (!$categories) {
             $categories = $this->categoriesTree;
         }
 
-        $urls = [];
         /** @var Category $category */
         foreach ($categories as $category) {
             if ($category->getTotal() > 10) {
-                $urls[] = rtrim($this->router->generate('category', ['categoryUrlWithFilters' => trim($category->getUrl(), '/')]), '/') . '/';
+                $url = rtrim($this->router->generate('category', ['categoryUrlWithFilters' => trim($category->getUrl(), '/')]), '/') . '/';
+                $this->siteMap->addItem(ltrim($url, '/'));
                 if (count($category->getChildren())) {
-                    $urls = array_merge($urls, $this->getCategoriesUrls($category->getChildren()));
+                    $this->setCategoriesUrls($category->getChildren());
                 }
             }
         }
-        return $urls;
     }
 
     protected function fetchAllowedCategoriesTree()
@@ -233,5 +257,14 @@ class SiteMapUrls
     protected function getLastProductId()
     {
         return $this->lastProductId;
+    }
+
+    private function createTargetDir($targetDir)
+    {
+        $targetDir = rtrim($targetDir, '/') . '/';
+        $this->logger->info('Create sitemap dir: ' . $targetDir);
+        if (!file_exists($targetDir)) {
+            mkdir($targetDir);
+        }
     }
 }
