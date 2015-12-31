@@ -58,10 +58,6 @@ class UrlSearch
      */
     public function clearPhraseUrl($phrase)
     {
-        $phrase = str_replace(
-            array('ę', 'ó', 'ą', 'ś', 'ł', 'ż', 'ź', 'ć', 'ń'),
-            array('e', 'o', 'a', 's', 'l', 'z', 'z', 'c', 'n'),
-            $phrase);
         $phrase = preg_replace('/\s+/', ' ', $phrase);
         return $phrase;
     }
