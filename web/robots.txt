@@ -440,6 +440,7 @@ User-agent: ScoutJet
 Disallow: /
 
 # vertical
+User-agent: *
 Disallow: /*:*:*
 
 Disallow: /*cena:*
