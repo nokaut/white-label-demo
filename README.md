@@ -26,7 +26,7 @@ Uruchamiamy konsole i przechodzimy do katalogu w który ma być projekt np. `/we
 Kropka na końcu jest ważna!
 
 Po pobraniu wykonujemy instalacje projektu. Rekomendowaną formą instalacji jest skorzystanie z [Composer'a](http://getcomposer.org/).
-Najpierw należy zainstalować Composer'a:
+Najpierw należy zainstalować Composer'a - [szczegóły tutaj](https://getcomposer.org/download/) 
 
     curl -sS https://getcomposer.org/installer | php
 
@@ -88,7 +88,7 @@ aby zmiany naniosły się na katalog główny z projektem.
 FAQ
 ---
 
-**Wykonałem wszystkie polecenia strona działa, ale gdy wrzuciłem na serwer cały katalog strona przestała działać**
+**Wykonałem wszystkie polecenia na swoim komputerze i strona działa, ale gdy wrzuciłem na serwer cały katalog strona przestała działać**
 
 Należy wykonać polecenia:
 
@@ -98,4 +98,6 @@ Jeśli na twoim serwerze nie masz możliwości zalogowania się do konsoli i wyk
 
      app/cache/
      app/logs/
+
+Sprawdź również czy powyższe katalogi mają prawo zapisu z serwera www.
 
