@@ -14,7 +14,7 @@ Wymagania
 ---------
 
 * PHP 5.5+
-* dostęp do Search API (klucz OAuth) + odblokowanie IP serwera - kontakt z Nokaut.pl
+* dostęp do Search API (klucz OAuth) - kontakt z Nokaut.pl
 * Opcjonalnie Memcache (wymagana wtyczka php-memcache)
 
 Instalacja
