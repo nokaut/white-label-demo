@@ -22,7 +22,7 @@ use Nokaut\ApiKit\Repository\OffersRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use WL\AppBundle\Lib\BreadcrumbsBuilder;
+use WL\AppBundle\Lib\Breadcrumbs\BreadcrumbsBuilder;
 use WL\AppBundle\Lib\CategoriesAllowed;
 use WL\AppBundle\Lib\Exception\CategoryNotAllowedException;
 use WL\AppBundle\Lib\Filter\PropertiesFilter;

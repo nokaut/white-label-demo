@@ -5,6 +5,7 @@ namespace WL\AppBundle\Controller;
 use Nokaut\ApiKit\ClientApi\Rest\Fetch\ProductsFetch;
 use Nokaut\ApiKit\ClientApi\Rest\Query\ProductsQuery;
 use Nokaut\ApiKit\Collection\Products;
+use Nokaut\ApiKit\Repository\CategoriesRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use WL\AppBundle\Lib\CategoriesAllowed;
 use WL\AppBundle\Lib\Filter;
@@ -17,27 +18,25 @@ class DefaultController extends Controller
 {
     public function indexAction()
     {
-
         $breadcrumbs = array();
         $breadcrumbs[] = new Breadcrumb("Strona główna");
-
-
 
         /** @var RepositoryFactory $productsAsyncRepo */
         $repositoryFactory = $this->get('repo.factory.cache.file');
         $productsRepo = $repositoryFactory->getProductsAsyncRepository();
 
-        $productsGroupCategory = $productsFetchGroupCategory = array();
-
         /** @var CategoriesAllowed $categoriesAllowed */
         $categoriesAllowed = $this->get('categories.allowed');
 
-        foreach ($categoriesAllowed->getParametersCategories() as $allowedGroupCategories) {
-            $productsFetchGroupCategory[] = $this->fetchProducts($productsRepo, $allowedGroupCategories);
+        if ($categoriesAllowed->isAllowedAllCategories()) {
+            $productsFetchGroupCategory = $this->fetchProductsFromAllCategories($repositoryFactory);
+        } else {
+            $productsFetchGroupCategory = $this->fetchProductsFormAllowedCategories($categoriesAllowed, $productsRepo);
         }
 
         $productsRepo->fetchAllAsync();
 
+        $productsGroupCategory = [];
         foreach ($productsFetchGroupCategory as $productsFetch) {
             /** @var ProductsFetch $productsFetch */
             $products = $productsFetch->getResult();
@@ -47,10 +46,10 @@ class DefaultController extends Controller
 
 
         return $this->render('WLAppBundle:Default:index.html.twig',
-            array(
+            [
                 'breadcrumbs' => $breadcrumbs,
                 'productsGroupCategory' => $productsGroupCategory
-            ));
+            ]);
     }
 
     /**
@@ -80,5 +79,41 @@ class DefaultController extends Controller
             $filterUrl = new Filter\Controller\UrlCategoryFilter();
             $filterUrl->filter($products);
         }
+    }
+
+    /**
+     * @param $repositoryFactory
+     * @return array
+     */
+    protected function fetchProductsFromAllCategories($repositoryFactory)
+    {
+        $productsFetchGroupCategory = [];
+        /** @var CategoriesRepository $categoriesRepo */
+        $categoriesRepo = $repositoryFactory->getCategoriesRepository();
+        $productsRepo = $repositoryFactory->getProductsAsyncRepository();
+        $categories = $categoriesRepo->fetchMenuCategories();
+
+        foreach ($categories as $category) {
+            if ($category->getId() == 9768) {//pominąć erotykę
+                continue;
+            }
+            $productsFetchGroupCategory[] = $this->fetchProducts($productsRepo, [$category->getId()]);
+        }
+        return $productsFetchGroupCategory;
+    }
+
+    /**
+     * @param $categoriesAllowed
+     * @param $productsRepo
+     * @param $productsFetchGroupCategory
+     * @return array
+     */
+    protected function fetchProductsFormAllowedCategories($categoriesAllowed, $productsRepo)
+    {
+        $productsFetchGroupCategory = [];
+        foreach ($categoriesAllowed->getParametersCategories() as $allowedGroupCategories) {
+            $productsFetchGroupCategory[] = $this->fetchProducts($productsRepo, $allowedGroupCategories);
+        }
+        return $productsFetchGroupCategory;
     }
 }

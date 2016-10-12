@@ -47,7 +47,7 @@ class UrlSearchTest extends KernelTestCase
     {
         $url = "produkt:casio.html";
 
-        $phraseUrl = $this->cut->preparePhraseWithAllowCategories($url);
+        $phraseUrl = $this->cut->preparePhrase($url);
 
         $this->assertEquals("url-1,url-2,url3/produkt:casio.html", $phraseUrl);
     }
