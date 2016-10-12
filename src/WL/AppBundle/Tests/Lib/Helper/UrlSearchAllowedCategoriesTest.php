@@ -13,8 +13,9 @@ use Nokaut\ApiKit\Collection\Categories;
 use Nokaut\ApiKit\Entity\Category;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 use WL\AppBundle\Lib\Helper\UrlSearch;
+use WL\AppBundle\Lib\Helper\UrlSearchAllowedCategories;
 
-class UrlSearchTest extends KernelTestCase
+class UrlSearchAllowedCategoriesTest extends KernelTestCase
 {
     /**
      * @var UrlSearch
@@ -31,7 +32,7 @@ class UrlSearchTest extends KernelTestCase
         $mockRepo = $this->getMockBuilder('\Nokaut\ApiKit\Repository\CategoriesRepository')->disableOriginalConstructor()->getMock();
         $mockRepo->expects($this->once())->method('fetchCategoriesByIds')->will($this->returnValue($this->getAllowedCategories()));
 
-        $this->cut = new UrlSearch($mockRepo, $mockCategoriesAllowed);
+        $this->cut = new UrlSearchAllowedCategories($mockRepo, $mockCategoriesAllowed);
     }
 
     public function testGetReduceUrl()
