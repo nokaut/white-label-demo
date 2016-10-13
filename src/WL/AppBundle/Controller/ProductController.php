@@ -86,6 +86,45 @@ class ProductController extends Controller
         ));
     }
 
+    public function modalAction($productUrl)
+    {
+        /** @var ProductsRepository $productsRepo */
+        $productsRepo = $this->get('repo.products');
+        try {
+            $product = $productsRepo->fetchProductByUrl($productUrl, $this->getFieldsForProduct());
+        } catch (NotFoundException $e) {
+            return $this->render('WLAppBundle:Product:modalNonProduct.html.twig');
+        }
+        $this->filter($product);
+
+        /** @var CategoriesAsyncRepository $categoriesRepo */
+        $categoriesRepo = $this->get('repo.categories.async');
+        $categoryFetch = $categoriesRepo->fetchById($product->getCategoryId());
+
+        /** @var OffersAsyncRepository $offersAsyncRepo */
+        $offersRepo = $this->get('repo.offers.async');
+        /** @var OffersFetch $offersFetch */
+        $offersFetch = $offersRepo->fetchOffersByProductId($product->getId(), OffersRepository::$fieldsForProductPage);
+
+        $categoriesRepo->fetchAllAsync();
+        /** @var Category $category */
+        $category = $categoryFetch->getResult();
+        try {
+            $this->checkAllowedCategory($category);
+        } catch (CategoryNotAllowedException $e) {
+            return $this->render('WLAppBundle:Product:modalNonProduct.html.twig');
+        }
+
+        $this->filterCategory($category);
+
+        return $this->render('WLAppBundle:Product:modal.html.twig', [
+            'product' => $product,
+            'offers' => $offersFetch->getResult(),
+            'category' => $category,
+            'canAddRating' => RatingAdd::canAddRate($product->getId())
+        ]);
+    }
+
     public function addRateAction(Request $request)
     {
         $logger = $this->get('logger');

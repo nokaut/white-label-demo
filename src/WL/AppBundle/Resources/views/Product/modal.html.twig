@@ -1,0 +1,60 @@
+<div class="modal fade" tabindex="-1" role="dialog" id="productModal">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title">{{ product.title|raw }}</h4>
+            </div>
+            <div class="modal-body">
+
+                <div id="offersContainer" class="row offers">
+                    {% for offer in offers %}
+                        <!-- offer starts here -->
+                        <div class="col-sm-12 offer" data-lp="{{ loop.index }}" data-price="{{ offer.price|number_format(2, '.', '') }}">
+                            <a rel="nofollow" target="_blank" href="{{ offer|click }}">
+                                <div class="row">
+                                    <div class="col-xs-4 col-sm-2">
+                                        <div class="image">
+                                            <img src="{{ nokaut_img_domain ~ nokaut_photo_url.prepare(offer.photoId, '90x90', offer.title) }}" />
+                                        </div>
+                                    </div>
+                                    <div class="col-xs-8 col-sm-6">
+                                        <h5>{{ offer.title|raw }}</h5>
+                                        <div class="pull-right">
+                                            {% if offer.shop.opineoRating and offer.shop.opineoRating.ratingCount > 0 %}
+                                                <small class="stars">
+                                                    Ocena sklepu:
+                                                    {% for i in 1..5 %}
+                                                        {% if offer.shop.opineoRating and (offer.shop.opineoRating.rating/2) >= i %}
+                                                            <i class="fa fa-star"></i>
+                                                        {% elseif offer.shop.opineoRating and (offer.shop.opineoRating.rating/2)|round >= i %}
+                                                            <i class="fa fa-star-half-o"></i>
+                                                        {% else %}
+                                                            <i class="fa fa-star-o"></i>
+                                                        {% endif %}
+                                                    {% endfor %}
+                                                </small>
+                                            {% endif %}
+                                            <img src="{{ nokaut_img_domain ~ offer.shop.urlLogo }}" />
+                                        </div>
+                                    </div>
+                                    <div class="col-xs-12 col-sm-4 text-right">
+                                        <p class="lead price">{{ offer.price|number_format(2, ',', '') }} PLN</p>
+                                        <span class="btn btn-success btn-success-outlined btn-icon-right">Zobacz w sklepie <i class="fa fa-angle-right"></i></span>
+                                    </div>
+                                </div>
+                            </a>
+                        </div>
+                        <!-- offer ends here -->
+                    {% endfor %}
+                </div>
+
+
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary">Save changes</button>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
