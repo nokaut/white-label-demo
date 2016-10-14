@@ -58,6 +58,7 @@ class ProductUrlExtension extends \Twig_Extension
         if ($this->productModal == 'modal' && !$product->getClickUrl()) {
             $attr['href'] = '#' . ltrim($product->getUrl(), '/');
             $attr['data-product-modal'] = ltrim($product->getUrl(), '/');
+            $attr['rel'] = 'nofollow';
         } elseif ($this->productModal == 'modal' && $product->getClickUrl()) {
             $attr['target'] = "_blank";
             $attr['href'] = $this->clickUrl->prepareProductClickUrl($product);
