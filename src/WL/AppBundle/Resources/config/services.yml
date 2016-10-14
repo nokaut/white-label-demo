@@ -109,7 +109,7 @@ services:
         arguments: [%domain%, @router, @repo.products, @repo.categories, @categories.allowed, @monolog.logger.cli]
 
     breadcrumb.builder:
-        factory_class: WL\AppBundle\Lib\Breadcrumbs\BreadcrumbsFactory
+        factory_class: WL\AppBundle\Lib\Breadcrumbs\BreadcrumbsBuilderFactory
         class: WL\AppBundle\Lib\Breadcrumbs\BreadcrumbsBuilder
         factory_method: newInstance
         arguments: [@categories.allowed]

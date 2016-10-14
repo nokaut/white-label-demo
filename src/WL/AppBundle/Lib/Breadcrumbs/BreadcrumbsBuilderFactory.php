@@ -11,7 +11,7 @@ namespace WL\AppBundle\Lib\Breadcrumbs;
 
 use WL\AppBundle\Lib\CategoriesAllowed;
 
-class BreadcrumbsFactory
+class BreadcrumbsBuilderFactory
 {
     public static function newInstance(CategoriesAllowed $categoriesAllowed)
     {
