@@ -1453,12 +1453,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/nokaut/api-kit.git",
-                "reference": "22f77490767e6d5c0f191234befde11f7d06f687"
+                "reference": "394db6e995ff8f1dfd507798801e3d0e90b2dcf9"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/nokaut/api-kit/zipball/22f77490767e6d5c0f191234befde11f7d06f687",
-                "reference": "22f77490767e6d5c0f191234befde11f7d06f687",
+                "url": "https://api.github.com/repos/nokaut/api-kit/zipball/394db6e995ff8f1dfd507798801e3d0e90b2dcf9",
+                "reference": "394db6e995ff8f1dfd507798801e3d0e90b2dcf9",
                 "shasum": ""
             },
             "require": {
@@ -1493,10 +1493,10 @@
                 "nokaut api"
             ],
             "support": {
-                "source": "https://github.com/nokaut/api-kit/tree/v1.7.0",
+                "source": "https://github.com/nokaut/api-kit/tree/v1.7.1",
                 "issues": "https://github.com/nokaut/api-kit/issues"
             },
-            "time": "2016-08-10 11:24:34"
+            "time": "2016-08-24 16:03:39"
         },
         {
             "name": "psr/http-message",
