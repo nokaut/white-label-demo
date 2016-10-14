@@ -3,11 +3,9 @@
 namespace WL\AppBundle\Controller;
 
 use Nokaut\ApiKit\Collection\Products;
-use Nokaut\ApiKit\Entity\Category;
-use Nokaut\ApiKit\Entity\Product;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Response;
-use WL\AppBundle\Lib\BreadcrumbsBuilder;
+use WL\AppBundle\Lib\Breadcrumbs\BreadcrumbsBuilder;
 use WL\AppBundle\Lib\Filter;
 use WL\AppBundle\Lib\Helper\UrlSearch;
 use WL\AppBundle\Lib\Pagination\Pagination;
@@ -24,7 +22,7 @@ class SearchController extends Controller
     {
         /** @var UrlSearch $urlSearchPreparer */
         $urlSearchPreparer = $this->get('helper.url_search');
-        $phraseUrlForApi = $urlSearchPreparer->preparePhraseWithAllowCategories($phrase);
+        $phraseUrlForApi = $urlSearchPreparer->preparePhrase($phrase);
 
         /** @var ProductsAsyncRepository $productsRepo */
         $productsRepo = $this->get('repo.products.async');

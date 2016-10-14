@@ -21,8 +21,22 @@ class CategoriesAllowed
         $this->parametersCategories = $parametersCategories;
     }
 
+    /**
+     * @return bool
+     */
+    public function isAllowedAllCategories()
+    {
+        return $this->parametersCategories == null;
+    }
+
+    /**
+     * @return array|false
+     */
     public function getAllowedCategories()
     {
+        if ($this->isAllowedAllCategories()) {
+            return false;
+        }
         $allowedCategories = array();
 
         foreach ($this->parametersCategories as $groupCategories) {
@@ -45,6 +59,10 @@ class CategoriesAllowed
      */
     public function checkAllowedCategory(Category $category)
     {
+        if ($this->isAllowedAllCategories()) {
+            return;
+        }
+
         $allowedCategoriesIds = $this->getAllowedCategories();
         foreach ($category->getPath() as $path) {
             if (in_array($path->getId(), $allowedCategoriesIds)) {

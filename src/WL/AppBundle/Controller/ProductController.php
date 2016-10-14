@@ -22,7 +22,7 @@ use Nokaut\ApiKit\Repository\OffersRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use WL\AppBundle\Lib\BreadcrumbsBuilder;
+use WL\AppBundle\Lib\Breadcrumbs\BreadcrumbsBuilder;
 use WL\AppBundle\Lib\CategoriesAllowed;
 use WL\AppBundle\Lib\Exception\CategoryNotAllowedException;
 use WL\AppBundle\Lib\Filter\PropertiesFilter;
@@ -84,6 +84,45 @@ class ProductController extends Controller
             'category' => $category,
             'canAddRating' => RatingAdd::canAddRate($product->getId())
         ));
+    }
+
+    public function modalAction($productUrl)
+    {
+        /** @var ProductsRepository $productsRepo */
+        $productsRepo = $this->get('repo.products');
+        try {
+            $product = $productsRepo->fetchProductByUrl($productUrl, $this->getFieldsForProduct());
+        } catch (NotFoundException $e) {
+            return $this->render('WLAppBundle:Product:modalNonProduct.html.twig');
+        }
+        $this->filter($product);
+
+        /** @var CategoriesAsyncRepository $categoriesRepo */
+        $categoriesRepo = $this->get('repo.categories.async');
+        $categoryFetch = $categoriesRepo->fetchById($product->getCategoryId());
+
+        /** @var OffersAsyncRepository $offersAsyncRepo */
+        $offersRepo = $this->get('repo.offers.async');
+        /** @var OffersFetch $offersFetch */
+        $offersFetch = $offersRepo->fetchOffersByProductId($product->getId(), OffersRepository::$fieldsForProductPage);
+
+        $categoriesRepo->fetchAllAsync();
+        /** @var Category $category */
+        $category = $categoryFetch->getResult();
+        try {
+            $this->checkAllowedCategory($category);
+        } catch (CategoryNotAllowedException $e) {
+            return $this->render('WLAppBundle:Product:modalNonProduct.html.twig');
+        }
+
+        $this->filterCategory($category);
+
+        return $this->render('WLAppBundle:Product:modal.html.twig', [
+            'product' => $product,
+            'offers' => $offersFetch->getResult(),
+            'category' => $category,
+            'canAddRating' => RatingAdd::canAddRate($product->getId())
+        ]);
     }
 
     public function addRateAction(Request $request)

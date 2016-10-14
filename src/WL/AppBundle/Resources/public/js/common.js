@@ -110,4 +110,17 @@ $(document).ready(function() {
         }
     });
 
+    $('[data-product-modal]').click(function (event) {
+        event.preventDefault();
+        $.post('/modal-' + $(this).attr('data-product-modal'), {})
+            .done(function (data) {
+                $('body').append(data);
+                $('#productModal').modal();
+                $('#productModal').on('hidden.bs.modal', function () {
+                    $(this).remove();
+                });
+            });
+
+    });
+
 });

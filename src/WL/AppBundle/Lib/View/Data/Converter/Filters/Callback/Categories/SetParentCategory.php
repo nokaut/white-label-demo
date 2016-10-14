@@ -62,6 +62,10 @@ class SetParentCategory extends \Nokaut\ApiKit\Ext\Data\Converter\Filters\Callba
      */
     protected function isAllowedParentCategory($pathList)
     {
+        if ($this->categoriesAllowed->isAllowedAllCategories()) {
+            return true;
+        }
+
         foreach ($pathList as $path) {
             if (in_array($path->getId(), $this->categoriesAllowed->getAllowedCategories())) {
                 return true;

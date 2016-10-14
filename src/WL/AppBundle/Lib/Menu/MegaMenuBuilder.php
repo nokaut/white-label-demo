@@ -6,19 +6,36 @@
  * Time: 12:43
  */
 
-namespace WL\AppBundle\Lib;
+namespace WL\AppBundle\Lib\Menu;
 
 
 use Nokaut\ApiKit\ClientApi\Rest\Fetch\CategoriesFetch;
 use Nokaut\ApiKit\ClientApi\Rest\Fetch\ProductsFetch;
 use Nokaut\ApiKit\Collection\Categories;
 use Nokaut\ApiKit\Entity\Category;
+use WL\AppBundle\Lib\CategoriesAllowed;
 use WL\AppBundle\Lib\Helper\Uri;
+use WL\AppBundle\Lib\RepositoryFactory;
 use WL\AppBundle\Lib\Type\Menu\Link;
 use WL\AppBundle\Lib\Type\MenuLink;
 
-class MenuBuilder
+class MegaMenuBuilder implements MenuInterface
 {
+
+    private $template = '@WLApp/megaMenu.html.twig';
+    /**
+     * @var MenuLink[]
+     */
+    protected $menuLinks = [];
+
+    /**
+     * @var \WL\AppBundle\Lib\Repository\ProductsAsyncRepository
+     */
+    protected $productsRepository;
+    /**
+     * @var \Nokaut\ApiKit\Repository\CategoriesAsyncRepository
+     */
+    protected $categoriesRepository;
     /**
      * @var RepositoryFactory
      */
@@ -37,22 +54,39 @@ class MenuBuilder
     }
 
     /**
+     * @return string
+     */
+    public function getTemplate()
+    {
+        return $this->template;
+    }
+
+    /**
      * @return MenuLink[]
      */
-    public function buildMenu()
+    public function getMenuLinks()
+    {
+        if (empty($this->menuLinks)) {
+            $this->buildMenu();
+        }
+        return $this->menuLinks;
+    }
+
+    /**
+     * @return MenuLink[]
+     */
+    private function buildMenu()
     {
         $categoriesFetch = $this->fetchCategories();
         $productsByGroup = $this->fetchProducts();
         $this->productsRepository->fetchAllAsync();
 
-        $menuLinks = array();
         foreach ($this->categoriesAllowed->getParametersCategories() as $name => $groupedCategoriesIds) {
             $menuLink = new MenuLink($name);
             $this->setSubLinks($categoriesFetch->getResult(), $groupedCategoriesIds, $menuLink);
             $menuLink->setTopProducts($productsByGroup[$name]->getResult());
-            $menuLinks[] = $menuLink;
+            $this->menuLinks[] = $menuLink;
         }
-        return $menuLinks;
     }
 
     /**

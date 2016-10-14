@@ -64,9 +64,10 @@ class CategoriesAllowedTest extends KernelTestCase
     protected function preapreCut()
     {
         $cut = $this->getMockBuilder('\WL\AppBundle\Lib\CategoriesAllowed')
-            ->setMethods(array('getAllowedCategories'))
+            ->setMethods(array('getAllowedCategories', 'isAllowedAllCategories'))
             ->disableOriginalConstructor()
             ->getMock();
+        $cut->expects($this->any())->method('isAllowedAllCategories')->willReturn(false);
         return $cut;
     }
 } 

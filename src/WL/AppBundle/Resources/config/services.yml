@@ -46,14 +46,18 @@ services:
         class: WL\AppBundle\Lib\CategoriesAllowed
         arguments: [%categories%]
 
-    menu.main:
-        class: WL\AppBundle\Lib\MenuBuilder
+    menu.mega:
+        class: WL\AppBundle\Lib\Menu\MegaMenuBuilder
         arguments: [@repo.factory.cache.file, @categories.allowed]
+    menu.dropDown:
+        class: WL\AppBundle\Lib\Menu\DropDownMenuBuilder
+        arguments: [@repo.factory.cache.file]
 
-    menu.main.builded:
-        factory_service: menu.main
-        class: array
-        factory_method: buildMenu
+    menu.main.factory:
+        factory_class: WL\AppBundle\Lib\MenuFactory
+        class: WL\AppBundle\Lib\MenuInterface
+        factory_method: newInstance
+        arguments: [@categories.allowed, @menu.mega, @menu.dropDown]
 
     pre.fetchs:
         class: WL\AppBundle\Lib\Listener\PreAsyncFetchListener
@@ -79,8 +83,10 @@ services:
         arguments: [@service_container]
 
     helper.url_search:
+        factory_class: WL\AppBundle\Lib\Helper\UrlSearchFactory
         class: WL\AppBundle\Lib\Helper\UrlSearch
-        arguments: [@repo.categories.cache.file, @categories.allowed]
+        factory_method: newInstance
+        arguments: [@categories.allowed, @repo.categories.cache.file]
 
     api_kit.config.cache.memcache:
         class: Nokaut\ApiKit\Config
@@ -103,8 +109,11 @@ services:
         arguments: [%domain%, @router, @repo.products, @repo.categories, @categories.allowed, @monolog.logger.cli]
 
     breadcrumb.builder:
-        class: WL\AppBundle\Lib\BreadcrumbsBuilder
+        factory_class: WL\AppBundle\Lib\Breadcrumbs\BreadcrumbsBuilderFactory
+        class: WL\AppBundle\Lib\Breadcrumbs\BreadcrumbsBuilder
+        factory_method: newInstance
         arguments: [@categories.allowed]
+
 
     twig.chunk_extension:
         class: WL\AppBundle\Lib\Twig\ChunkExtension
@@ -119,6 +128,12 @@ services:
 
     twig.dictionary_extension:
         class: WL\AppBundle\Lib\Twig\DictionaryExtension
+        tags:
+          - { name: twig.extension }
+
+    twig.productUrl_extension:
+        class: WL\AppBundle\Lib\Twig\ProductUrlExtension
+        arguments: [@service_container, @helper.click]
         tags:
           - { name: twig.extension }
 
