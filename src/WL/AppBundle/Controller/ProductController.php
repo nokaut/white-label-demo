@@ -37,6 +37,9 @@ class ProductController extends Controller
 {
     public function indexAction($productUrl)
     {
+        if ($this->getParameter('product_mode') == 'modal') {
+            throw $this->createNotFoundException('modal product mode - disallowed products page');
+        }
         /** @var ProductsRepository $productsRepo */
         $productsRepo = $this->get('repo.products');
         try {
