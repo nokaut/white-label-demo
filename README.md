@@ -38,9 +38,9 @@ Podczas instalacji program poprosi nas o podanie parametrów. Zostawiamy domyśl
  - cache_enabled: - jeśli mamy zainstalowany memcache i chcemy używać cache wprowadzamy `true` w innym przyadku wprowadzamy `false`
  - memcache_url: - jeśli w poprzedni parametrze wprowadziliśmy `false` naciskamy enter jeśli `true` musimy podać adres serwera memcache, jeśli memcache jest na tym samym serwerze co serwis, postawiamy domyślą wartość `localhost`
  - memcache_port: - jeśli w parametrze `cache_enabled` wprowadziliśmy `false` naciskamy enter jeśli `true` musmy podać port serwera memcache, domyślnie memcache jest na porcie 11211
- - product_mode: - wybór tryb widoku produktu, są dostępne dwie opcję `modal`, `page`
-    - `page` - ustawia produkt z ofertami jako osobną stronę która będzie indeksowana przez wyszukiwarki takie jak Google
-    - `modal` - produkt i jego oferty prezentowany jest w okineku typu modal, przez co nie jest indeksowana przez wyszukiwarki
+ - product_mode: - tryb widoku produktu, są dostępne dwie opcję `modal`, `page`
+    - `page` - ustawia produkt z ofertami jako osobną stronę, która będzie indeksowana przez wyszukiwarki takie jak Google
+    - `modal` - produkt i jego oferty prezentowany jest w okienku typu modal, przez co nie jest indeksowany przez wyszukiwarki
  - domain: - domena pod którą będzie znajdowała się strona, format: http://moj-serwis.pl/
  - categories: - parametr odpowiadający za tematykę strony, wybieramy w nim ID-ki kategorii które mają się znaleźć w serwisie, np:
 
