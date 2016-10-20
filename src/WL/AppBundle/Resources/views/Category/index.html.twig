@@ -306,6 +306,8 @@
 {% block javascripts %}
     {{ parent() }}
 
+    <script src="{{ asset('bundles/wlapp/js/isotope.pkgd.min.js') }}"></script>
+
     {% if category is defined %}
     <script type="text/javascript">
         $(function() {

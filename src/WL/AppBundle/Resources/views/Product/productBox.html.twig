@@ -6,13 +6,13 @@
 <div>
     <div class="col-xs-12 product-wrapper-grid">
         <div class="product normal">
-            <a {% if product.clickUrl is not empty %}target="_blank"{% endif %} href="{{ productUrl }}">
+            <a {{ product|productUrlAttr }}>
                 <div class="image">
                     <img class="img-responsive" title="{{ product.title|raw }}"
                          src="{{ nokaut_img_domain ~ nokaut_photo_url.prepare(product.photoId, '500x500', product.title) }}"/>
                 </div>
             </a>
-            <a {% if product.clickUrl is not empty %}target="_blank"{% endif %} href="{{ productUrl }}">
+            <a {{ product|productUrlAttr }}>
                 <h5 class="title">{{ product.title|raw }}</h5>
             </a>
 
@@ -29,7 +29,7 @@
 
                 {% set savePercent = helper_price.getSavePercent(product.prices) %}
                 {% if savePercent > 0 %}
-                    <a {% if product.clickUrl is not empty %}target="_blank"{% endif %} href="{{ productUrl }}" data-container="body" data-placement="left" data-toggle="tooltip">
+                    <a {{ product|productUrlAttr }} data-container="body" data-placement="left" data-toggle="tooltip">
                         <i class="fa fa-tag"></i>
 
                         <div class="tooltip_title_wrapper hidden">
@@ -38,10 +38,10 @@
                     </a>
                 {% endif %}
                 {% if product.clickUrl is not empty %}
-                    <a href="{{ url('product', {'productUrl': product.url }) }}"><i class="fa fa-link"></i></a>
+                    <a {{ product|productUrlAttr(false) }}><i class="fa fa-link"></i></a>
                 {% endif %}
             </div>
-            <a {% if product.clickUrl is not empty %}target="_blank"{% endif %} href="{{ productUrl }}">
+            <a {{ product|productUrlAttr }}>
                 <div class="row">
                     <div class="col-xs-12 text-center">
                         <span class="price lead">{% if product.clickUrl is empty %}od {% endif %}{{ product.prices.min|number_format(2,',',' ') }} PLN</span>

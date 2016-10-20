@@ -104,6 +104,9 @@ class ProductController extends Controller
         $categoriesRepo = $this->get('repo.categories.async');
         $categoryFetch = $categoriesRepo->fetchById($product->getCategoryId());
 
+        $productsFromCategoryFetch = $this->fetchProductsFromCategory($product->getCategoryId());
+        $productsSimilarFetch = $this->fetchSimilarProducts($product);
+
         /** @var OffersAsyncRepository $offersAsyncRepo */
         $offersRepo = $this->get('repo.offers.async');
         /** @var OffersFetch $offersFetch */
@@ -112,17 +115,18 @@ class ProductController extends Controller
         $categoriesRepo->fetchAllAsync();
         /** @var Category $category */
         $category = $categoryFetch->getResult();
-        try {
-            $this->checkAllowedCategory($category);
-        } catch (CategoryNotAllowedException $e) {
-            return $this->render('WLAppBundle:Product:modalNonProduct.html.twig');
-        }
 
         $this->filterCategory($category);
+        $productsFromCategory = $productsFromCategoryFetch->getResult();
+        $this->filterProducts($productsFromCategory);
+        $productsSimilar = $productsSimilarFetch->getResult();
+        $this->filterProducts($productsSimilar);
 
         return $this->render('WLAppBundle:Product:modal.html.twig', [
             'product' => $product,
             'offers' => $offersFetch->getResult(),
+            'productsTop10' => $productsFromCategory,
+            'productsSimilar' => $productsSimilar,
             'category' => $category,
             'canAddRating' => RatingAdd::canAddRate($product->getId())
         ]);
