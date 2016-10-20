@@ -171,103 +171,102 @@
             </div>
         </div><!-- /.modal-content -->
     </div><!-- /.modal-dialog -->
-</div><!-- /.modal -->
 
-
-<script type="text/javascript">
-    $('#productModal').on('shown.bs.dropdown', function () {
-        $('#offersContainer').isotope({
-            itemSelector : '.offer',
-            layoutMode : 'vertical',
-            getSortData : {
-                price : function ( $elem ) {
-                    return parseFloat($($elem).attr('data-price'));
+    <script type="text/javascript">
+        $('#productModal').on('shown.bs.dropdown', function () {
+            $('#offersContainer').isotope({
+                itemSelector : '.offer',
+                layoutMode : 'vertical',
+                getSortData : {
+                    price : function ( $elem ) {
+                        return parseFloat($($elem).attr('data-price'));
+                    }
                 }
-            }
-        });
+            });
 
-        $('#sortOffersSelect a').click(function(){
-            // get href attribute, minus the '#'
-            var sortName = $(this).attr('href').slice(1);
-            switch (sortName) {
-                case 'domyslne':
-                    $('#offersContainer').isotope({ sortBy : 'original-order' });
-                    break;
-                case 'najtansze':
-                    $('#offersContainer').isotope({
-                        sortBy : 'price',
-                        sortAscending : true
-                    });
-                    break;
-                case 'najdrozsze':
-                    $('#offersContainer').isotope({
-                        sortBy : 'price',
-                        sortAscending : false
-                    });
-                    break;
-            }
-            $('#sortOffersSelect li').removeClass('active');
-            $(this).parent().addClass('active');
-            $('#sortOffersSelect').dropdown('toggle');
-            return false;
-        });
-
-
-    });
-
-    $('a[href="#modal-product-information"]').on('shown.bs.tab', function (e) {
-        $('.gallery-view').bxSlider({
-            pagerCustom: '#gallery-items',
-            controls: false
-        });
-    });
-
-    $('a[href="#modal-product-similar"]').on('shown.bs.tab', function (e) {
-        var similar = $("#products-similar");
-        similar.owlCarousel({
-            items : 4,
-            itemsDesktop : [1000,4],
-            itemsDesktopSmall : [900,3],
-            itemsTablet: [600,2],
-            itemsMobile : false,
-            pagination: false
-        });
-        $("#products-similar-next").click(function(){
-            similar.trigger('owl.next');
-        });
-        $("#products-similar-prev").click(function(){
-            similar.trigger('owl.prev');
-        });
-
-        var top = $("#products-top");
-        top.owlCarousel({
-            items : 4,
-            itemsDesktop : [1000,4],
-            itemsDesktopSmall : [900,3],
-            itemsTablet: [600,2],
-            itemsMobile : false,
-            pagination: false
-        });
-        $("#products-top-next").click(function(){
-            top.trigger('owl.next');
-        });
-        $("#products-top-prev").click(function(){
-            top.trigger('owl.prev');
-        });
-
-        $('[data-product-modal]').click(function (event) {
-            event.preventDefault();
-            $('#productModal').modal('hide');
-            $.post('/modal-' + $(this).attr('data-product-modal'), {})
-                    .done(function (data) {
-                        $('body').append(data);
-                        $('#productModal').modal();
-                        $('#productModal').on('hidden.bs.modal', function () {
-                            $(this).remove();
+            $('#sortOffersSelect a').click(function(){
+                // get href attribute, minus the '#'
+                var sortName = $(this).attr('href').slice(1);
+                switch (sortName) {
+                    case 'domyslne':
+                        $('#offersContainer').isotope({ sortBy : 'original-order' });
+                        break;
+                    case 'najtansze':
+                        $('#offersContainer').isotope({
+                            sortBy : 'price',
+                            sortAscending : true
                         });
-                    });
+                        break;
+                    case 'najdrozsze':
+                        $('#offersContainer').isotope({
+                            sortBy : 'price',
+                            sortAscending : false
+                        });
+                        break;
+                }
+                $('#sortOffersSelect li').removeClass('active');
+                $(this).parent().addClass('active');
+                $('#sortOffersSelect').dropdown('toggle');
+                return false;
+            });
+
 
         });
-    });
 
-</script>
+        $('a[href="#modal-product-information"]').on('shown.bs.tab', function (e) {
+            $('.gallery-view').bxSlider({
+                pagerCustom: '#gallery-items',
+                controls: false
+            });
+        });
+
+        $('a[href="#modal-product-similar"]').on('shown.bs.tab', function (e) {
+            var similar = $("#products-similar");
+            similar.owlCarousel({
+                items : 4,
+                itemsDesktop : [1000,4],
+                itemsDesktopSmall : [900,3],
+                itemsTablet: [600,2],
+                itemsMobile : false,
+                pagination: false
+            });
+            $("#products-similar-next").click(function(){
+                similar.trigger('owl.next');
+            });
+            $("#products-similar-prev").click(function(){
+                similar.trigger('owl.prev');
+            });
+
+            var top = $("#products-top");
+            top.owlCarousel({
+                items : 4,
+                itemsDesktop : [1000,4],
+                itemsDesktopSmall : [900,3],
+                itemsTablet: [600,2],
+                itemsMobile : false,
+                pagination: false
+            });
+            $("#products-top-next").click(function(){
+                top.trigger('owl.next');
+            });
+            $("#products-top-prev").click(function(){
+                top.trigger('owl.prev');
+            });
+
+            $('[data-product-modal]').click(function (event) {
+                event.preventDefault();
+                $('#productModal').modal('hide');
+                $.post('/modal-' + $(this).attr('data-product-modal'), {})
+                        .done(function (data) {
+                            $('body').append(data);
+                            $('#productModal').modal();
+                            $('#productModal').on('hidden.bs.modal', function () {
+                                $(this).remove();
+                            });
+                        });
+
+            });
+        });
+
+    </script>
+</div><!-- /.modal -->
