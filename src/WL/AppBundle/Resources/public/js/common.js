@@ -110,10 +110,21 @@ $(document).ready(function() {
         }
     });
 
-    $('[data-product-modal]').click(function (event) {
+    productModalEvent();
+
+});
+
+function productModalEvent(contextSelectorForEvent) {
+    if (!contextSelectorForEvent) {
+        contextSelectorForEvent = 'body';
+    }
+    $(contextSelectorForEvent).find('[data-product-modal]').click(function (event) {
         event.preventDefault();
+        $('#productModal').modal('hide');
+        $('body').append('<div id="modal-loader" class="modal-backdrop fade in text-center" style="padding-top:100px;"><img src="/bundles/wlapp/images/progress-circle-info.svg"></div>');
         $.post('/modal-' + $(this).attr('data-product-modal'), {})
             .done(function (data) {
+                $('#modal-loader').remove();
                 $('body').append(data);
                 $('#productModal').modal();
                 $('#productModal').on('hidden.bs.modal', function () {
@@ -122,5 +133,4 @@ $(document).ready(function() {
             });
 
     });
-
-});
+}
