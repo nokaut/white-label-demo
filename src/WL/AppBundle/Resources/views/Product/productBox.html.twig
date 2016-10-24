@@ -18,7 +18,7 @@
 
             <div class="product-details-popup text-center">
                 {% if product.descriptionShort %}
-                <a {% if product.clickUrl is not empty %}target="_blank"{% endif %} href="{{ productUrl }}" data-container="body" data-placement="left" data-toggle="tooltip">
+                <a {{ product|productUrlAttr }} data-container="body" data-placement="left" data-toggle="tooltip">
                     <i class="fa fa-align-justify"></i>
                     <div class="tooltip_title_wrapper hidden">
                         <p>{{ product.descriptionShort|raw }}</p>
