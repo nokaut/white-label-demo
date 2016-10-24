@@ -121,10 +121,10 @@ function productModalEvent(contextSelectorForEvent) {
     $(contextSelectorForEvent).find('[data-product-modal]').click(function (event) {
         event.preventDefault();
         $('#productModal').modal('hide');
-        $('body').append('<div id="modal-loader" class="modal-backdrop fade in text-center" style="padding-top:100px;"><img src="/bundles/wlapp/images/progress-circle-info.svg"></div>');
+        $('#modal-preloader').show();
         $.post('/modal-' + $(this).attr('data-product-modal'), {})
             .done(function (data) {
-                $('#modal-loader').remove();
+                $('#modal-preloader').hide();
                 $('body').append(data);
                 $('#productModal').modal();
                 $('#productModal').on('hidden.bs.modal', function () {

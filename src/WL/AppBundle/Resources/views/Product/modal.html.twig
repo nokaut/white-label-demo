@@ -216,47 +216,56 @@
 
         });
 
+        var eventsProductInformationInitialized = false;
         $('a[href="#modal-product-information"]').on('shown.bs.tab', function (e) {
-            $('.gallery-view').bxSlider({
-                pagerCustom: '#gallery-items',
-                controls: false
-            });
+            if (!eventsProductInformationInitialized) {
+                $('.gallery-view').bxSlider({
+                    pagerCustom: '#gallery-items',
+                    controls: false
+                });
+                eventsProductInformationInitialized = true;
+            }
         });
 
+        var eventsProductSimilarInitialized = false;
         $('a[href="#modal-product-similar"]').on('shown.bs.tab', function (e) {
-            var similar = $("#products-similar");
-            similar.owlCarousel({
-                items : 4,
-                itemsDesktop : [1000,4],
-                itemsDesktopSmall : [900,3],
-                itemsTablet: [600,2],
-                itemsMobile : false,
-                pagination: false
-            });
-            $("#products-similar-next").click(function(){
-                similar.trigger('owl.next');
-            });
-            $("#products-similar-prev").click(function(){
-                similar.trigger('owl.prev');
-            });
+            if (!eventsProductSimilarInitialized) {
+                var similar = $("#products-similar");
+                similar.owlCarousel({
+                    items: 4,
+                    itemsDesktop: [1000, 4],
+                    itemsDesktopSmall: [900, 3],
+                    itemsTablet: [600, 2],
+                    itemsMobile: false,
+                    pagination: false
+                });
+                $("#products-similar-next").click(function () {
+                    similar.trigger('owl.next');
+                });
+                $("#products-similar-prev").click(function () {
+                    similar.trigger('owl.prev');
+                });
 
-            var top = $("#products-top");
-            top.owlCarousel({
-                items : 4,
-                itemsDesktop : [1000,4],
-                itemsDesktopSmall : [900,3],
-                itemsTablet: [600,2],
-                itemsMobile : false,
-                pagination: false
-            });
-            $("#products-top-next").click(function(){
-                top.trigger('owl.next');
-            });
-            $("#products-top-prev").click(function(){
-                top.trigger('owl.prev');
-            });
+                var top = $("#products-top");
+                top.owlCarousel({
+                    items: 4,
+                    itemsDesktop: [1000, 4],
+                    itemsDesktopSmall: [900, 3],
+                    itemsTablet: [600, 2],
+                    itemsMobile: false,
+                    pagination: false
+                });
+                $("#products-top-next").click(function () {
+                    top.trigger('owl.next');
+                });
+                $("#products-top-prev").click(function () {
+                    top.trigger('owl.prev');
+                });
 
-            productModalEvent('#productModal');
+                productModalEvent('#productModal');
+
+                eventsProductSimilarInitialized = true;
+            }
         });
 
     </script>
