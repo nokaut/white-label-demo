@@ -15,7 +15,7 @@ Wymagania
 
 * PHP 5.5+
 * dostęp do Search API (klucz OAuth) - kontakt z Nokaut.pl
-* Opcjonalnie Memcache (wymagana wtyczka php-memcache)
+* Opcjonalnie Memcached (wymagana wtyczka php-memcached)
 
 Instalacja
 ----------
@@ -35,9 +35,9 @@ Następnie instalujemy pakiety Composer'em:
 Podczas instalacji program poprosi nas o podanie parametrów. Zostawiamy domyślne (naciskając Enter) dla wszystkich parametrów oprócz:
 
  - api_token: - tu wprowadzamy token który dostaniemy od Noakut.pl
- - cache_enabled: - jeśli mamy zainstalowany memcache i chcemy używać cache wprowadzamy `true` w innym przyadku wprowadzamy `false`
- - memcache_url: - jeśli w poprzedni parametrze wprowadziliśmy `false` naciskamy enter jeśli `true` musimy podać adres serwera memcache, jeśli memcache jest na tym samym serwerze co serwis, postawiamy domyślą wartość `localhost`
- - memcache_port: - jeśli w parametrze `cache_enabled` wprowadziliśmy `false` naciskamy enter jeśli `true` musmy podać port serwera memcache, domyślnie memcache jest na porcie 11211
+ - cache_enabled: - jeśli mamy zainstalowany memcached i chcemy używać cache wprowadzamy `true` w innym przyadku wprowadzamy `false`
+ - memcache_url: - jeśli w poprzedni parametrze wprowadziliśmy `false` naciskamy enter jeśli `true` musimy podać adres serwera memcached, jeśli memcached jest na tym samym serwerze co serwis, postawiamy domyślą wartość `localhost`
+ - memcache_port: - jeśli w parametrze `cache_enabled` wprowadziliśmy `false` naciskamy enter jeśli `true` musmy podać port serwera memcached, domyślnie memcached jest na porcie 11211
  - product_mode: - tryb widoku produktu, są dostępne dwie opcję `modal`, `page`
     - `page` - ustawia produkt z ofertami jako osobną stronę, która będzie indeksowana przez wyszukiwarki takie jak Google
     - `modal` - produkt i jego oferty prezentowany jest w okienku typu modal, przez co nie jest indeksowany przez wyszukiwarki

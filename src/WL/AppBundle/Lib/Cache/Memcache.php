@@ -31,7 +31,7 @@ class Memcache extends AbstractCache
     public function __construct($host, $port, $liveTime, $enabledCache = true)
     {
         if ($enabledCache) {
-            $this->cache = new \Memcache();
+            $this->cache = new \Memcached();
             $this->cache->addserver($host, $port);
             $this->liveTime = $liveTime;
         }
@@ -41,7 +41,7 @@ class Memcache extends AbstractCache
     public function get($keyName, $lifetime = null)
     {
         if ($this->enabledCache) {
-            return @$this->cache->get($keyName);
+            return $this->cache->get($keyName);
         }
         return null;
     }
@@ -52,7 +52,7 @@ class Memcache extends AbstractCache
             if (empty($lifetime)) {
                 $lifetime = $this->liveTime;
             }
-            $this->cache->set($keyName, $content, 0, $lifetime);
+            $this->cache->set($keyName, $content, $lifetime);
         }
     }
 
