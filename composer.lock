@@ -13,12 +13,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/desarrolla2/Cache.git",
-                "reference": "5a9b1b55cf666328cb3ca161357ccd767225fea0"
+                "reference": "3f5f6319c1c8311ea89d1abe709fe29f553574f7"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/desarrolla2/Cache/zipball/5a9b1b55cf666328cb3ca161357ccd767225fea0",
-                "reference": "5a9b1b55cf666328cb3ca161357ccd767225fea0",
+                "url": "https://api.github.com/repos/desarrolla2/Cache/zipball/3f5f6319c1c8311ea89d1abe709fe29f553574f7",
+                "reference": "3f5f6319c1c8311ea89d1abe709fe29f553574f7",
                 "shasum": ""
             },
             "require": {
@@ -60,7 +60,7 @@
                 "mysql",
                 "redis"
             ],
-            "time": "2015-11-26 12:29:49"
+            "time": "2016-09-28 06:15:12"
         },
         {
             "name": "doctrine/annotations",
