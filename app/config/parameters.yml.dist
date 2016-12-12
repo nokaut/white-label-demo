@@ -18,7 +18,7 @@ parameters:
     debug_redirects:        false
     use_assetic_controller: true
 
-    api_token: ~
+    api_token: test_token
     api_url: http://nokaut.io/api/v2/
 
     cache_enabled: false
