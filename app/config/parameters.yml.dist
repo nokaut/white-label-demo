@@ -31,7 +31,6 @@ parameters:
 
     nokaut_img_domain: http://offers.gallery
 
-    click_mode: redirect #redirect, frame_offers_shop, frame_offers_category
     click_domain: http://nokaut.click
 
     product_mode: 'page' #modal, page

@@ -17,14 +17,6 @@ use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 class ClickUrl
 {
-    const REDIRECT = 'redirect';
-    const FRAME_OFFERS_SHOP = 'frame_offers_shop';
-    const FRAME_OFFERS_CATEGORY = 'frame_offers_category';
-
-    /**
-     * @var string
-     */
-    protected $clickMode;
     /**
      * @var ContainerInterface
      */
@@ -32,10 +24,8 @@ class ClickUrl
 
     function __construct(ContainerInterface $container)
     {
-        $this->clickMode = $container->getParameter('click_mode');
         $this->container = $container;
     }
-
 
     /**
      * @param Offer|OfferWithBestPrice $offer
@@ -43,11 +33,7 @@ class ClickUrl
      */
     public function prepareOfferClickUrl($offer)
     {
-        if (self::REDIRECT == $this->clickMode) {
-            return $this->generateUrl('clickRedirect', array('clickUrl' => urlencode($offer->getClickUrl())));
-        }
-
-        return $this->generateUrl('clickOffer', array('offerId' => $offer->getId()));
+        return $this->generateUrl('clickRedirect', array('clickUrl' => urlencode($offer->getClickUrl())));
 
     }
 
@@ -57,12 +43,7 @@ class ClickUrl
      */
     public function prepareProductClickUrl($product)
     {
-        if (self::REDIRECT == $this->clickMode) {
-            return $this->generateUrl('clickRedirect', array('clickUrl' => urlencode($product->getClickUrl())));
-        }
-
-        return $this->generateUrl('clickProduct', array('productId' => $product->getId()));
-
+        return $this->generateUrl('clickRedirect', array('clickUrl' => urlencode($product->getClickUrl())));
     }
 
     protected function generateUrl($route, $parameters = array())
