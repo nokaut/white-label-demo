@@ -37,6 +37,8 @@ parameters:
 
     domain: ~
 
+    google_analytics_id: ~
+
     categories:
             'Kategorie I':
                     - 1

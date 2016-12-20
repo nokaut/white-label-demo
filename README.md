@@ -42,6 +42,7 @@ Podczas instalacji program poprosi nas o podanie parametrów. Zostawiamy domyśl
     - `page` - ustawia produkt z ofertami jako osobną stronę, która będzie indeksowana przez wyszukiwarki takie jak Google
     - `modal` - produkt i jego oferty prezentowany jest w okienku typu modal, przez co nie jest indeksowany przez wyszukiwarki
  - domain: - domena pod którą będzie znajdowała się strona, format: http://moj-serwis.pl/
+ - google_analytics_id: - Identyfikator śledzenia dla Google Analytics (numer który najcześciej zaczyna się od _UA-_ np: _UA-1234556-1_, dostępny w zakładce Administracja w analytics.google.com dla danego projektu)
  - categories: - parametr odpowiadający za tematykę strony, wybieramy w nim ID-ki kategorii które mają się znaleźć w serwisie, np:
 
          'Kategorie I': #ta nazwa pojawi się w menu głównym
