@@ -4,12 +4,12 @@
 {{ product.title|raw }}  - {{ parent() }}
 {% endblock %}
 
-{% block desc %}{% spaceless %}{{ category.title|raw }}; Producent: {{ product.producerName }};
+{% block desc %}{{ category.title|raw }}; Producent: {{ product.producerName }};
     {% for property in product.properties %}
         {{ property.name|raw }}: {% include '@WLApp/Product/property.html.twig' %};
     {% endfor %}
     {{ product.descriptionHtml|striptags|truncate(200) }}
-{% endspaceless %}{% endblock %}
+{% endblock %}
 
 {% block head %}
     {{ parent() }}
@@ -140,7 +140,7 @@
             var rating = calculateRating(e, elementStars);
             $.post("{{ url('rating_add') }}",
                     {
-                        productId: $('#productRating').attr('data-product'),
+                        productId: '{{ product.id }}',
                         rating: rating
                     })
                     .done(function (data) {

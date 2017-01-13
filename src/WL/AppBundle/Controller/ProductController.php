@@ -138,10 +138,10 @@ class ProductController extends Controller
         try {
             $logger->info('add rating for product ' . $request->get('productId') . ", rating: " . $request->get('rating'));
 
-            $rateAdd = new RatingAdd($this->container->getParameter('api_url'));
+            $rateAdd = new RatingAdd($this->get('repo.products'));
             $currentRating = $rateAdd->addRating($request->get('productId'), $request->get('rating'));
 
-            return new Response($currentRating ? $currentRating : -1);
+            return new Response($currentRating ? $currentRating->getRating() : -1);
         } catch (\Exception $e) {
             $logger->error('Fail add rating for product ' . $request->get('productId') . ', '
                 . $e->getMessage());

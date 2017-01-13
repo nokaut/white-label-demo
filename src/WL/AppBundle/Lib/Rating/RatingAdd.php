@@ -8,22 +8,32 @@
 
 namespace WL\AppBundle\Lib\Rating;
 
-use Guzzle\Http\Client;
+
+use Nokaut\ApiKit\Entity\Product\Rating\Rate;
+use Nokaut\ApiKit\Repository\ProductsRepository;
+use WL\AppBundle\Lib\Helper\Ip;
 
 class RatingAdd
 {
     private $cookeExpire = 86400; //24 hours
-    private $apiUrl;
+    /**
+     * @var ProductsRepository
+     */
+    private $productsRepository;
 
-    function __construct($apiUrl)
+    /**
+     * RatingAdd constructor.
+     * @param ProductsRepository $productsRepository
+     */
+    function __construct($productsRepository)
     {
-        $this->apiUrl = $apiUrl;
+        $this->productsRepository = $productsRepository;
     }
 
     /**
      * @param $productId
      * @param $rate
-     * @return false|int - current rating or false if fail send rate
+     * @return \Nokaut\ApiKit\Entity\Product\Rating|false - Rrating or false if fail send rate
      */
     public function addRating($productId, $rate)
     {
@@ -36,21 +46,18 @@ class RatingAdd
 
     }
 
-    private function sendToApi($productId, $rate)
+    /**
+     * @param $productId
+     * @param $rateValue
+     * @return \Nokaut\ApiKit\Entity\Product\Rating
+     */
+    private function sendToApi($productId, $rateValue)
     {
-        $client = new Client();
-        $post = '{"rate": '. intval($rate) .'}';
-        $request = $client->post($this->apiUrl . "products/{$productId}/rate", null, $post);
-        $request->addHeader('Content-Type', 'application/json');
-
-        $response = $client->send($request);
-
-        $bodyAsString = $response->getBody(true);
-        if (empty($bodyAsString)) {
-            return false;
-        }
-        $bodyObject = json_decode($bodyAsString);
-        return $bodyObject->current_rating;
+        $rate = new Rate();
+        $rate->setCreatedAt(date('Y-m-d'));
+        $rate->setRate($rateValue);
+        $rate->setIpAddress(Ip::getUserIp());
+        return $this->productsRepository->createProductRate($productId, $rate);
     }
 
     /**
