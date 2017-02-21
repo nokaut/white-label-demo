@@ -17,14 +17,16 @@ class CacheFile extends \Desarrolla2\Cache\Cache implements \Nokaut\ApiKit\Cache
     private $enabledCache = true;
     private $cacheDir;
     private $timeout;
+    private $keyPrefix;
 
-    function __construct($cacheDir, $timeout, $enabledCache = true)
+    function __construct($cacheDir, $timeout, $enabledCache = true, $keyPrefix = 'api-raw-response-')
     {
         $adapter = new File($cacheDir);
         $adapter->setOption('ttl', $timeout);
         $this->enabledCache = $enabledCache;
         $this->cacheDir = $cacheDir;
         $this->timeout = $timeout;
+        $this->keyPrefix = md5($keyPrefix);
         parent::__construct($adapter);
     }
 
@@ -51,8 +53,7 @@ class CacheFile extends \Desarrolla2\Cache\Cache implements \Nokaut\ApiKit\Cache
 
     public function getPrefixKeyName()
     {
-        return 'api-raw-response-';
+        return $this->keyPrefix;
     }
 
-
-} 
+}

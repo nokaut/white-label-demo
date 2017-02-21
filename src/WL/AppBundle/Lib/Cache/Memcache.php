@@ -13,7 +13,7 @@ use Lsw\MemcacheBundle\Cache\AntiDogPileMemcache;
 use Nokaut\ApiKit\Cache\AbstractCache;
 use Nokaut\ApiKit\Cache\CacheInterface;
 
-class Memcache extends AbstractCache
+class Memcache implements CacheInterface
 {
     /**
      * @var \Memcache
@@ -21,14 +21,16 @@ class Memcache extends AbstractCache
     private $cache;
     private $liveTime;
     private $enabledCache;
+    private $keyPrefix;
 
     /**
      * @param string $host
      * @param string $port
      * @param int $liveTime - liveTime in seconds
      * @param bool $enabledCache
+     * @param string $keyPrefix
      */
-    public function __construct($host, $port, $liveTime, $enabledCache = true)
+    public function __construct($host, $port, $liveTime, $enabledCache = true, $keyPrefix = 'api-raw-response-')
     {
         if ($enabledCache) {
             $this->cache = new \Memcached();
@@ -36,6 +38,7 @@ class Memcache extends AbstractCache
             $this->liveTime = $liveTime;
         }
         $this->enabledCache = $enabledCache;
+        $this->keyPrefix = md5($keyPrefix);
     }
 
     public function get($keyName, $lifetime = null)
@@ -61,6 +64,11 @@ class Memcache extends AbstractCache
         if ($this->enabledCache) {
             $this->cache->delete($keyName);
         }
+    }
+
+    public function getPrefixKeyName()
+    {
+        return $this->keyPrefix;
     }
 
 }

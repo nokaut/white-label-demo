@@ -70,10 +70,10 @@ services:
 
     cache.memcache:
         class: WL\AppBundle\Lib\Cache\Memcache
-        arguments: [%memcache_url%, %memcache_port%, %cache_default_lifetime%, %cache_enabled%]
+        arguments: [%memcache_url%, %memcache_port%, %cache_default_lifetime%, %cache_enabled%, %api_token%]
     cache.file:
         class: WL\AppBundle\Lib\Cache\CacheFile
-        arguments: [%kernel.cache_dir%, %cache_menu_lifetime%, %cache_menu_enabled%]
+        arguments: [%kernel.cache_dir%, %cache_menu_lifetime%, %cache_menu_enabled%, %api_token%]
 
     helper.price:
         class: WL\AppBundle\Lib\Helper\Price
