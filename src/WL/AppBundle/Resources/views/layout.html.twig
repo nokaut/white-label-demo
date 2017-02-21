@@ -3,6 +3,8 @@
 {% set route = app.request.get('_route') %}
 {% set routeArgument = route == 'search' ? 'phrase' : 'categoryUrlWithFilters' %}
 
+{% block title %}{{ site_name }}{% endblock %}
+
 {% block head %}
     <meta name="viewport" content="width=device-width, initial-scale=1">
 {% endblock %}
@@ -73,7 +75,7 @@
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
         </button>
-        <a class="navbar-brand" href="/">Porownywarka</a>
+        <a class="navbar-brand" href="/">{{ site_name }}</a>
     </div>
     <div class="navbar-collapse collapse navbar-responsive-collapse">
 
@@ -127,7 +129,7 @@
             <div class="row">
                 <div class="col-md-5">
                     <h5>O nas</h5>
-                    <p>Porównywarka.co to serwis pozwalający na porównanie cen w najlepszych sklepach internetowych w Polsce. Został stworzony, by ułatwić użytkownikom Internetu znalezienie najniższych cen i wygodne e-zakupy. Porównaj oferty kilku tysięcy sklepów internetowych.</p>
+                    <p>{{ site_name }} to serwis pozwalający na porównanie cen w najlepszych sklepach internetowych w Polsce. Został stworzony, by ułatwić użytkownikom Internetu znalezienie najniższych cen i wygodne e-zakupy. Porównaj oferty kilku tysięcy sklepów internetowych.</p>
                 </div>
                 <div class="col-md-7">
                     <h5>Dla sklepów</h5>
@@ -136,7 +138,7 @@
             </div>
             <div class="row">
                 <div class="col-md-12">
-                    Copyright © 2014. Wszystkie prawa zastrzeżone.
+                    Copyright © {{ "now"|date('Y') }}. Wszystkie prawa zastrzeżone.
                     <a href="{{ url('map_categories') }}">Mapa kategorii</a>
                 </div>
             </div>

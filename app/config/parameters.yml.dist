@@ -36,6 +36,7 @@ parameters:
     product_mode: 'page' #modal, page
 
     domain: ~
+    site_name: 'Porownywarka.co'
 
     google_analytics_id: ~
 

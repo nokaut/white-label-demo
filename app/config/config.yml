@@ -35,6 +35,7 @@ twig:
         nokaut_img_domain: %nokaut_img_domain%
         click_domain: %click_domain%
         google_analytics_id: %google_analytics_id%
+        site_name: %site_name%
 
 # Assetic Configuration
 assetic:
