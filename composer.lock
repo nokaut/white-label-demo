@@ -1349,12 +1349,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/nokaut/api-kit.git",
-                "reference": "db7d418c206c1d5d25581fc480282c9279f25a8e"
+                "reference": "7463cf53c919141d4d0922b296c897810be8d1c7"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/nokaut/api-kit/zipball/db7d418c206c1d5d25581fc480282c9279f25a8e",
-                "reference": "db7d418c206c1d5d25581fc480282c9279f25a8e",
+                "url": "https://api.github.com/repos/nokaut/api-kit/zipball/7463cf53c919141d4d0922b296c897810be8d1c7",
+                "reference": "7463cf53c919141d4d0922b296c897810be8d1c7",
                 "shasum": ""
             },
             "require": {
@@ -1392,7 +1392,7 @@
                 "source": "https://github.com/nokaut/api-kit/tree/master",
                 "issues": "https://github.com/nokaut/api-kit/issues"
             },
-            "time": "2016-11-10 12:17:14"
+            "time": "2017-02-22 12:40:57"
         },
         {
             "name": "paragonie/random_compat",
