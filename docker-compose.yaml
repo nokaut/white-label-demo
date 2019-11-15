@@ -1,0 +1,31 @@
+version: '3.7'
+
+services:
+  app:
+    image:
+      white_label_demo
+    depends_on:
+      - dbserver
+    build:
+      context: .
+      dockerfile: ./docker/php/Dockerfile
+    environment:
+      TZ: Europe/Warsaw
+    ports:
+      - "12000:8000"
+    volumes:
+      - ./:/var/www
+
+  dbserver:
+    image: "mysql:5.6.34"
+    environment:
+      MYSQL_DATABASE: white_label_demo
+      MYSQL_ROOT_PASSWORD: docker
+    ports:
+      - "33099:3306"
+    restart: always
+    volumes:
+      - mysql:/var/lib/mysql
+
+volumes:
+  mysql:

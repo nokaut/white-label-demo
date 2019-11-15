@@ -3,6 +3,8 @@
 use Symfony\Component\HttpKernel\Kernel;
 use Symfony\Component\Config\Loader\LoaderInterface;
 
+date_default_timezone_set('Europe/Warsaw');
+
 class AppKernel extends Kernel
 {
     public function registerBundles()
