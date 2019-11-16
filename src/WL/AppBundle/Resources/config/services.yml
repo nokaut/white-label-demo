@@ -8,44 +8,36 @@ services:
         arguments: ["@api_kit.config.cache.file", "@categories.allowed"]
 
     repo.products:
-        factory: ["@repo.factory"]
+        factory: ["@repo.factory", "getProductsRepository"]
         class: WL\AppBundle\Lib\Repository\ProductsRepository
-        factory_method: getProductsRepository
 
     repo.products.async:
-        factory_service: repo.factory
+        factory: ["@repo.factory", "getProductsAsyncRepository"]
         class: WL\AppBundle\Lib\Repository\ProductsAsyncRepository
-        factory_method: getProductsAsyncRepository
 
     repo.categories:
-        factory_service: repo.factory
+        factory: ["@repo.factory", "getCategoriesRepository"]
         class: Nokaut\ApiKit\Repository\CategoriesRepository
-        factory_method: getCategoriesRepository
 
     repo.categories.cache.file:
-        factory_service: repo.factory.cache.file
+        factory: ["@repo.factory.cache.file", "getCategoriesRepository"]
         class: Nokaut\ApiKit\Repository\CategoriesAsyncRepository
-        factory_method: getCategoriesRepository
 
     repo.categories.async:
-        factory_service: repo.factory
+        factory: ["@repo.factory", "getCategoriesAsyncRepository"]
         class: Nokaut\ApiKit\Repository\CategoriesAsyncRepository
-        factory_method: getCategoriesAsyncRepository
 
     repo.offers:
-        factory_service: repo.factory
+        factory: ["@repo.factory", "getOffersRepository"]
         class: Nokaut\ApiKit\Repository\OffersRepository
-        factory_method: getOffersRepository
 
     repo.offers.async:
-        factory_service: repo.factory
+        factory: ["@repo.factory", "getOffersAsyncRepository"]
         class: Nokaut\ApiKit\Repository\OffersAsyncRepository
-        factory_method: getOffersAsyncRepository
 
     repo.async:
-        factory_service: repo.factory
+        factory: ["@repo.factory", "getAsyncRepository"]
         class: Nokaut\ApiKit\Repository\AsyncRepository
-        factory_method: getAsyncRepository
 
     categories.allowed:
         class: WL\AppBundle\Lib\CategoriesAllowed
