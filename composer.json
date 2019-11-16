@@ -39,7 +39,7 @@
         "sensio/distribution-bundle": "^5.0.19",
         "sensio/framework-extra-bundle": "^3.0.2",
         "incenteev/composer-parameter-handler": "~2.0",
-        "nokaut/api-kit": "dev-master#7463cf53c919141d4d0922b296c897810be8d1c7",
+        "nokaut/api-kit": "dev-master#c670aefed327fed23a14449d071390b40802922f",
         "desarrolla2/cache":  "^1.8.3",
         "evert/sitemap-php": "dev-master#68658f799ebcd4c743138eea558a590324a17d3e"
     },

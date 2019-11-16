@@ -8,7 +8,6 @@
 
 namespace WL\AppBundle\Lib;
 
-
 use WL\AppBundle\Lib\Menu\MenuInterface;
 
 class MenuFactory

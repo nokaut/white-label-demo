@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "cf46f9c96643849500d1fec0e45d0c49",
+    "content-hash": "0d5e46b6ee91e2e6eb0f6f03bb9fb774",
     "packages": [
         {
             "name": "composer/ca-bundle",
@@ -1736,12 +1736,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/nokaut/api-kit.git",
-                "reference": "7463cf53c919141d4d0922b296c897810be8d1c7"
+                "reference": "c670aefed327fed23a14449d071390b40802922f"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/nokaut/api-kit/zipball/7463cf53c919141d4d0922b296c897810be8d1c7",
-                "reference": "7463cf53c919141d4d0922b296c897810be8d1c7",
+                "url": "https://api.github.com/repos/nokaut/api-kit/zipball/c670aefed327fed23a14449d071390b40802922f",
+                "reference": "c670aefed327fed23a14449d071390b40802922f",
                 "shasum": ""
             },
             "require": {
@@ -1779,7 +1779,7 @@
                 "source": "https://github.com/nokaut/api-kit/tree/master",
                 "issues": "https://github.com/nokaut/api-kit/issues"
             },
-            "time": "2017-02-22T12:40:57+00:00"
+            "time": "2018-07-31T13:13:07+00:00"
         },
         {
             "name": "paragonie/random_compat",
