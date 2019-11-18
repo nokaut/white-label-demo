@@ -9,7 +9,8 @@
 /vendor/
 /bin/
 /composer.phar
-
+/var
+!var/*/.gitkeep
 .idea
 
 .DS_Store

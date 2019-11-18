@@ -29,9 +29,9 @@ twig:
     debug:            "%kernel.debug%"
     strict_variables: "%kernel.debug%"
     globals:
-        menu_main: @menu.main.factory
-        nokaut_photo_url: @photo.url
-        helper_price: @helper.price
+        menu_main: "@menu.main.factory"
+        nokaut_photo_url: "@photo.url"
+        helper_price: "@helper.price"
         nokaut_img_domain: %nokaut_img_domain%
         click_domain: %click_domain%
         google_analytics_id: %google_analytics_id%
