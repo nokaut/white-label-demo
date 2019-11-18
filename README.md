@@ -3,7 +3,7 @@ Nokaut.pl Demo White Label (PHP)
 
 [![Build Status](https://travis-ci.org/nokaut/white-label-demo.svg?branch=master)](https://travis-ci.org/nokaut/white-label-demo.svg?branch=master)
 
-Demo serwisu porównywarki cen wykonana na frameworku [Symfony2](http://symfony.com/)
+Demo serwisu porównywarki cen wykonana na frameworku [Symfony](http://symfony.com/)
 
 Status
 ------
@@ -13,7 +13,7 @@ Demo serwisu porównywarki cen. Zwiera podstawowe funkcjonalności do uruchomien
 Wymagania
 ---------
 
-* PHP 5.6+
+* PHP 7.2+
 * dostęp do Search API (klucz OAuth) - kontakt z Nokaut.pl
 * Opcjonalnie Memcached (wymagana wtyczka php-memcached)
 
@@ -87,6 +87,25 @@ Bardzo ważna rzecz: css, JavaScript i obrazki trzymane są w katalogu `src/WL/A
      php app/console asset:install
 
 aby zmiany naniosły się na katalog główny z projektem.
+
+
+Uruchamiane serwera prez dockera
+--------------------------------
+
+### Set up
+
+```bash
+docker-compose build
+docker-compose run app install
+```
+
+## Uruchomienie
+
+```bash
+docker-compose up
+```
+
+Aplikacja dostępna będzie w przeglądarce (np. Chrome) pod adresem: http://localhost:8000/
 
 
 FAQ

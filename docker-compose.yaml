@@ -8,6 +8,6 @@ services:
     environment:
       TZ: Europe/Warsaw
     ports:
-      - "12000:8000"
+      - "8000:8000"
     volumes:
       - ./:/var/www
