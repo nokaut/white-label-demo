@@ -1,6 +1,6 @@
 {
     "name": "nokaut/white-label-demo",
-    "description": "Demo serwisu porównywarki cen",
+    "description": "Price comparison site demo",
     "license": "proprietary",
     "type": "project",
     "prefer-stable": true,
@@ -28,7 +28,7 @@
         }
     ],
     "require": {
-        "php": ">=7.0",
+        "php": ">=7.2",
         "symfony/symfony": "3.3.*",
         "doctrine/orm": "^2.5",
         "doctrine/doctrine-bundle": "^1.6",
