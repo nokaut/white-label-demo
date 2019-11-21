@@ -1,15 +1,13 @@
 /web/bundles/
-/app/bootstrap.php.cache
-/app/cache/*
+/var/bootstrap.php.cache
 /app/config/parameters.yml
-/app/logs/*
-!app/cache/.gitkeep
-!app/logs/.gitkeep
 /build/
 /vendor/
 /composer.phar
-/var
-!var/*/.gitkeep
+/var/cache/*
+/var/logs/*
+!var/cache/.gitkeep
+!var/logs/.gitkeep
 .idea
 
 .DS_Store
