@@ -40,8 +40,8 @@
         "sensio/framework-extra-bundle": "^3.0.2",
         "incenteev/composer-parameter-handler": "~2.0",
         "nokaut/api-kit": "dev-master#c670aefed327fed23a14449d071390b40802922f",
-        "desarrolla2/cache":  "^1.8.3",
-        "evert/sitemap-php": "dev-master#68658f799ebcd4c743138eea558a590324a17d3e"
+        "desarrolla2/cache":  "~2.1",
+        "evert/sitemap-php": "~1.2"
     },
     "require-dev": {
         "sensio/generator-bundle": "^3.0",
