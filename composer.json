@@ -34,19 +34,19 @@
         "doctrine/doctrine-bundle": "~1.6",
         "twig/extensions": "~1.0",
         "symfony/assetic-bundle": "~2.3",
-        "symfony/swiftmailer-bundle": "^2.3.10",
-        "symfony/monolog-bundle": "^3.1.0",
-        "sensio/distribution-bundle": "^5.0.19",
-        "sensio/framework-extra-bundle": "^3.0.2",
+        "symfony/swiftmailer-bundle": "~2.3.10",
+        "symfony/monolog-bundle": "~3.1.0",
+        "sensio/distribution-bundle": "~5.0.19",
+        "sensio/framework-extra-bundle": "~3.0.2",
         "incenteev/composer-parameter-handler": "~2.0",
         "nokaut/api-kit": "dev-master#c670aefed327fed23a14449d071390b40802922f",
         "desarrolla2/cache":  "~2.1",
         "evert/sitemap-php": "~1.2"
     },
     "require-dev": {
-        "sensio/generator-bundle": "^3.0",
-        "symfony/phpunit-bridge": "^3.3",
-        "symfony/web-server-bundle": "^3.3"
+        "sensio/generator-bundle": "~3.0",
+        "symfony/phpunit-bridge": "~3.3",
+        "symfony/web-server-bundle": "~3.3"
     },
     "scripts": {
         "symfony-scripts": [
