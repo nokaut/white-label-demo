@@ -141,9 +141,11 @@ class CategoryController extends Controller
         try {
             $category = $categoriesRepo->fetchByUrl($categoryUrl);
 
-            /** @var CategoriesAllowed $categoryAllowed */
-            $categoriesAllowed = $this->get('categories.allowed');
-            $categoriesAllowed->checkAllowedCategory($category);
+            if ($category) {
+                /** @var CategoriesAllowed $categoriesAllowed */
+                $categoriesAllowed = $this->get('categories.allowed');
+                $categoriesAllowed->checkAllowedCategory($category);
+            }
 
             return $category;
         } catch (NotFoundException $e) {
