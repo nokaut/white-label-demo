@@ -4,6 +4,7 @@ services:
         arguments: ["@api_kit.config.cache.memcache", "@categories.allowed"]
 
     repo.factory.cache.file:
+        public: true
         class: WL\AppBundle\Lib\RepositoryFactory
         arguments: ["@api_kit.config.cache.file", "@categories.allowed"]
 
