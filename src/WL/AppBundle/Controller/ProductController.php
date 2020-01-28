@@ -239,8 +239,10 @@ class ProductController extends Controller
      */
     protected function checkAllowedCategory($category)
     {
-        /** @var CategoriesAllowed $categoryAllowed */
-        $categoriesAllowed = $this->get('categories.allowed');
-        $categoriesAllowed->checkAllowedCategory($category);
+        if($category) {
+            /* @var CategoriesAllowed $categoriesAllowed */
+            $categoriesAllowed = $this->get('categories.allowed');
+            $categoriesAllowed->checkAllowedCategory($category);
+        }
     }
 }
