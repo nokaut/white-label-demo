@@ -9,7 +9,7 @@
             {% set photoId = offer.photoId %}
         {% endif %}
         <a rel="nofollow" target="_blank" href="{{ offer|click }}">
-            <img class="img-responsive" src="{{ nokaut_img_domain ~ nokaut_photo_url.prepare(photoId, '500x500', product.title) }}" alt="{{ product.title }}">
+            <img class="img-responsive" src="{{ nokaut_img_domain ~ nokaut_photo_url.prepare(photoId, '400x400', product.title) }}" alt="{{ product.title }}">
         </a>
     </div>
 

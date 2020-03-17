@@ -4,7 +4,7 @@
         <ul class="bxslider gallery-view">
             {% for photoId in product.photoIds if photoId %}
                 {% if loop.index < 5 %}
-                    <li><img class="img-responsive" src="{{ nokaut_img_domain ~ nokaut_photo_url.prepare(photoId, '500x500', product.title) }}" alt="{{ product.title }}"></li>
+                    <li><img class="img-responsive" src="{{ nokaut_img_domain ~ nokaut_photo_url.prepare(photoId, '400x400', product.title) }}" alt="{{ product.title }}"></li>
                 {% endif %}
             {% endfor %}
         </ul>
