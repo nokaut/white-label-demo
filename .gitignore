@@ -9,6 +9,6 @@
 !var/cache/.gitkeep
 !var/logs/.gitkeep
 .idea
-
+.phpunit.result.cache
 .DS_Store
 /docker/.composer/auth.json

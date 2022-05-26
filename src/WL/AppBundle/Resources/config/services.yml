@@ -49,13 +49,13 @@ services:
     categories.allowed:
         public: true
         class: WL\AppBundle\Lib\CategoriesAllowed
-        arguments: [%categories%]
+        arguments: ["%categories%"]
 
     menu.mega:
         class: WL\AppBundle\Lib\Menu\MegaMenuBuilder
         arguments: ["@repo.factory.cache.file", "@categories.allowed"]
 
-    menu.dropDown:
+    menu.drop_down:
         class: WL\AppBundle\Lib\Menu\DropDownMenuBuilder
         arguments: ["@repo.factory.cache.file"]
 
@@ -65,7 +65,7 @@ services:
     menu.main.factory:
         class: WL\AppBundle\Lib\Menu\MenuInterface
         factory: ["@menu.factory", newInstance]
-        arguments: ["@categories.allowed", "@menu.mega", "@menu.dropDown"]
+        arguments: ["@categories.allowed", "@menu.mega", "@menu.drop_down"]
 
     pre.fetchs:
         class: WL\AppBundle\Lib\Listener\PreAsyncFetchListener
@@ -78,10 +78,10 @@ services:
 
     cache.memcache:
         class: WL\AppBundle\Lib\Cache\Memcache
-        arguments: [%memcache_url%, %memcache_port%, %cache_default_lifetime%, %cache_enabled%, %api_token%]
+        arguments: ["%memcache_url%", "%memcache_port%", "%cache_default_lifetime%", "%cache_enabled%", "%api_token%"]
     cache.file:
         class: WL\AppBundle\Lib\Cache\CacheFile
-        arguments: [%kernel.cache_dir%, %cache_menu_lifetime%, %cache_menu_enabled%, %api_token%]
+        arguments: ["%kernel.cache_dir%", "%cache_menu_lifetime%", "%cache_menu_enabled%", "%api_token%"]
 
     helper.price:
         class: WL\AppBundle\Lib\Helper\Price
@@ -92,37 +92,35 @@ services:
 
     helper.url_search:
         public: true
-        factory_class: WL\AppBundle\Lib\Helper\UrlSearchFactory
+        factory: ['WL\AppBundle\Lib\Helper\UrlSearchFactory', 'newInstance']
         class: WL\AppBundle\Lib\Helper\UrlSearch
-        factory_method: newInstance
         arguments: ["@categories.allowed", "@repo.categories.cache.file"]
 
     api_kit.config.cache.memcache:
         class: Nokaut\ApiKit\Config
         calls:
-          - [setApiAccessToken, [%api_token%]]
-          - [setApiUrl, [%api_url%]]
+          - [setApiAccessToken, ["%api_token%"]]
+          - [setApiUrl, ["%api_url%"]]
           - [setCache, ["@cache.memcache"]]
           - [setLogger, ["@logger"]]
 
     api_kit.config.cache.file:
         class: Nokaut\ApiKit\Config
         calls:
-          - [setApiAccessToken, [%api_token%]]
-          - [setApiUrl, [%api_url%]]
+          - [setApiAccessToken, ["%api_token%"]]
+          - [setApiUrl, ["%api_url%"]]
           - [setCache, ["@cache.file"]]
           - [setLogger, ["@logger"]]
 
     sitemap.urls:
         public: true
         class: WL\AppBundle\Lib\SiteMap\SiteMapUrls
-        arguments: [%domain%, "@router", "@repo.products", "@repo.categories", "@categories.allowed", "@monolog.logger.cli"]
+        arguments: ["%domain%", "@router", "@repo.products", "@repo.categories", "@categories.allowed", "@monolog.logger.cli"]
 
     breadcrumb.builder:
         public: true
-        factory_class: WL\AppBundle\Lib\Breadcrumbs\BreadcrumbsBuilderFactory
+        factory: ['WL\AppBundle\Lib\Breadcrumbs\BreadcrumbsBuilderFactory','newInstance']
         class: WL\AppBundle\Lib\Breadcrumbs\BreadcrumbsBuilder
-        factory_method: newInstance
         arguments: ["@categories.allowed"]
 
     twig.chunk_extension:

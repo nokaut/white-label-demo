@@ -9,7 +9,9 @@
 namespace WL\AppBundle\Lib\Twig;
 
 
-class DictionaryExtension extends \Twig_Extension
+use Twig\Extension\AbstractExtension;
+
+class DictionaryExtension extends AbstractExtension
 {
     public function getFilters()
     {

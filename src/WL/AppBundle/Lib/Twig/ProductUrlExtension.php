@@ -11,9 +11,10 @@ namespace WL\AppBundle\Lib\Twig;
 use Nokaut\ApiKit\Entity\Product;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
+use Twig\Extension\AbstractExtension;
 use WL\AppBundle\Lib\Helper\ClickUrl;
 
-class ProductUrlExtension extends \Twig_Extension
+class ProductUrlExtension extends AbstractExtension
 {
     /**
      * @var boolean

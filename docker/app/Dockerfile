@@ -1,4 +1,4 @@
-FROM php:7.2
+FROM phpdockerio/php:7.4-fpm
 
 WORKDIR /var/www
 
@@ -9,7 +9,5 @@ RUN chmod +x /usr/bin/dispatcher.sh
 RUN apt-get update && \
     apt-get upgrade -y && \
     apt-get install -y git zip unzip
-
-#ADD docker/.composer/auth.json /root/.composer/
 
 ENTRYPOINT [ "dispatcher.sh" ]
