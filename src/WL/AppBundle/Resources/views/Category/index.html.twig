@@ -1,9 +1,9 @@
 {% extends "WLAppBundle::layout.html.twig" %}
 
 {% block title %}
-    {% spaceless %}
+    {% apply spaceless %}
         {{ metadataTitle }} - {{ parent() }}
-    {% endspaceless %}
+    {% endapply %}
 {% endblock %}
 
 {% block desc %}{{ category.description|striptags }}{% endblock %}
@@ -118,10 +118,12 @@
                                     </a>
                                 </li>
                             {% endif %}
-                            {% for category in subcategories if not category.isFilter %}
+                            {% for category in subcategories %}
+                                {% if not category.isFilter %}
                                 <li{% if loop.first %} class="lower-half"{% endif %}><a href="{{ url(route, { (routeArgument) : category.urlIn}) }}">
                                     <span class="badge pull-right">{{ category.total }}</span> {{ category.name|raw }}</a>
                                 </li>
+                                {% endif %}
                             {% endfor %}
                         </ul>
                     </div>
@@ -131,8 +133,10 @@
 
             {{ _self.filterView(priceFilters, true, '-prices', route, routeArgument, true ) }}
             {{ _self.filterView(producersFilters, false, '-producers', route, routeArgument) }}
-            {% for filter in propertiesFilters if not filter.isExcluded %}
+            {% for filter in propertiesFilters %}
+                {% if not filter.isExcluded %}
                 {{ _self.filterView(filter, false, '-properites-' ~ loop.index, route, routeArgument) }}
+                {% endif %}
             {% endfor %}
 
             {% if category is defined and category.description %}
@@ -173,16 +177,18 @@
                         </span>
                     </span>
                 {% endif %}
-                {% for filter in selectedFilters if filter is not empty %}
-                <span>
-                    <span class="badge-name">{{ filter.name }}:</span>
-                    {% for value in filter %}
-                    <span class="badge">
-                        <button type="button" onclick="document.location.href='{{ url(route, { (routeArgument): value.url }) }}'" class="close">×</button>
-                        <span>{{ value.name|raw }} {{ filter.unit }}</span>
+                {% for filter in selectedFilters %}
+                    {% if filter is not empty %}
+                    <span>
+                        <span class="badge-name">{{ filter.name }}:</span>
+                        {% for value in filter %}
+                        <span class="badge">
+                            <button type="button" onclick="document.location.href='{{ url(route, { (routeArgument): value.url }) }}'" class="close">×</button>
+                            <span>{{ value.name|raw }} {{ filter.unit }}</span>
+                        </span>
+                        {% endfor %}
                     </span>
-                    {% endfor %}
-                </span>
+                    {% endif %}
                 {% endfor %}
             </h1>
         </div>

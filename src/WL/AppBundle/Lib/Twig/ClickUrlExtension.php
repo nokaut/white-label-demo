@@ -13,9 +13,10 @@ use Nokaut\ApiKit\Entity\EntityAbstract;
 use Nokaut\ApiKit\Entity\Offer;
 use Nokaut\ApiKit\Entity\Product;
 use Nokaut\ApiKit\Entity\Product\OfferWithBestPrice;
+use Twig\Extension\AbstractExtension;
 use WL\AppBundle\Lib\Helper\ClickUrl;
 
-class ClickUrlExtension extends \Twig_Extension
+class ClickUrlExtension extends AbstractExtension
 {
     /**
      * @var ClickUrl

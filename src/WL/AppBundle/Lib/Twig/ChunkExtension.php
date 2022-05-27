@@ -11,8 +11,9 @@ namespace WL\AppBundle\Lib\Twig;
 
 
 use Nokaut\ApiKit\Collection\CollectionAbstract;
+use Twig\Extension\AbstractExtension;
 
-class ChunkExtension extends \Twig_Extension
+class ChunkExtension extends AbstractExtension
 {
     public function getFilters()
     {
