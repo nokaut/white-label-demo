@@ -8,7 +8,7 @@ Demo serwisu porównywarki cen wykonane na frameworku [Symfony](http://symfony.c
 Status
 ------
 
-Demo serwisu porównywarki cen. Zwiera podstawowe funkcjonalności do uruchomienia własnego serwisu.
+Demo serwisu porównywarki cen. Zawiera podstawowe funkcjonalności do uruchomienia własnego serwisu.
 
 Wymagania
 ---------
