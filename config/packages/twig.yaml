@@ -1,0 +1,16 @@
+twig:
+    default_path: '%kernel.project_dir%/templates'
+    debug: '%kernel.debug%'
+    strict_variables: '%kernel.debug%'
+    exception_controller: null
+    globals:
+        menu_main: "@menu.main.factory"
+        nokaut_photo_url: "@photo.url"
+        helper_price: "@helper.price"
+        nokaut_img_domain: "%nokaut_img_domain%"
+        click_domain: "%click_domain%"
+        google_analytics_id: "%google_analytics_id%"
+        site_name: "%site_name%"
+
+framework:
+    assets: ~

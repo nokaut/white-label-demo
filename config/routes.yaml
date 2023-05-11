@@ -1,0 +1,51 @@
+wl_homepage:
+  path: /
+  defaults: { _controller: App\Controller\DefaultController::indexAction }
+
+category:
+  path: /kategoria-{categoryUrlWithFilters}
+  defaults: { _controller: App\Controller\CategoryController::indexAction }
+  requirements:
+    categoryUrlWithFilters: ".+"
+
+product:
+  path: /produkt-{productUrl}.html
+  defaults: { _controller: App\Controller\ProductController::indexAction }
+  requirements:
+    productUrl: ".+"
+
+product_modal:
+  path: /modal-{productUrl}
+  defaults: { _controller: App\Controller\ProductController::modalAction }
+  methods:  [POST]
+  requirements:
+    productUrl: ".+"
+
+search:
+  path: /produkty-{phrase}
+  defaults: { _controller: App\Controller\SearchController::indexAction }
+  requirements:
+    phrase: ".*"
+
+map_categories:
+  path: /mapa-kategorii
+  defaults: { _controller: App\Controller\MapCategoryController::indexAction }
+
+rating_add:
+  path: /daja_ocene
+  defaults: { _controller: App\Controller\ProductController::addRateAction }
+  methods:  [POST]
+
+clickOffer:
+  path:     /clickOffer/{offerId}
+  defaults: { _controller: App\Controller\ClickController::clickRedirectAction }
+
+clickProduct:
+  path:     /clickProduct/{productId}
+  defaults: { _controller: App\Controller\ClickController::clickRedirectAction }
+
+clickRedirect:
+  path: /click{clickUrl}
+  defaults: { _controller: App\Controller\ClickController::clickRedirectAction }
+  requirements:
+    clickUrl: ".+"

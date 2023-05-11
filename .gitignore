@@ -1,14 +1,18 @@
-/web/bundles/
-/var/bootstrap.php.cache
-/app/config/parameters.yml
-/build/
-/vendor/
-/composer.phar
-/var/cache/*
-/var/logs/*
-!var/cache/.gitkeep
-!var/logs/.gitkeep
 .idea
-.phpunit.result.cache
 .DS_Store
-/docker/.composer/auth.json
+/config/packages/parameters.yml
+
+###> phpunit/phpunit ###
+.phpunit.result.cache
+###< phpunit/phpunit ###
+
+###> symfony/framework-bundle ###
+/.env
+/.env.local
+/.env.local.php
+/.env.*.local
+/config/secrets/prod/prod.decrypt.private.php
+/public/bundles/
+/var/
+/vendor/
+###< symfony/framework-bundle ###

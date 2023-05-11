@@ -6,12 +6,14 @@
  * Time: 09:33
  */
 
-namespace WL\AppBundle\Tests\Lib;
+namespace Tests\Lib;
 
 
 use Nokaut\ApiKit\Entity\Category;
 use PHPUnit\Framework\MockObject\MockObject;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
+use App\Lib\Exception\CategoryNotAllowedException;
+use App\Lib\CategoriesAllowed;
 
 class CategoriesAllowedTest extends KernelTestCase
 {
@@ -27,7 +29,7 @@ class CategoriesAllowedTest extends KernelTestCase
 
     public function testCheckAllowedCategoryNotAllowed()
     {
-        $this->expectException(\WL\AppBundle\Lib\Exception\CategoryNotAllowedException::class);
+        $this->expectException(CategoryNotAllowedException::class);
         $cut = $this->preapreCut();
         $cut->expects($this->once())->method('getAllowedCategories')->willReturn(array(10, 20, 40));
 
@@ -62,11 +64,11 @@ class CategoriesAllowedTest extends KernelTestCase
      */
     protected function preapreCut()
     {
-        $cut = $this->getMockBuilder('\WL\AppBundle\Lib\CategoriesAllowed')
+        $cut = $this->getMockBuilder('App\Lib\CategoriesAllowed')
             ->onlyMethods(array('getAllowedCategories', 'isAllowedAllCategories'))
             ->disableOriginalConstructor()
             ->getMock();
         $cut->expects($this->any())->method('isAllowedAllCategories')->willReturn(false);
         return $cut;
     }
-} 
+}

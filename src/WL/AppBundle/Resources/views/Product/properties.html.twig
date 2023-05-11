@@ -1,9 +1,0 @@
-<ul class="features">
-    <li>Producent: <em>{{ product.producerName|raw }}</em></li>
-    <li>Kategoria: <em>{{ category.title|raw }}</em></li>
-    {% for property in product.properties %}
-        <li>{{ property.name|raw }}:
-            <em>{% include '@WLApp/Product/property.html.twig' %}</em>
-        </li>
-    {% endfor %}
-</ul>

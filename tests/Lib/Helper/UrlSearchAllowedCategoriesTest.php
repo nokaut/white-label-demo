@@ -6,14 +6,14 @@
  * Time: 14:10
  */
 
-namespace WL\AppBundle\Tests\Lib\Helper;
+namespace Tests\Lib\Helper;
 
 
+use App\Lib\Helper\UrlSearch;
 use Nokaut\ApiKit\Collection\Categories;
 use Nokaut\ApiKit\Entity\Category;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
-use WL\AppBundle\Lib\Helper\UrlSearch;
-use WL\AppBundle\Lib\Helper\UrlSearchAllowedCategories;
+use App\Lib\Helper\UrlSearchAllowedCategories;
 
 class UrlSearchAllowedCategoriesTest extends KernelTestCase
 {
@@ -27,7 +27,7 @@ class UrlSearchAllowedCategoriesTest extends KernelTestCase
      */
     public function init()
     {
-        $mockCategoriesAllowed = $this->getMockBuilder('\WL\AppBundle\Lib\CategoriesAllowed')->disableOriginalConstructor()->getMock();
+        $mockCategoriesAllowed = $this->getMockBuilder('App\Lib\CategoriesAllowed')->disableOriginalConstructor()->getMock();
         $mockCategoriesAllowed->expects($this->once())->method('getAllowedCategories')->will($this->returnValue(array()));
         $mockRepo = $this->getMockBuilder('\Nokaut\ApiKit\Repository\CategoriesRepository')->disableOriginalConstructor()->getMock();
         $mockRepo->expects($this->once())->method('fetchCategoriesByIds')->will($this->returnValue($this->getAllowedCategories()));
