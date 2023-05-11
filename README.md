@@ -1,140 +1,153 @@
-Nokaut.pl Demo White Label (PHP)
-==============================
+# Nokaut.pl Demo White Label (PHP)
+Demo serwisu porównywarki cen wykonane na frameworku [Symfony](http://symfony.com/). Zawiera podstawowe funkcjonalności do uruchomienia własnego serwisu.
 
-[![Build Status](https://travis-ci.org/nokaut/white-label-demo.svg?branch=master)](https://travis-ci.org/nokaut/white-label-demo.svg?branch=master)
-
-Demo serwisu porównywarki cen wykonane na frameworku [Symfony](http://symfony.com/)
-
-Status
-------
-
-Demo serwisu porównywarki cen. Zawiera podstawowe funkcjonalności do uruchomienia własnego serwisu.
-
-Wymagania
----------
-
-* PHP 7.2.5+
+# Wymagania
+* PHP 8.0+
 * Dostęp do Search API (klucz OAuth) - kontakt z Nokaut.pl
 * Opcjonalnie Memcached (wymagana wtyczka php-memcached)
 
-Instalacja
-----------
-Uruchamiamy konsolę i przechodzimy do katalogu, w którym ma być projekt np. `/web/porownywarka` i pobieramy projekt:
+# Pobranie aplikacji
+Uruchamiamy konsolę i przechodzimy do katalogu, w którym chcemy umieścić projekt i pobieramy go z repozytorium (kropka na końcu jest istotna):
 
     git clone git@github.com:nokaut/white-label-demo.git .
 
-Kropka na końcu jest ważna!
+# Zmienne środowiskowe
 
-Po pobraniu wykonujemy instalację projektu. Rekomendowaną formą instalacji jest skorzystanie z [Composer'a](http://getcomposer.org/).
-Najpierw należy zainstalować Composer'a - [szczegóły tutaj](https://getcomposer.org/download/) 
+Tworzymy plik `.env` poleceniem
 
-Następnie instalujemy pakiety Composer'em:
+    cp .env.dist .env
 
-    php composer.phar install
+W nim ustawiamy środowisko, w którym będzie działał serwis, domyślnie jest to `dev`, jeśli chcemy uruchomić serwis w
+produkcyjnie, zmieniamy wartość na `prod`:
 
-Podczas instalacji program poprosi nas o podanie parametrów. Zostawiamy domyślne (naciskając Enter) dla wszystkich parametrów oprócz:
+    APP_ENV=prod
 
- - api_token: - tu wprowadzamy token, który dostaniemy od Nokaut.pl
- - cache_enabled: - jeśli mamy zainstalowany memcached i chcemy używać cache wprowadzamy `true` w innym przyadku wprowadzamy `false`
- - memcache_url: - jeśli w poprzedni parametrze wprowadziliśmy `false`, naciskamy enter, jeśli `true`, musimy podać adres serwera memcached, jeśli memcached jest na tym samym serwerze co serwis, postawiamy domyślą wartość `localhost`
- - memcache_port: - jeśli w parametrze `cache_enabled` wprowadziliśmy `false`, naciskamy enter, jeśli `true`, musmy podać port serwera memcached, domyślnie memcached jest na porcie 11211
- - product_mode: - tryb widoku produktu, są dostępne dwie opcję `modal`, `page`
-    - `page` - ustawia produkt z ofertami jako osobną stronę, która będzie indeksowana przez wyszukiwarki takie jak Google
-    - `modal` - produkt i jego oferty prezentowany jest w okienku typu modal, przez co nie jest indeksowany przez wyszukiwarki
- - domain: - domena, pod którą będzie znajdowała się strona, format: http://moj-serwis.pl/
- - site_name: - nazwa serwisu, będzie się wyświetlać między innymi na górze oraz w stopce strony
- - google_analytics_id: - identyfikator śledzenia dla Google Analytics (numer który najcześciej zaczyna się od _UA-_ np: _UA-1234556-1_, dostępny w zakładce Administracja w analytics.google.com dla danego projektu)
- - categories: - parametr odpowiadający za tematykę strony, wybieramy w nim ID-ki kategorii które mają się znaleźć w serwisie, np:
+# Uruchomienie aplikacji
 
-         'Kategorie I': #ta nazwa pojawi się w menu głównym
-             - id kategorii 1
-             - id kategorii 2
-             ...
-         'Kategorie II':
-             - id kategorii 3
-             - id kategorii 4
-         ....
-    - Możemy również w polu `categories` podać `null` co oznacza że będzie dostępny cały katalog produktów.
+## Instalacja zależności i konfiguracja
+Wykonujemy instalację projektu [Composer'em](https://getcomposer.org/download/):
 
+    composer install
 
-Pramatry można w każdej chwili zmienić w pliku  **app/config/parameters.yml**
+Podczas instalacji program poprosi nas o podanie parametrów. Zostawiamy domyślne (naciskając Enter) dla wszystkich
+parametrów oprócz:
 
-Po uzupełnieniu parametrów wykonujemy dwa ostatnie polecenia **(to polecenie należy zawsze wykonać po aktualizacji powyższego pliku z parametrami)**.
+- api_token: - tu wprowadzamy token, który dostaniemy od Nokaut.pl
+- cache_enabled: - jeśli mamy zainstalowany memcached i chcemy używać cache wprowadzamy `true` w innym przyadku
+  wprowadzamy `false`
+- memcache_url: - jeśli w poprzedni parametrze wprowadziliśmy `false`, naciskamy enter, jeśli `true`, musimy podać adres
+  serwera memcached, jeśli memcached jest na tym samym serwerze co serwis, postawiamy domyślą wartość `localhost`
+- memcache_port: - jeśli w parametrze `cache_enabled` wprowadziliśmy `false`, naciskamy enter, jeśli `true`, musmy podać
+  port serwera memcached, domyślnie memcached jest na porcie 11211
+- product_mode: - tryb widoku produktu, są dostępne dwie opcję `modal`, `page`
+    - `page` - ustawia produkt z ofertami jako osobną stronę, która będzie indeksowana przez wyszukiwarki takie jak
+      Google
+    - `modal` - produkt i jego oferty prezentowany jest w okienku typu modal, przez co nie jest indeksowany przez
+      wyszukiwarki
+- domain: - domena, pod którą będzie znajdowała się strona, format: http://moj-serwis.pl/
+- site_name: - nazwa serwisu, będzie się wyświetlać między innymi na górze oraz w stopce strony
+- google_analytics_id: - identyfikator śledzenia dla Google Analytics (numer, który najcześciej zaczyna się od _UA-_ np:
+  _UA-1234556-1_, dostępny w zakładce Administracja w analytics.google.com dla danego projektu)
+- categories: - parametr odpowiadający za tematykę strony, wybieramy w nim ID-ki kategorii, które mają się znaleźć w
+  serwisie, np:
 
-     php app/console cache:clear --env=prod
-     php app/console asset:install --env=prod
+        'Kategorie I': #ta nazwa pojawi się w menu głównym
+            - id kategorii 1
+            - id kategorii 2
+            ...
+        'Kategorie II':
+            - id kategorii 3
+            - id kategorii 4
+        ....
 
- Następujące katalogi muszą posiadać uprawnienia zapisu z poziomu skryptu PHP
+Parametry można w każdej chwili zmienić w pliku **config/packages/parameters.yml**
 
-     app/cache/
-     app/logs/
+Po uzupełnieniu lub zmianie parametrów wykonujemy polecenia:
 
- Domena musi być ustawiona na katalog:
+     php bin/console cache:clear --env=prod
+     php bin/console assets:install --symlink --relative public --env=prod
 
-     <ścieżka do katalgu z projektem>/web/
+ Następujące katalogi muszą mieć uprawnienia zapisu z poziomu skryptu PHP
 
-Uruchamiane serwera dewelopersko - czyli do wykonywania zmian na nim
---------------------------------------------------------------------
+     var/cache/
+     var/log/
 
-Po zainstalowaniu projektu, możemy uruchomić go w trybie do pracy, wchodzimy do katalogu gdzie jest projekt i wykonujemy polecenie:
+ Domena w konfiguracji serwera WWW musi być ustawiona na katalog:
 
-    php app/console server:run
+     <ścieżka do katalgu z projektem>/public/
+
+## Uruchomienie deweloperskiego serwera WWW
+
+Po zainstalowaniu projektu możemy uruchomić go lokalnie w trybie deweloperskim, wchodzimy do katalogu gdzie jest projekt i wykonujemy polecenie:
+
+    symfony serve
 
 Dostaniemy informację `Server running on http://127.0.0.1:8000` i teraz możemy przejść do przeglądarki wpisując w adres `http://localhost:8000/` - ujrzymy nasz serwis.
 
-Bardzo ważna rzecz: css, JavaScript i obrazki trzymane są w katalogu `src/WL/AppBundle/Resources/public/` po każdej zmianie w tych plikach lub dodaniu nowego należy uruchomić polecenie:
+Uwaga: pliki CSS, JavaScript i obrazki trzymane są w katalogu `public/`.
 
-     php app/console asset:install
+# Uruchomienie aplikacji w Dockerze
 
-aby zmiany naniosły się na katalog publiczny projektu.
+## Przygotowanie środowiska i aplikacji
 
-
-Uruchamiane aplikacji w Dockerze
---------------------------------
-
-### Set up
+### Zbudowanie obrazów usług
 
 ```bash
 docker-compose build
 ```
 
-### Composer install
-
-```bash
-docker-compose run app install
-```
-
-lub w razie problemów wejście do kontenera i instalacja (composer może zapytać do token do githuba)
-
-```bash
-docker-compose run app shell
-composer install
-...
-exit
-```
-
-## Uruchomienie
+## Utworzenie i uruchomienie kontenerów
 
 ```bash
 docker-compose up
 ```
 
-Aplikacja dostępna będzie w przeglądarce (np. Chrome) pod adresem: http://localhost:8000/
+### Instalacja zależności i konfiguracja
 
+W nowym okienku konsoli przechodzimy do katalogu aplikacji, wchodzimy na kontener aplikacji.
+```bash
+docker-compose exec php bash
+```
+
+Konfigurujemy i instalujemy zależności.
+```bash
+composer install
+```
+
+Aplikacja dostępna będzie w przeglądarce (np. Chrome) pod adresem: http://127.0.0.1:8000
+
+## Testy
+
+Aby uruchomić testy, należy w katalogu aplikacji wejść do kontenera poprzez polecenie:
+
+    docker-compose exec php bash
+
+I wykonać polecenie:
+
+    bin/phpunit
+
+Możesz wykonać testy jednostkowe dla konkretnego pliku, np.:
+
+    bin/phpunit tests/Controller/DefaultControllerTest.php
+
+Albo też wyłączyć grupę testów, np.:
+
+    bin/phpunit --exclude-group=integration
 
 FAQ
 ---
 
-**Wykonałem wszystkie polecenia na swoim komputerze i strona działa, ale gdy wrzuciłem na serwer cały katalog strona przestała działać**
+**Wykonałem wszystkie polecenia na swoim komputerze i strona działa, ale gdy wrzuciłem na serwer cały katalog strona
+przestała działać**
 
 Należy wykonać polecenia:
 
-     php app/console cache:clear --env=prod
+     php bin/console cache:clear --env=prod
 
 Jeśli na twoim serwerze nie masz możliwości zalogowania się do konsoli i wykonania powyższych poleceń usuń zawartość katalogów, ale same katalogi pozostaw:
 
-     app/cache/
-     app/logs/
+     var/cache/
+     var/log/
 
-Sprawdź również czy powyższe katalogi mają prawo zapisu z serwera www.
+Sprawdź również, czy powyższe katalogi mają prawo zapisu z serwera www.
 

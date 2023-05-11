@@ -1,0 +1,55 @@
+{% extends 'layout.html.twig' %}
+
+{% block title %}
+    Mapa kategorii - {{ parent() }}
+{% endblock %}
+
+
+{% block head %}
+    {{ parent() }}
+
+    <link rel="canonical" href="{{ url('map_categories') }}"/>
+{% endblock %}
+
+
+
+{% block content %}
+    <div class="row category">
+        <div class="col-md-12 col-sm-12">
+
+            <div class="row category-details">
+                <div class="col-xs-11">
+                    <h1>Mapa kategorii</h1>
+                </div>
+                <div class="col-xs-1 text-right">
+
+                </div>
+            </div>
+
+            <div class="row category-products">
+
+                <div class="col-xs-12">
+
+                    {% for menuLink in menu_main.menuLinks %}
+                        <div>
+                            {% if menuLink.subLinks is defined %}
+                                <h3>{{ menuLink.name }}</h3>
+                                <ul>
+                                    {% for subLink in menuLink.subLinks %}
+                                        <li><a href="{{ url('category', {'categoryUrlWithFilters': subLink.url}) }}"
+                                               title="{{ subLink.name }}">{{ subLink.name }}</a></li>
+                                    {% endfor %}
+                                </ul>
+                            {% else %}
+                                <li><a href="{{  url('category', { 'categoryUrlWithFilters': menuLink.url}) }}">{{ menuLink.name }}</a></li>
+                            {% endif %}
+                        </div>
+                    {% endfor %}
+
+                </div>
+
+            </div>
+
+        </div>
+    </div>
+{% endblock %}

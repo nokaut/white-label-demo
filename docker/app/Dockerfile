@@ -1,13 +1,13 @@
-FROM phpdockerio/php:7.4-fpm
+FROM php:8.2-fpm
 
 WORKDIR /var/www
 
 COPY --from=composer:latest /usr/bin/composer /usr/local/bin/composer
-ADD docker/dispatcher.sh /usr/bin/dispatcher.sh
-RUN chmod +x /usr/bin/dispatcher.sh
 
 RUN apt-get update && \
     apt-get upgrade -y && \
-    apt-get install -y git zip unzip
+    apt-get install -y git zip unzip zlib1g-dev libicu-dev libzip-dev libxml2-dev libzip-dev libmemcached-dev && \
+    pecl install memcached && \
+    docker-php-ext-install zip && \
+    docker-php-ext-enable memcached
 
-ENTRYPOINT [ "dispatcher.sh" ]

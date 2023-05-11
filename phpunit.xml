@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- https://phpunit.de/manual/current/en/appendixes.configuration.html -->
+<phpunit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://schema.phpunit.de/9.3/phpunit.xsd" backupGlobals="false" colors="true" bootstrap="vendor/autoload.php" stopOnError="true" stopOnFailure="true" convertErrorsToExceptions="true" convertNoticesToExceptions="true" convertWarningsToExceptions="true">
+  <coverage>
+    <include>
+      <directory>src</directory>
+    </include>
+    <exclude>
+      <directory>src/*Bundle/Resources</directory>
+      <directory>src/*/*Bundle/Resources</directory>
+      <directory>src/*/Bundle/*Bundle/Resources</directory>
+    </exclude>
+  </coverage>
+  <php>
+    <ini name="error_reporting" value="-1"/>
+    <ini name="intl.default_locale" value="en"/>
+    <ini name="intl.error_level" value="0"/>
+    <ini name="memory_limit" value="-1"/>
+    <env name="APP_ENV" value="dev"/>
+    <env name="RESET_ENVIRONMENT" value="false"/>
+    <env name="TEST_VERBOSITY" value="1"/>
+    <env name="KERNEL_CLASS" value="App\Kernel"/>
+
+    <!-- ###+ symfony/framework-bundle ### -->
+    <env name="APP_ENV" value="dev"/>
+    <env name="APP_SECRET" value="e6548ce0314abcb5dd9b3dbacaedc4b6"/>
+    <!-- env name="TRUSTED_PROXIES" value="127.0.0.0/8,10.0.0.0/8,172.16.0.0/12,192.168.0.0/16" -->
+    <!-- env name="TRUSTED_HOSTS" value="'^(localhost|example\.com)$'" -->
+    <!-- ###- symfony/framework-bundle ### -->
+  </php>
+  <testsuites>
+    <testsuite name="Project Test Suite">
+      <directory>tests</directory>
+    </testsuite>
+  </testsuites>
+</phpunit>

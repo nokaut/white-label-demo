@@ -1,0 +1,187 @@
+parameters:
+
+services:
+  _defaults:
+    autowire: true
+    autoconfigure: true
+
+  App\:
+    resource: '../src/'
+    exclude:
+      - '../src/DependencyInjection/'
+      - '../src/Entity/'
+      - '../src/Kernel.php'
+
+  App\Lib\RepositoryFactory:
+    arguments: [ "@api_kit.config.cache.memcache", "@categories.allowed" ]
+
+  repo.factory:
+    alias: App\Lib\RepositoryFactory
+    
+  repo.factory.cache.file:
+    public: true
+    class: App\Lib\RepositoryFactory
+    arguments: [ "@api_kit.config.cache.file", "@categories.allowed" ]
+
+  App\Lib\Repository\ProductsRepository:
+    factory: [ "@repo.factory", "getProductsRepository" ]
+
+  repo.products:
+    public: true
+    alias: App\Lib\Repository\ProductsRepository
+
+  App\Lib\Repository\ProductsAsyncRepository:
+    factory: [ "@repo.factory", "getProductsAsyncRepository" ]
+
+  repo.products.async:
+    public: true
+    alias: App\Lib\Repository\ProductsAsyncRepository
+
+  Nokaut\ApiKit\Repository\CategoriesRepository:
+    factory: [ "@repo.factory", "getCategoriesRepository" ]
+
+  repo.categories:
+    public: true
+    alias: Nokaut\ApiKit\Repository\CategoriesRepository
+
+  repo.categories.cache.file:
+    factory: [ "@repo.factory.cache.file", "getCategoriesRepository" ]
+    class: Nokaut\ApiKit\Repository\CategoriesAsyncRepository
+
+  Nokaut\ApiKit\Repository\CategoriesAsyncRepository:
+    factory: [ "@repo.factory", "getCategoriesAsyncRepository" ]
+
+  repo.categories.async:
+    public: true
+    alias: Nokaut\ApiKit\Repository\CategoriesAsyncRepository
+
+  repo.offers:
+    public: true
+    factory: [ "@repo.factory", "getOffersRepository" ]
+    class: Nokaut\ApiKit\Repository\OffersRepository
+
+  Nokaut\ApiKit\Repository\OffersAsyncRepository:
+    factory: [ "@repo.factory", "getOffersAsyncRepository" ]
+
+  repo.offers.async:
+    public: true
+    alias: Nokaut\ApiKit\Repository\OffersAsyncRepository
+
+  repo.async:
+    factory: [ "@repo.factory", "getAsyncRepository" ]
+    class: Nokaut\ApiKit\Repository\AsyncRepository
+
+  App\Lib\CategoriesAllowed:
+    arguments:
+      - '%categories%'
+
+  categories.allowed:
+    public: true
+    alias: App\Lib\CategoriesAllowed
+
+  App\Lib\Menu\MegaMenuBuilder:
+    arguments:
+      - "@repo.factory.cache.file"
+      - "@categories.allowed"
+
+  menu.mega:
+    public: true
+    alias: App\Lib\Menu\MegaMenuBuilder
+
+  App\Lib\Menu\DropDownMenuBuilder:
+    arguments: [ "@repo.factory.cache.file" ]
+
+  menu.drop_down:
+    alias: App\Lib\Menu\DropDownMenuBuilder
+    public: true
+
+  App\Lib\MenuFactory:
+    arguments:
+
+  menu.factory:
+    public: true
+    alias: App\Lib\MenuFactory
+
+  App\Lib\Menu\MenuInterface:
+    factory: [ "@menu.factory", newInstance ]
+    arguments: [ "@categories.allowed", "@menu.mega", "@menu.drop_down" ]
+
+  menu.main.factory:
+    alias: App\Lib\Menu\MenuInterface
+    public: true
+
+  pre.fetchs:
+    class: App\Lib\Listener\PreAsyncFetchListener
+    arguments: [ "@service_container" ]
+    tags:
+      - { name: kernel.event_listener, event: kernel.controller, method: onKernelController }
+
+  photo.url:
+    class: Nokaut\ApiKit\Helper\PhotoUrl
+
+  cache.memcache:
+    class: App\Lib\Cache\Memcache
+    arguments: [ "%memcache_url%", "%memcache_port%", "%cache_default_lifetime%", "%cache_enabled%", "%api_token%" ]
+  cache.file:
+    class: App\Lib\Cache\CacheFile
+    arguments: [ "%kernel.cache_dir%", "%cache_menu_lifetime%", "%cache_menu_enabled%", "%api_token%" ]
+
+  helper.price:
+    class: App\Lib\Helper\Price
+
+  helper.click:
+    class: App\Lib\Helper\ClickUrl
+    arguments: [ "@service_container" ]
+
+  helper.url_search:
+    public: true
+    factory: [ 'App\Lib\Helper\UrlSearchFactory', 'newInstance' ]
+    class: App\Lib\Helper\UrlSearch
+    arguments: [ "@categories.allowed", "@repo.categories.cache.file" ]
+
+  api_kit.config.cache.memcache:
+    class: Nokaut\ApiKit\Config
+    calls:
+      - [ setApiAccessToken, [ "%api_token%" ] ]
+      - [ setApiUrl, [ "%api_url%" ] ]
+      - [ setCache, [ "@cache.memcache" ] ]
+      - [ setLogger, [ "@logger" ] ]
+
+  api_kit.config.cache.file:
+    class: Nokaut\ApiKit\Config
+    calls:
+      - [ setApiAccessToken, [ "%api_token%" ] ]
+      - [ setApiUrl, [ "%api_url%" ] ]
+      - [ setCache, [ "@cache.file" ] ]
+      - [ setLogger, [ "@logger" ] ]
+
+  sitemap.urls:
+    public: true
+    class: App\Lib\SiteMap\SiteMapUrls
+    arguments: [ "%domain%", "@router", "@repo.products", "@repo.categories", "@categories.allowed", "@monolog.logger" ]
+
+  App\Lib\Breadcrumbs\BreadcrumbsBuilder:
+    public: true
+    factory: [ 'App\Lib\Breadcrumbs\BreadcrumbsBuilderFactory','newInstance' ]
+    arguments: [ "@categories.allowed" ]
+
+  breadcrumb.builder:
+    public: true
+    alias: App\Lib\Breadcrumbs\BreadcrumbsBuilder
+
+  App\Lib\Rating\RatingAdd:
+    arguments:
+      - '@repo.products'
+
+  App\Command\SitemapsDumpCommand:
+    arguments:
+      - "@monolog.logger"
+      - "@sitemap.urls"
+
+  App\Command\SitemapsPingGoogleCommand:
+    arguments:
+      - "@monolog.logger"
+      - "@parameter_bag"
+
+
+

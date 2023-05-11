@@ -1,0 +1,92 @@
+{% extends 'layout.html.twig' %}
+
+{% block title %}{{ offer.title|raw }}{% endblock %}
+
+
+{% block head %}
+    <meta name="viewport" content="width=device-width">
+{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <style type="text/css">
+        body {
+            overflow-y: hidden;
+        }
+
+        #imagepgframe {
+            width: 100%;
+            height: 100%;
+            position: absolute;
+        }
+
+        #wrap {
+            width: 100%;
+            position: absolute;
+            top: 150px;
+            left: 0;
+            bottom: 0;
+        }
+    </style>
+{% endblock %}
+
+{% block body %}
+    <div class="container-fluid">
+        <div class="row product-wrapper-grid">
+            <div id="products-similar" class="owl-carousel">
+                {% if products %}
+                    {% for product in products if product.offerWithBestPrice %}
+                        <div>
+                            <div class="product col-sm-12 normal inner">
+                                <a href="{{ product.offerWithBestPrice|click }}">
+                                    <div class="image">
+                                        <img src="{{ nokaut_img_domain ~ nokaut_photo_url.prepare(product.photoId, '130x130', product.title) }}" />
+                                        <div class="content">
+                                            <h5>{{ product.title|raw }}</h5>
+                                            <span class="price">{{ product.prices.min|number_format(2, ',', '') }} PLN</span>
+                                            <span class="btn btn-sm btn-success btn-success-outlined btn-icon-right">Zobacz <i class="fa fa-angle-right"></i></span>
+                                        </div>
+                                    </div>
+                                </a>
+                            </div>
+                        </div>
+                    {% endfor %}
+                {% elseif offers %}
+                    {% for offer in offers %}
+                        <div>
+                            <div class="product col-sm-12 normal inner">
+                                <a href="{{ offer|click }}">
+                                    <div class="image">
+                                        <img src="{{ nokaut_img_domain ~ nokaut_photo_url.prepare(offer.photoId, '130x130', offer.title) }}" />
+                                        <div class="content">
+                                            <h5>{{ offer.title|raw }}</h5>
+                                            <span class="price">{{ offer.price|number_format(2, ',', '') }} PLN</span>
+                                            <span class="btn btn-sm btn-success btn-success-outlined btn-icon-right">Zobacz <i class="fa fa-angle-right"></i></span>
+                                        </div>
+                                    </div>
+                                </a>
+                            </div>
+                        </div>
+                    {% endfor %}
+                {% endif %}
+
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-xs-6">
+                <a style="left: -1px; margin-top: -80px; position: absolute;" id="products-similar-prev" class="btn btn-sm btn-primary btn-primary-outlined"><i class="fa fa-angle-left"></i></a>
+                <!--<a style="left: 0; margin-top: -155px; position: absolute;" class="close"><small style="font-size: 14px; padding-left: 7px;"><i class="fa fa-angle-up"></i></small></a>-->
+            </div>
+            <div class="col-xs-6 text-right">
+                <a style="right: -1px; margin-top: -80px; position: absolute;" id="products-similar-next" class="btn btn-sm btn-primary btn-primary-outlined"><i class="fa fa-angle-right"></i></a>
+                <a href="{{ click_domain ~ offer.clickUrl }}" style="right: 0; margin-top: -145px; position: absolute;" class="close"><small style="font-size: 20px; padding-right: 7px;">×</small></a>
+
+            </div>
+        </div>
+    </div>
+
+    <div id="wrap">
+        <iframe  id="imagepgframe" name="click" frameBorder="0" src="{{ iframeUrl|raw }}"></iframe>
+    </div>
+{% endblock %}
+

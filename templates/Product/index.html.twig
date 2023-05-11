@@ -1,0 +1,161 @@
+{% extends 'layout.html.twig' %}
+
+{% block title %}
+{{ product.title|raw }}  - {{ parent() }}
+{% endblock %}
+
+{% block desc %}{{ category.title|raw }}; Producent: {{ product.producerName }};
+    {% for property in product.properties %}
+        {{ property.name|raw }}: {% include 'Product/property.html.twig' %};
+    {% endfor %}
+    {{ product.descriptionHtml|striptags }}
+{% endblock %}
+
+{% block head %}
+    {{ parent() }}
+
+    <link rel="canonical" href="{{ url('product', {'productUrl': product.url}) }}" />
+{% endblock %}
+
+
+
+{% block content %}
+
+    {% if offers.metadata.total == 0 %}
+        {% include 'Product/nonOffers.html.twig' %}
+    {% elseif offers.metadata.total == 1 %}
+        {% include 'Product/oneOffer.html.twig' %}
+    {% else %}
+        {% include 'Product/multiOffers.html.twig' %}
+    {% endif %}
+
+    {% if productsSimilar|length > 0 %}
+        <div class="row lower-double products">
+            <div class="col-xs-8">
+                <h4>Produkty podobne</h4>
+            </div>
+            <div class="col-xs-4 text-right">
+                <a id="products-similar-prev" class="btn btn-sm btn-primary btn-primary-outlined"><i class="fa fa-angle-left"></i></a>
+                <a id="products-similar-next" class="btn btn-sm btn-primary btn-primary-outlined"><i class="fa fa-angle-right"></i></a>
+            </div>
+        </div>
+
+        <div class="row">
+        <div id="products-similar" class=" owl-carousel">
+            {% for product in productsSimilar %}
+                {% include 'Product/productBox.html.twig' with {'product': product} %}
+            {% endfor %}
+        </div>
+        </div>
+    {% endif %}
+
+    <div class="row lower-double products">
+        <div class="col-xs-8">
+            <h4>Produkty najpopularniejsze w kategorii <a href="{{ url('category', {'categoryUrlWithFilters': category.url}) }}">{{ category.title|raw }}</a></h4>
+        </div>
+        <div class="col-xs-4 text-right">
+            <a id="products-top-prev" class="btn btn-sm btn-primary btn-primary-outlined"><i class="fa fa-angle-left"></i></a>
+            <a id="products-top-next" class="btn btn-sm btn-primary btn-primary-outlined"><i class="fa fa-angle-right"></i></a>
+        </div>
+    </div>
+    <div class="row">
+    <div id="products-top" class=" owl-carousel">
+    {% for product in productsTop10 %}
+        {% include 'Product/productBox.html.twig' with {'product': product} %}
+    {% endfor %}
+    </div>
+    </div>
+
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+
+    <script src="{{ asset('js/isotope.pkgd.min.js') }}"></script>
+
+    <script type="text/javascript">
+        $('#offersContainer').isotope({
+            itemSelector : '.offer',
+            layoutMode : 'vertical',
+            getSortData : {
+                price : function ( $elem ) {
+                    return parseFloat($($elem).attr('data-price'));
+                }
+            }
+        });
+
+        $('#sortOffersSelect a').click(function(){
+            // get href attribute, minus the '#'
+            var sortName = $(this).attr('href').slice(1);
+            switch (sortName) {
+                case 'domyslne':
+                    $('#offersContainer').isotope({ sortBy : 'original-order' });
+                    break;
+                case 'najtansze':
+                    $('#offersContainer').isotope({
+                        sortBy : 'price',
+                        sortAscending : true
+                    });
+                    break;
+                case 'najdrozsze':
+                    $('#offersContainer').isotope({
+                        sortBy : 'price',
+                        sortAscending : false
+                    });
+                    break;
+            }
+            $('#sortOffersSelect li').removeClass('active');
+            $(this).parent().addClass('active');
+            $('#sortOffersSelect').dropdown('toggle');
+            return false;
+        });
+
+
+    </script>
+
+    {% if canAddRating %}
+    <script type="text/javascript">
+
+        $('.product-star').css('cursor', 'pointer');
+        $('.product-star')
+        .mouseover(function(e) {
+            var rating = calculateRating(e, this);
+            selectStars(rating);
+        }).mouseout(function(e) {
+            var currentRating = $(this).attr('data-star-current');
+            selectStars(currentRating);
+        }).click(function(e) {
+            sendPostWithRating(e, this);
+        });
+
+        function calculateRating(e, elementRating) {
+            return $(elementRating).attr('data-star-nr');
+        }
+
+        function sendPostWithRating(e, elementStars) {
+            var rating = calculateRating(e, elementStars);
+            $.post("{{ url('rating_add') }}",
+                    {
+                        productId: '{{ product.id }}',
+                        rating: rating
+                    })
+                    .done(function (data) {
+                        if (data != -1) {
+                            selectStars(Math.round(data));
+                        }
+                        $(".product-star").unbind().css('cursor','default');
+                        $.growl.notice({ title: "", message: "Dziękujemy za Twój głos. Niebawem zostanie uwzględniony w całkowitej ocenie produktu." });
+                    });
+        }
+
+        function selectStars(countSelectedStars) {
+            $('.product-star').removeClass('fa-star','silver');
+            $('.product-star').addClass('fa-star-o','silver');
+            for(var i=1; i<=countSelectedStars; ++i) {
+                $('.product-star[data-star-nr='+i+']').removeClass('fa-star-o','silver');
+                $('.product-star[data-star-nr='+i+']').addClass('fa-star','silver');
+            }
+        }
+    </script>
+    {% endif %}
+{% endblock %}
