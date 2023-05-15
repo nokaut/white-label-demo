@@ -8,15 +8,19 @@
 
 namespace App\Lib\Cache;
 
-use Desarrolla2\Cache\Memcached as MemcachedCache;
+use ErrorException;
 use Nokaut\ApiKit\Cache\CacheInterface;
-use Memcached;
+use Psr\Cache\InvalidArgumentException;
+use Symfony\Component\Cache\Adapter\MemcachedAdapter;
+use Symfony\Component\Cache\Exception\CacheException;
+
 
 class Memcache implements CacheInterface
 {
+    /** @var MemcachedAdapter $cache */
     private $cache;
-    private $liveTime;
     private $enabledCache;
+    private $liveTime;
     private $keyPrefix;
 
     /**
@@ -25,41 +29,64 @@ class Memcache implements CacheInterface
      * @param int $liveTime - liveTime in seconds
      * @param bool $enabledCache
      * @param string $keyPrefix
+     * @throws CacheException
+     * @throws CacheException
+     * @throws ErrorException
      */
     public function __construct($host, $port, $liveTime, $enabledCache = true, $keyPrefix = 'api-raw-response-')
     {
         if ($enabledCache) {
-            $server = new Memcached();
-            $server->addServer($host, $port);
-            $this->cache = new MemcachedCache($server);
-            $this->liveTime = $liveTime;
+            $server = "memcached://memcached:{$port}";
+            $client = MemcachedAdapter::createConnection($server);
+
+            $cache = new MemcachedAdapter($client, '', 0);
+            $this->cache = $cache;
         }
         $this->enabledCache = $enabledCache;
+        $this->liveTime = $liveTime;
         $this->keyPrefix = md5($keyPrefix);
     }
 
+    /**
+     * @throws InvalidArgumentException
+     */
     public function get($keyName, $lifetime = null)
     {
         if ($this->enabledCache) {
-            return $this->cache->get($keyName);
+            $cacheItem = $this->cache->getItem($keyName);
+
+            if ($cacheItem->isHit()) {
+                return $cacheItem->get();
+            }
         }
+
         return null;
     }
 
+    /**
+     * @throws InvalidArgumentException
+     */
     public function save($keyName = null, $content = null, $lifetime = null)
     {
         if ($this->enabledCache) {
             if (empty($lifetime)) {
                 $lifetime = $this->liveTime;
             }
-            $this->cache->set($keyName, $content, $lifetime);
+
+            $cacheItem = $this->cache->getItem($keyName);
+            $cacheItem->set($content);
+            $cacheItem->expiresAfter($lifetime);
+            $this->cache->save($cacheItem);
         }
     }
 
+    /**
+     * @throws InvalidArgumentException
+     */
     public function delete($keyName)
     {
         if ($this->enabledCache) {
-            $this->cache->delete($keyName);
+            $this->cache->deleteItem($keyName);
         }
     }
 
@@ -67,5 +94,4 @@ class Memcache implements CacheInterface
     {
         return $this->keyPrefix;
     }
-
 }

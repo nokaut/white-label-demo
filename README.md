@@ -40,11 +40,12 @@ parametrów oprócz:
 - memcache_port: - jeśli w parametrze `cache_enabled` wprowadziliśmy `false`, naciskamy enter, jeśli `true`, musmy podać
   port serwera memcached, domyślnie memcached jest na porcie 11211
 - product_mode: - tryb widoku produktu, są dostępne dwie opcję `modal`, `page`
-    - `page` - ustawia produkt z ofertami jako osobną stronę, która będzie indeksowana przez wyszukiwarki takie jak
-      Google
-    - `modal` - produkt i jego oferty prezentowany jest w okienku typu modal, przez co nie jest indeksowany przez
-      wyszukiwarki
-- domain: - domena, pod którą będzie znajdowała się strona, format: http://moj-serwis.pl/
+  - `page` - ustawia produkt z ofertami jako osobną stronę, która będzie indeksowana przez wyszukiwarki takie jak
+    Google
+  - `modal` - produkt i jego oferty prezentowany jest w okienku typu modal, przez co nie jest indeksowany przez
+    wyszukiwarki
+- site_host: - domena, na której będzie działał serwis, np. `porownywarka.co`
+- site_scheme: - protokół, na którym będzie działał serwis, np. `http` lub `https`
 - site_name: - nazwa serwisu, będzie się wyświetlać między innymi na górze oraz w stopce strony
 - google_analytics_id: - identyfikator śledzenia dla Google Analytics (numer, który najcześciej zaczyna się od _UA-_ np:
   _UA-1234556-1_, dostępny w zakładce Administracja w analytics.google.com dla danego projektu)
@@ -110,11 +111,24 @@ docker-compose exec php bash
 ```
 
 Konfigurujemy i instalujemy zależności.
+
 ```bash
 composer install
 ```
 
 Aplikacja dostępna będzie w przeglądarce (np. Chrome) pod adresem: http://127.0.0.1:8000
+
+## Mapa witryny
+
+Aby wygenerować mapę witryny w formacie XML, należy w katalogu aplikacji wejść do kontenera poprzez polecenie:
+
+    docker-compose exec php bash
+
+I wykonać polecenie:
+
+    bin/console presta:sitemaps:dump
+
+Mapa witryny zostanie wygenerowane w katalogu `public/`, z indeksem w pliku sitemap.xml.
 
 ## Testy
 

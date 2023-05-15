@@ -14,7 +14,7 @@ use Twig\TwigFilter;
 
 class DictionaryExtension extends AbstractExtension
 {
-    public function getFilters()
+    public function getFilters(): array
     {
         return array(
             new TwigFilter('varietyProducts', [$this, 'varietyProducts']),
@@ -44,9 +44,9 @@ class DictionaryExtension extends AbstractExtension
         $mod = $number % 10;
         if ($mod >= 2 && $mod <= 4) {
             return $number . " " . $listOfVariety[1];
-        } else {
-            return $number . " " . $listOfVariety[2];
         }
+
+        return $number . " " . $listOfVariety[2];
     }
 
     /**

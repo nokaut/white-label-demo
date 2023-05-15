@@ -3,6 +3,9 @@
 namespace App\Controller;
 
 use App\Lib\Breadcrumbs\BreadcrumbsBuilder;
+use App\Lib\Filter\Controller\UrlSearchFilter;
+use App\Lib\Filter\PropertiesFilter;
+use App\Lib\Filter\SortFilter;
 use App\Lib\Helper\UrlSearch;
 use App\Lib\Pagination\Pagination;
 use App\Lib\Repository\ProductsAsyncRepository;
@@ -11,17 +14,21 @@ use App\Lib\Type\Breadcrumb;
 use App\Lib\View\Data\Converter\Filters\Callback\Categories\ReduceAllSelected;
 use App\Lib\Filter;
 use App\Lib\View\Data\Converter\Filters\Callback;
+use App\Lib\View\Data\Converter\Filters\Callback\Categories\ReduceIncorrectCategories;
+use App\Lib\View\Data\Converter\Filters\Callback\PriceRanges\SetName;
 use Nokaut\ApiKit\Collection\Products;
 use Nokaut\ApiKit\Ext\Data;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Routing\RouterInterface;
 
 class SearchController extends AbstractController
 {
     public function __construct(
-        private UrlSearch $urlSearch,
+        private UrlSearch               $urlSearch,
         private ProductsAsyncRepository $productsAsyncRepository,
-        private BreadcrumbsBuilder $breadcrumbsBuilder
+        private BreadcrumbsBuilder      $breadcrumbsBuilder,
+        private RouterInterface         $router
     )
     {
     }
@@ -30,7 +37,7 @@ class SearchController extends AbstractController
     {
         $phraseUrlForApi = $this->urlSearch->preparePhrase($phrase);
 
-        $productsFetch = $this->productsAsyncRepository->fetchProductsByUrlWithQuality($phraseUrlForApi, $this->getProductFields(), 24, 60);
+        $productsFetch = $this->productsAsyncRepository->fetchProductsByUrlWithQuality($phraseUrlForApi, $this->getProductFields(), 24);
         $this->productsAsyncRepository->fetchAllAsync();
         /** @var Products $products */
         $products = $productsFetch->getResult();
@@ -88,13 +95,13 @@ class SearchController extends AbstractController
         if ($products === null) {
             return;
         }
-        $filterUrl = new \App\Lib\Filter\Controller\UrlSearchFilter($this->urlSearch);
+        $filterUrl = new UrlSearchFilter($this->urlSearch);
         $filterUrl->filter($products);
 
-        $filterProperties = new \App\Lib\Filter\PropertiesFilter();
+        $filterProperties = new PropertiesFilter();
         $filterProperties->filterProducts($products);
 
-        $filterSort = new \App\Lib\Filter\SortFilter();
+        $filterSort = new SortFilter();
         $filterSort->filter($products);
     }
 
@@ -111,7 +118,7 @@ class SearchController extends AbstractController
         $pagination->setTotal($products->getMetadata()->getPaging()->getTotal());
         $pagination->setCurrentPage($products->getMetadata()->getPaging()->getCurrent());
         $pagination->setUrlTemplate(
-            $this->get('router')->generate('search', ['phrase' => $products->getMetadata()->getPaging()->getUrlTemplate()])
+            $this->router->generate('search', ['phrase' => $products->getMetadata()->getPaging()->getUrlTemplate()])
         );
         return $pagination;
     }
@@ -202,8 +209,8 @@ class SearchController extends AbstractController
     protected function getCategoriesFilters($products)
     {
         $converterFilter = new Data\Converter\Filters\CategoriesConverter();
-        $categoriesFilter = $converterFilter->convert($products,array(
-            new \App\Lib\View\Data\Converter\Filters\Callback\Categories\ReduceIncorrectCategories(),
+        $categoriesFilter = $converterFilter->convert($products, array(
+            new ReduceIncorrectCategories(),
             new Data\Converter\Filters\Callback\Categories\SetIsExcluded(),
             new Data\Converter\Filters\Callback\Categories\SortByName(),
         ));
@@ -247,7 +254,7 @@ class SearchController extends AbstractController
         $converterSelectedFilter = new Data\Converter\Filters\Selected\PriceRangesConverter();
         $priceRangesSelectedFilter = $converterSelectedFilter->convert($products, array(
             new Data\Converter\Filters\Callback\PriceRanges\SetIsNofollow(),
-            new \App\Lib\View\Data\Converter\Filters\Callback\PriceRanges\SetName()
+            new SetName()
         ));
         return $priceRangesSelectedFilter;
     }

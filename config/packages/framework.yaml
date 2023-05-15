@@ -1,18 +1,12 @@
 framework:
-  test: true
   secret: '%env(APP_SECRET)%'
-  router:
-    strict_requirements: ~
-  form: ~
-  csrf_protection: ~
-  validation: { enable_annotations: true }
-  default_locale: "%locale%"
-  trusted_hosts: ~
+  csrf_protection: true
+  http_method_override: true
+  test: true
+
   session:
-    # handler_id set to null will use default session handler from php.ini
-    handler_id: ~
+    handler_id: null
     cookie_secure: auto
     cookie_samesite: lax
-  fragments: ~
-  http_method_override: true
+    storage_factory_id: session.storage.factory.native
   serializer: { enabled: true }

@@ -9,47 +9,58 @@
 namespace App\Lib\Cache;
 
 
-use Desarrolla2\Cache\File;
-use Desarrolla2\Cache\Memory as Cache;
 use Nokaut\ApiKit\Cache\CacheInterface;
+use Psr\Cache\InvalidArgumentException;
+use Symfony\Component\Cache\Adapter\FilesystemAdapter;
 
-class CacheFile extends Cache implements CacheInterface
+class CacheFile implements CacheInterface
 {
-
     private $enabledCache = true;
     protected $cacheDir;
-    private $timeout;
     private $keyPrefix;
+    private $cache;
 
     function __construct($cacheDir, $timeout, $enabledCache = true, $keyPrefix = 'api-raw-response-')
     {
-        $adapter = new File($cacheDir);
-        $adapter->setTtlOption($timeout);
+        $cache = new FilesystemAdapter('', $timeout, $cacheDir);
+        $this->cache = $cache;
         $this->enabledCache = $enabledCache;
         $this->cacheDir = $cacheDir;
-        $this->timeout = $timeout;
         $this->keyPrefix = md5($keyPrefix);
     }
 
 
-    public function get($keyName, $lifetime = null)
+    /**
+     * @throws InvalidArgumentException
+     */
+    public function get($keyName, $lifetime = null): mixed
     {
         if ($this->enabledCache) {
-            return parent::get($keyName);
+            return $this->cache->get($keyName, function () {
+                return null;
+            });
         }
         return null;
     }
 
+    /**
+     * @throws InvalidArgumentException
+     */
     public function save($keyName = null, $content = null, $lifetime = null)
     {
         if ($this->enabledCache) {
-            parent::set($keyName, $content, $lifetime);
+
+            $cacheItem = $this->cache->getItem($keyName);
+            $cacheItem->set($content);
+            $cacheItem->expiresAfter($lifetime);
+
+            $this->cache->save($cacheItem);
         }
     }
 
     public function delete($keyName)
     {
-        parent::delete($keyName);
+        $this->cache->delete($keyName);
     }
 
     public function getPrefixKeyName()

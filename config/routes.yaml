@@ -1,6 +1,11 @@
+presta_sitemap:
+  resource: "@PrestaSitemapBundle/config/routing.yml"
+
 wl_homepage:
   path: /
   defaults: { _controller: App\Controller\DefaultController::indexAction }
+  options:
+    sitemap: true
 
 category:
   path: /kategoria-{categoryUrlWithFilters}
@@ -21,15 +26,19 @@ product_modal:
   requirements:
     productUrl: ".+"
 
+
 search:
   path: /produkty-{phrase}
   defaults: { _controller: App\Controller\SearchController::indexAction }
   requirements:
     phrase: ".*"
 
+
 map_categories:
   path: /mapa-kategorii
   defaults: { _controller: App\Controller\MapCategoryController::indexAction }
+  options:
+    sitemap: true
 
 rating_add:
   path: /daja_ocene
@@ -49,3 +58,4 @@ clickRedirect:
   defaults: { _controller: App\Controller\ClickController::clickRedirectAction }
   requirements:
     clickUrl: ".+"
+
