@@ -1,4 +1,6 @@
 parameters:
+  router.request_context.host: '%site_host%'
+  router.request_context.scheme: "%site_scheme%"
 
 services:
   _defaults:
@@ -155,11 +157,6 @@ services:
       - [ setCache, [ "@cache.file" ] ]
       - [ setLogger, [ "@logger" ] ]
 
-  sitemap.urls:
-    public: true
-    class: App\Lib\SiteMap\SiteMapUrls
-    arguments: [ "%domain%", "@router", "@repo.products", "@repo.categories", "@categories.allowed", "@monolog.logger" ]
-
   App\Lib\Breadcrumbs\BreadcrumbsBuilder:
     public: true
     factory: [ 'App\Lib\Breadcrumbs\BreadcrumbsBuilderFactory','newInstance' ]
@@ -173,15 +170,10 @@ services:
     arguments:
       - '@repo.products'
 
-  App\Command\SitemapsDumpCommand:
-    arguments:
-      - "@monolog.logger"
-      - "@sitemap.urls"
-
   App\Command\SitemapsPingGoogleCommand:
     arguments:
       - "@monolog.logger"
       - "@parameter_bag"
 
-
-
+  Symfony\Component\DependencyInjection\ContainerInterface:
+    alias: 'service_container'

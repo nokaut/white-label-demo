@@ -18,14 +18,9 @@ use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 class ClickUrl
 {
-    /**
-     * @var ContainerInterface
-     */
-    protected $container;
 
-    function __construct(ContainerInterface $container)
+    function __construct(private ContainerInterface $container)
     {
-        $this->container = $container;
     }
 
     /**

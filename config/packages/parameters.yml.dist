@@ -11,7 +11,8 @@ parameters:
   nokaut_img_domain: 'https://offers.gallery'
   click_domain: 'http://nokaut.click'
   product_mode: page
-  domain: ~
+  site_host: 'porownywarka.co'
+  site_scheme: 'http'
   site_name: 'Porownywarka.co'
   google_analytics_id: ~
   categories:

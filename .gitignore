@@ -1,6 +1,7 @@
 .idea
 .DS_Store
 /config/packages/parameters.yml
+/public/sitemap.*
 
 ###> phpunit/phpunit ###
 .phpunit.result.cache

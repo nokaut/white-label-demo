@@ -9,7 +9,7 @@
 namespace App\Lib\Listener;
 
 use Symfony\Component\DependencyInjection\ContainerInterface;
-use Symfony\Component\HttpKernel\Event\FilterControllerEvent;
+use Symfony\Component\HttpKernel\Event\ControllerEvent;
 
 class PreAsyncFetchListener
 {
@@ -24,7 +24,7 @@ class PreAsyncFetchListener
         $this->container = $container;
     }
 
-    public function onKernelController(FilterControllerEvent $event)
+    public function onKernelController(ControllerEvent $event)
     {
         if (is_null(self::$done)) {
             //todo

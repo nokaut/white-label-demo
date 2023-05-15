@@ -16,11 +16,11 @@ use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 class UrlEncodeSubscriber implements EventSubscriberInterface
 {
 
-    public static function getSubscribedEvents()
+    public static function getSubscribedEvents(): array
     {
-        return array(
+        return [
             'request.before_send' => 'onRequestBeforeSend',
-        );
+        ];
     }
 
     public function onRequestBeforeSend(Event $event)

@@ -1,0 +1,5 @@
+presta_sitemap:
+  defaults:
+    priority: 1
+    changefreq: daily
+    lastmod: now

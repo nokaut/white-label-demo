@@ -12,6 +12,7 @@ namespace App\Controller;
 use App\Lib\Breadcrumbs\BreadcrumbsBuilder;
 use App\Lib\CategoriesAllowed;
 use App\Lib\Exception\CategoryNotAllowedException;
+use App\Lib\Filter\Controller\UrlCategoryFilter;
 use App\Lib\Filter\PropertiesFilter;
 use App\Lib\Helper\Uri;
 use App\Lib\Rating\RatingAdd;
@@ -19,6 +20,7 @@ use App\Lib\Repository\ProductsAsyncRepository;
 use App\Lib\Repository\ProductsRepository;
 use App\Lib\Type\Breadcrumb;
 use App\Lib\Filter;
+use Exception;
 use Nokaut\ApiKit\ClientApi\Rest\Exception\NotFoundException;
 use Nokaut\ApiKit\ClientApi\Rest\Fetch\ProductsFetch;
 use Nokaut\ApiKit\ClientApi\Rest\Query\ProductsQuery;
@@ -28,21 +30,25 @@ use Nokaut\ApiKit\Entity\Product;
 use Nokaut\ApiKit\Repository\CategoriesAsyncRepository;
 use Nokaut\ApiKit\Repository\OffersAsyncRepository;
 use Nokaut\ApiKit\Repository\OffersRepository;
+use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Routing\RouterInterface;
 
 class ProductController extends AbstractController
 {
     public function __construct(
-        private ProductsRepository $productsRepository,
+        private ProductsRepository        $productsRepository,
         private CategoriesAsyncRepository $categoriesAsyncRepository,
-        private OffersAsyncRepository $offersAsyncRepository,
-        private ProductsAsyncRepository $productsAsyncRepository,
-        private ParameterBagInterface $parameterBag,
-        private CategoriesAllowed $categoriesAllowed,
-        private BreadcrumbsBuilder $breadcrumbsBuilder
+        private OffersAsyncRepository     $offersAsyncRepository,
+        private ProductsAsyncRepository   $productsAsyncRepository,
+        private ParameterBagInterface     $parameterBag,
+        private CategoriesAllowed         $categoriesAllowed,
+        private BreadcrumbsBuilder        $breadcrumbsBuilder,
+        private RouterInterface           $router,
+        private LoggerInterface           $logger
     )
     {
     }
@@ -139,16 +145,15 @@ class ProductController extends AbstractController
 
     public function addRateAction(Request $request)
     {
-        $logger = $this->get('logger');
         try {
-            $logger->info('add rating for product ' . $request->get('productId') . ", rating: " . $request->get('rating'));
+            $this->logger->info('add rating for product ' . $request->get('productId') . ", rating: " . $request->get('rating'));
 
             $rateAdd = new RatingAdd($this->get('repo.products'));
             $currentRating = $rateAdd->addRating($request->get('productId'), $request->get('rating'));
 
             return new Response($currentRating ? $currentRating->getRating() : -1);
-        } catch (\Exception $e) {
-            $logger->error('Fail add rating for product ' . $request->get('productId') . ', '
+        } catch (Exception $e) {
+            $this->logger->error('Fail add rating for product ' . $request->get('productId') . ', '
                 . $e->getMessage());
             return new Response('-1');
         }
@@ -161,7 +166,7 @@ class ProductController extends AbstractController
     protected function fetchProductsFromCategory($categoryId)
     {
         /** @var ProductsAsyncRepository $productsRepo */
-        $productsFetch = $this->productsAsyncRepository->fetchTopProducts(10, array($categoryId), 10);
+        $productsFetch = $this->productsAsyncRepository->fetchTopProducts(10, array($categoryId));
         return $productsFetch;
     }
 
@@ -176,7 +181,7 @@ class ProductController extends AbstractController
      */
     protected function filterCategory(Category $category)
     {
-        $filterCategory = new \App\Lib\Filter\UrlCategoryFilter();
+        $filterCategory = new Filter\UrlCategoryFilter();
         $filterCategory->filter($category);
     }
 
@@ -185,7 +190,7 @@ class ProductController extends AbstractController
      */
     protected function filterProducts(Products $products)
     {
-        $filterUrl = new \App\Lib\Filter\Controller\UrlCategoryFilter();
+        $filterUrl = new UrlCategoryFilter();
         $filterUrl->filter($products);
     }
 
@@ -211,7 +216,7 @@ class ProductController extends AbstractController
         $breadcrumbs = $this->breadcrumbsBuilder->prepareBreadcrumbs(
             $category,
             function ($url) {
-                return $this->get('router')->generate('category', array('categoryUrlWithFilters' => $url));
+                return $this->router->generate('category', array('categoryUrlWithFilters' => $url));
             }
         );
         $breadcrumbs[] = new Breadcrumb($product->getTitle());

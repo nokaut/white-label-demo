@@ -41,7 +41,7 @@ class ProductUrlExtension extends AbstractExtension
         $this->container = $container;
     }
 
-    public function getFilters()
+    public function getFilters(): array
     {
         return [
             new TwigFilter('productUrlAttr', [$this, 'prepareAttrUrl'], ['is_safe' => ['html']]),
@@ -56,11 +56,11 @@ class ProductUrlExtension extends AbstractExtension
     function prepareAttrUrl($product, $oneOfferToShop = true)
     {
         $attr = [];
-        if ($this->productModal == 'modal' && !$product->getClickUrl()) {
+        if ($this->productModal === 'modal' && !$product->getClickUrl()) {
             $attr['href'] = '#' . ltrim($product->getUrl(), '/');
             $attr['data-product-modal'] = ltrim($product->getUrl(), '/');
             $attr['rel'] = 'nofollow';
-        } elseif ($this->productModal == 'modal' && $product->getClickUrl()) {
+        } elseif ($this->productModal === 'modal' && $product->getClickUrl()) {
             $attr['target'] = "_blank";
             $attr['href'] = $this->clickUrl->prepareProductClickUrl($product);
             $attr['rel'] = 'nofollow';
