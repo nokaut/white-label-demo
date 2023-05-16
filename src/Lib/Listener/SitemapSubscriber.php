@@ -183,7 +183,7 @@ class SitemapSubscriber implements EventSubscriberInterface
             }
             $sleepTime = $attempt * 3;
 
-            $this->logger->error('Exception: ' . $e->getMessage() . ", retry after {$sleepTime}s sleep: " . $lastProductId);
+            $this->logger->error(printf("Exception: %s, retry after %s sleep: %s", $e->getMessage(), $sleepTime, $lastProductId));
             sleep($sleepTime);
             $attempt++;
             return $this->getProducts($lastProductId, $limit, $attempt);

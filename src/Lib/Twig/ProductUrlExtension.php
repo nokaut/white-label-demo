@@ -74,7 +74,7 @@ class ProductUrlExtension extends AbstractExtension
 
         $result = '';
         foreach ($attr as $attrName => $value) {
-            $result .= "{$attrName}=\"{$value}\" ";
+            $result .= printf("%s=\"%s\" ", $attrName, $value);
         }
         return trim($result);
     }

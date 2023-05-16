@@ -26,13 +26,11 @@ product_modal:
   requirements:
     productUrl: ".+"
 
-
 search:
   path: /produkty-{phrase}
   defaults: { _controller: App\Controller\SearchController::indexAction }
   requirements:
     phrase: ".*"
-
 
 map_categories:
   path: /mapa-kategorii

@@ -55,7 +55,7 @@ class ProductController extends AbstractController
 
     public function indexAction($productUrl)
     {
-        if ($this->getParameter('product_mode') == 'modal') {
+        if ($this->getParameter('product_mode') === 'modal') {
             throw $this->createNotFoundException('modal product mode - disallowed products page');
         }
 
@@ -148,7 +148,7 @@ class ProductController extends AbstractController
         try {
             $this->logger->info('add rating for product ' . $request->get('productId') . ", rating: " . $request->get('rating'));
 
-            $rateAdd = new RatingAdd($this->get('repo.products'));
+            $rateAdd = new RatingAdd($this->productsRepository);
             $currentRating = $rateAdd->addRating($request->get('productId'), $request->get('rating'));
 
             return new Response($currentRating ? $currentRating->getRating() : -1);
@@ -238,8 +238,7 @@ class ProductController extends AbstractController
 //        $query->setQuality(60);
         /** @var ProductsAsyncRepository $productsRepo */
 
-        $productsFetch = $this->productsAsyncRepository->fetchProductsByQuery($query);
-        return $productsFetch;
+        return $this->productsAsyncRepository->fetchProductsByQuery($query);
     }
 
     /**
