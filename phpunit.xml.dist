@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- https://phpunit.readthedocs.io/en/latest/configuration.html -->
+<phpunit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:noNamespaceSchemaLocation="vendor/phpunit/phpunit/phpunit.xsd"
+         backupGlobals="false"
+         colors="true"
+         bootstrap="tests/bootstrap.php"
+         convertDeprecationsToExceptions="false"
+>
+    <php>
+        <ini name="error_reporting" value="-1"/>
+        <ini name="intl.default_locale" value="en"/>
+        <ini name="intl.error_level" value="3"/>
+        <ini name="memory_limit" value="-1"/>
+        <env name="APP_ENV" value="dev"/>
+        <env name="RESET_ENVIRONMENT" value="false"/>
+        <env name="TEST_VEBOSITY" value="1"/>
+        <env name="KERNEL_CLASS" value="App\Kernel"/>
+
+        <!-- ###+ symfony/framework-bundle ### -->
+        <env name="APP_ENV" value="dev"/>
+        <env name="APP_SECRET" value="ThisTokenIsNotSoSecretChangeIt"/>
+        <!-- ###- symfony/framework-bundle ### -->
+    </php>
+
+    <testsuites>
+        <testsuite name="Project Test Suite">
+            <directory>tests</directory>
+        </testsuite>
+    </testsuites>
+
+    <coverage processUncoveredFiles="true">
+        <include>
+            <directory suffix=".php">src</directory>
+        </include>
+    </coverage>
+
+    <listeners>
+        <listener class="Symfony\Bridge\PhpUnit\SymfonyTestsListener"/>
+    </listeners>
+</phpunit>

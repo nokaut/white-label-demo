@@ -17,3 +17,7 @@
 /var/
 /vendor/
 ###< symfony/framework-bundle ###
+
+###> symfony/phpunit-bridge ###
+/phpunit.xml
+###< symfony/phpunit-bridge ###
