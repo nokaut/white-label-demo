@@ -1,6 +1,11 @@
 ChangeLog
 =========
 
+v1.3.1
+------
+
+- Docker php image version specification
+
 v1.3.0
 ------
 
