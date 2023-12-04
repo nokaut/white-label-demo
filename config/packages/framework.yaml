@@ -1,6 +1,7 @@
 framework:
   secret: '%env(APP_SECRET)%'
   csrf_protection: true
+  handle_all_throwables: true
   http_method_override: true
   test: true
 
@@ -10,3 +11,9 @@ framework:
     cookie_samesite: lax
     storage_factory_id: session.storage.factory.native
   serializer: { enabled: true }
+
+  php_errors:
+    log: true
+
+  annotations:
+    enabled: false
