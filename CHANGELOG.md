@@ -1,6 +1,12 @@
 ChangeLog
 =========
 
+v1.4.0
+------
+
+- Symfony 6.4.1
+- Recipes upgrade
+
 v1.3.1
 ------
 
